@@ -1,5 +1,8 @@
 # Marcin add-ons
 TEST.ipynb
+pywindow/shape.py
+pywindow/graph.py
+pywindow/plot.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

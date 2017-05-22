@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module containing all functions of general purpose and shared in pyWINDOW.
+Module containing all general purpose functions shared by other modules.
 
 """
 
@@ -35,12 +35,21 @@ class _FunctionError(Exception):
         self.message = message
 
 
-def is_number(s):
+def is_number(number):
     """
-    This function checks if a string is a number/float
+    Return True if an object is a number - can be converted into a float.
+
+    Parameters
+    ----------
+    number : any
+
+    Returns
+    -------
+    bool
+        True if input is a float convertable (a number), False otherwise.
     """
     try:
-        float(s)
+        float(number)
         return True
     except ValueError:
         return False
@@ -48,20 +57,47 @@ def is_number(s):
 
 def unique(input_list):
     """
-    A function that itterates list for duplicates and returns a list containing
-    only unique items. It is similiar to 'set' function but not entirely
-    the same
+    Return a list of unique items (similar to set functionality).
+
+    Parameters
+    ----------
+    input_list : list
+        A list containg some items that can occur more than once.
+
+    Returns
+    -------
+    list
+        A list with only unique occurances of an item.
     """
     output = []
     for item in input_list:
         if item not in output:
             output.append(item)
-    return (output)
+    return output
 
 
 def make_JSON_serializable(obj):
     """
-    Return a dictionary with all arrays (two lvls) changed to lists.
+    Return a dictionary with all arrays (two lvls down) changed to lists.
+
+    It takes a dictionary (and subdictionaries up to second level down) and
+    searches for numpy.ndarrays that are not json serializable. It exchanges
+    these arrays into lists.
+
+    Parameters
+    ----------
+    obj : dictionary
+        A dictionary that is going to be dumped as json.
+
+    Modifies
+    --------
+    obj : dictionary
+        The input dictionary.
+
+    Returns
+    -------
+    dictionary
+        A processed dictionary without numpy arrays.
     """
     for key in obj.keys():
         if isinstance(obj[key], np.ndarray):
@@ -76,24 +112,78 @@ def make_JSON_serializable(obj):
     return obj
 
 
-def distance(point_a, point_b):
+def distance(a, b):
     """
+    Return the distance between two vectors (points) a and b.
+
+    Parameters
+    ----------
+    a : numpy.ndarray
+        First vector.
+    b : numpy.ndarray
+        Second vector.
+
+    Returns
+    -------
+    numpy.float64
+        A distance between two vectors (points).
     """
-    return ((np.sum((point_a - point_b)**2))**0.5)
+    return (np.sum((a - b)**2))**0.5
 
 
 def molecular_weight(elements):
+    """
+    Return molecular weight of a molecule.
+
+    Parameters
+    ----------
+    elements : numpy.ndarray
+        An array of all elements (type: str) in a molecule.
+
+    Returns
+    -------
+    numpy.float64
+        A molecular weight of a molecule.
+    """
     return (np.array([atomic_mass[i.upper()] for i in elements]).sum())
 
 
 def center_of_coor(coordinates):
     """
-    This function calculates the centre of coordinates (COC)
+    Return the centre of coordinates.
+
+    Parameters
+    ----------
+    coordinates : numpy.ndarray
+        An array containing molecule's coordinates.
+
+    Returns
+    -------
+    numpy.ndarray
+        An 1d array with coordinates of the centre of coordinates excluding
+        elements' masses.
     """
     return (np.sum(coordinates, axis=0) / coordinates.shape[0])
 
 
 def center_of_mass(elements, coordinates):
+    """
+    Return the centre of mass (COM).
+
+    Parameters
+    ----------
+    elements : numpy.ndarray
+        An array of all elements (type: str) in a molecule.
+
+    coordinates : numpy.ndarray
+        An array containing molecule's coordinates.
+
+    Returns
+    -------
+    numpy.ndarray
+        An 1d array with coordinates of the centre of mass including elements'
+        masses.
+    """
     mass = molecular_weight(elements)
     mass_array = np.array([[atomic_mass[i.upper()]] * 3 for i in elements])
     mass_coordinates = coordinates * mass_array
@@ -101,6 +191,45 @@ def center_of_mass(elements, coordinates):
 
 
 def compose_atom_list(*args):
+    """
+    Return an `atom list` from elements and/or atom ids and coordinates.
+
+    An `atom list` is a special object that some pyWINDOW functions uses.
+    It is a nested list of lists with each individual list containing:
+        version 1 : [[element, coordinates (x, y, z)], ...]
+        version 2 : [[element, atom key, coordinates (x, y, z)], ...]
+    They work better for molecular re-building than two separate arrays for
+    elements and coordinates do.
+
+    Parameters (version 1)
+    -----------------------
+    elements : numpy.ndarray
+        An array of all elements (type: str) in a molecule.
+
+    coordinates : numpy.ndarray
+        An array containing molecule's coordinates.
+
+    Parameters (version 2)
+    -----------------------
+    elements : numpy.ndarray
+        An array of all elements (type: str) in a molecule.
+
+    atom_ids : numpy.ndarray
+        An array of all forcfield dependent atom keys (type:str) in a molecule.
+
+    coordinates : numpy.ndarray
+        An array containing molecule's coordinates.
+
+    Returns
+    -------
+    list
+        Version 1 or version 2 atom list depending on input parameters.
+
+    Raises
+    ------
+    _FunctionError : Exception
+        Raised when wrong number of parameters is passed to the function.
+    """
     if len(args) == 2:
         atom_list = [[
             i[0],
@@ -131,6 +260,29 @@ def compose_atom_list(*args):
 
 
 def decompose_atom_list(atom_list):
+    """
+    Return elements and/or atom ids and coordinates from an `atom list`.
+
+    Depending on input type of an atom list (version 1 or 2)
+        version 1 : [[element, coordinates (x, y, z)], ...]
+        version 2 : [[element, atom key, coordinates (x, y, z)], ...]
+    the function reverses what pywindow.utilities.compose_atom_list() do.
+
+    Parameters
+    ----------
+    atom_list : list
+        A nested list of lists (version 1 or 2)
+
+    Returns (version 1)
+    -------------------
+    (numpy.ndarray, numpy.ndarray)
+        A touple of elements and coordinates arrays.
+
+    Returns (version 2)
+    -------------------
+    (numpy.ndarray, numpy.ndarray, numpy.ndarray)
+        A touple of elements, atom keys and coordinates arrays.
+    """
     transpose = list(zip(*atom_list))
     if len(transpose) == 4:
         elements = np.array(transpose[0])
@@ -156,13 +308,9 @@ def decompose_atom_list(atom_list):
 
 
 def dlf_notation(atom_key):
-    """29-04-16: This function should decipher DLF_notation used in
-                 newer version of DLFIELD It returns the begining
-                 of the DLF string, in case of single letter atoms
-                 it should return just atom key like 'C' or 'O',
-                 in case of double letter atom_keys it will stop
-                 after the second 'CL' or 'BR'. I assume that the
-                 begging is always the periodic table atom id"""
+    """
+    Return element for atom key using DL_F notation.
+    """
     split = list(atom_key)
     element = ''
     number = False
@@ -178,11 +326,6 @@ def dlf_notation(atom_key):
 def opls_notation(atom_key):
     """
     Return element for OPLS forcefield atom key.
-
-    05-03-17: Need to perform a double check first for .upper()
-    and if nothing found for unchanges, as NE is for Nitrogen,
-    but Ne would be for Neon and same He, HE, and other possible
-    conflicts
     """
     # warning for Ne, He, Na types overlap
     conflicts = ['ne', 'he', 'na']
@@ -242,6 +385,22 @@ def decipher_atom_key(atom_key, forcefield):
 
 def shift_com(elements, coordinates, com_adjust=np.zeros(3)):
     """
+    Return coordinates translated by some vector.
+
+    Parameters
+    ----------
+    elements : numpy.ndarray
+        An array of all elements (type: str) in a molecule.
+
+    coordinates : numpy.ndarray
+        An array containing molecule's coordinates.
+
+    com_adjust : numpy.ndarray (default = [0, 0, 0])
+
+    Returns
+    -------
+    numpy.ndarray
+        Translated array of molecule's coordinates.
     """
     com = center_of_mass(elements, coordinates)
     com = np.array([com - com_adjust] * coordinates.shape[0])
@@ -250,7 +409,19 @@ def shift_com(elements, coordinates, com_adjust=np.zeros(3)):
 
 def max_dim(elements, coordinates):
     """
-    returns, index1, index2, maxdim
+    Return the maximum diameter of a molecule.
+
+    Parameters
+    ----------
+    elements : numpy.ndarray
+        An array of all elements (type: str) in a molecule.
+
+    coordinates : numpy.ndarray
+        An array containing molecule's coordinates.
+
+    Returns
+    -------
+
     """
     atom_vdw_vertical = np.matrix(
         [[atomic_vdw_radius[i.upper()]] for i in elements])
@@ -262,11 +433,12 @@ def max_dim(elements, coordinates):
     final_matrix = np.triu(re_dist_matrix)
     i1, i2 = np.unravel_index(final_matrix.argmax(), final_matrix.shape)
     maxdim = final_matrix[i1, i2]
-    return (i1, i2, maxdim)
+    return i1, i2, maxdim
 
 
 def void_diameter(elements, coordinates, com=None):
     """
+    Return void diameter of a molecule.
     """
     if com is None:
         com = center_of_mass(elements, coordinates)
@@ -280,6 +452,7 @@ def void_diameter(elements, coordinates, com=None):
 
 def correct_void_diameter(com, *params):
     """
+    Return negative of a void diameter. (optimisation function)
     """
     elements, coordinates = params
     return (-void_diameter(elements, coordinates, com)[0])
@@ -287,6 +460,7 @@ def correct_void_diameter(com, *params):
 
 def opt_void_diameter(elements, coordinates, bounds=None, **kwargs):
     """
+    Return optimised void diameter and it's COM.
     """
     if bounds is None:
         void_r = void_diameter(elements, coordinates)[0] / 2
@@ -301,13 +475,14 @@ def opt_void_diameter(elements, coordinates, bounds=None, **kwargs):
 
 def void_volume(void_radius):
     """
+    Return the volume of a spherical void.
     """
     return (4 / 3 * np.pi * void_radius**3)
 
 
 def unit_cell_to_lattice_matrix(cryst):
     """
-    Return parallelpiped unit cell lattice matrix.
+    Return parallelpiped unit cell lattice matrix from crystallographic param.
     """
     # Extract unit cell edges and angles.
     a_, b_, c_, alpha, beta, gamma = cryst
@@ -333,6 +508,9 @@ def unit_cell_to_lattice_matrix(cryst):
 
 
 def lattice_matrix_to_unit_cell(lattice_matrix):
+    """
+    Return crystallographic param. from unit cell lattice matrix.
+    """
     cell_lengths = np.sqrt(np.sum(lattice_matrix**2, axis=1))
     cell_angles = np.array([
         np.rad2deg(np.pi / 2 - np.dot(lattice_matrix[1], lattice_matrix[2]) /
@@ -346,15 +524,17 @@ def lattice_matrix_to_unit_cell(lattice_matrix):
 
 
 def cell_volume_from_matrix(matrix):
-    """needs to be checked"""
+    """Return unit cell's volume from lattice matrix."""
     return np.linalg.det(matrix)
 
 
 def cell_volume_from_cryst(cryst):
+    """Return unit cell's volume from crystallographic parameters."""
     return cell_volume_from_matrix(cryst_to_lattice_matrix(cryst))
 
 
 def fractional_from_cartesian(coordinate, matrix):
+    """ Return a fractional coordinate from a cartesian one. """
     sigma_a = np.cross(matrix[1], matrix[2])
     sigma_b = np.cross(matrix[2], matrix[0])
     sigma_c = np.cross(matrix[0], matrix[1])
@@ -369,12 +549,14 @@ def fractional_from_cartesian(coordinate, matrix):
 
 
 def cartisian_from_fractional(coordinate, matrix):
+    """ Return cartesian coordinate from a fractional one. """
     multiplication_matrix = np.matrix(matrix)
     orthogonal = multiplication_matrix * coordinate.reshape(-1, 1)
     return np.array(orthogonal.reshape(1, -1))
 
 
 def cart2frac_all(coordinates, matrix):
+    """ Convert all cartesian coordinates to fractional. """
     frac_coordinates = deepcopy(coordinates)
     for coord in range(frac_coordinates.shape[0]):
         frac_coordinates[coord] = fractional_from_cartesian(
@@ -383,6 +565,7 @@ def cart2frac_all(coordinates, matrix):
 
 
 def frac2cart_all(frac_coordinates, matrix):
+    """ Convert all fractional coordinates to cartesian. """
     coordinates = deepcopy(frac_coordinates)
     for coord in range(coordinates.shape[0]):
         coordinates[coord] = cartisian_from_fractional(coordinates[coord],
@@ -391,6 +574,7 @@ def frac2cart_all(frac_coordinates, matrix):
 
 
 def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
+    """ Create a supercell. """
     if 'lattice' not in system.keys():
         matrix = unit_cell_to_lattice_matrix(system['unit_cell'])
     else:
@@ -430,13 +614,12 @@ def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
 
 
 def normal_vector(origin, vectors):
-    """
-    The function calculates a normal vector for two vectors with same origin
-    """
+    """ Return normal vector for two vectors with same origin. """
     return np.cross(vectors[0] - origin, vectors[1] - origin)
 
 
 def discrete_molecules(system, supercell=None):
+    """ Decompose molecular system into individual discreet molecules. """
     origin = np.array([0, 0, 0])
     # We create a list containing all atoms, theirs periodic elements and
     # coordinates. As this process is quite complicated, we need a list
@@ -576,8 +759,8 @@ def discrete_molecules(system, supercell=None):
     return molecules
 
 
-# Calculates the angle between two normal vectors
 def angle_between_vectors(x, y):
+    """ Calculate the angle between two vectors x and y """
     first_step = abs(x[0] * y[0] + x[1] * y[1] + x[2] * y[2]) / (
         np.sqrt(x[0]**2 + x[1]**2 + x[2]**2) *
         np.sqrt(y[0]**2 + y[1]**2 + y[2]**2))
@@ -587,6 +770,7 @@ def angle_between_vectors(x, y):
 
 def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
     """
+    Analyse a sampling vector's path for window analysis purpose.
     """
     # Calculate number of chunks if vector length is divided by increment.
     chunks = int(np.linalg.norm(vector) // increment)
@@ -608,12 +792,18 @@ def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
 
 
 def optimise_xy(xy, *args):
+    """
+    Return negative void diameter for x and y coordinates optimisation.
+    """
     z, elements, coordinates = args
     window_com = np.array([xy[0], xy[1], z])
     return -void_diameter(elements, coordinates, com=window_com)[0]
 
 
 def optimise_z(z, *args):
+    """
+    Return void diameter for coordinates optimisation in z direction.
+    """
     x, y, elements, coordinates = args
     window_com = np.array([x, y, z])
     return void_diameter(elements, coordinates, com=window_com)[0]
@@ -628,7 +818,7 @@ def window_analysis(window,
                     lb_z=False,
                     **kwargs):
     """
-    Return window diameter and window's centre (in Angstrom).
+    Return window diameter and window's centre.
 
     Parameters
     ----------
@@ -768,7 +958,7 @@ def find_windows(elements,
                  output='all',
                  **kwargs):
     """
-
+    Return windows diameters and center of masses for a molecule.
     """
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
