@@ -205,28 +205,54 @@ class DLPOLY(object):
         return MolecularSystem.load_system(frame_data)
 
     def analysis(self, frames='all', ncpus=1, override=False, **kwargs):
-        if override is True:
-            self.analysis_output = {}
+        """ """
+        # If a single frame is passed for analysis it runs by default in
+        # serial, therefore the ncpus parameter is passed to the subfunctions
+        # allowing find_windows() to run in serial/parallel.
         if isinstance(frames, int):
-            analysed_frame = self._analysis_serial(frames, ncpus, **kwargs)
-            if frames not in self.analysis_output.keys():
+            # If override keyword is True, then regardless if the frame was
+            # already in the analysis_output dictionary it will be overridden.
+            if override is True:
+                analysed_frame = self._analysis_serial(frames, ncpus, **kwargs)
                 self.analysis_output[frames] = analysed_frame
-            return analysed_frame
+                return analysed_frame
+            # If override keyword is False and frame was already analysed.
+            if override is False and frames in self.analysis_output.keys():
+                return self.analysis_output[frames]
+            # If override keyword is False and frame was not already analysed
+            if override is False and frames not in self.analysis_output.keys():
+                analysed_frame = self._analysis_serial(frames, ncpus, **kwargs)
+                self.analysis_output[frames] = analysed_frame
+                return analysed_frame
+        # If multiple frames (list, range, etc.) are passed by default they
+        # will be analysed in parallel and the find_windows() in serial. Even
+        # if a single cpu (default) is set it will run through Pool (but in
+        # serial). Option to run multiple frames in serial, but find_windows()
+        # in parallel is not allowed as it is less optimal.
         else:
             frames_for_analysis = []
             if isinstance(frames, list):
                 for frame in frames:
-                    if frame not in self.analysis_output.keys():
+                    if override is False:
+                        if frame not in self.analysis_output.keys():
+                            frames_for_analysis.append(frame)
+                    if override is True:
                         frames_for_analysis.append(frame)
             if isinstance(frames, tuple):
                 for frame in range(frames[0], frames[1]):
-                    if frame not in self.analysis_output.keys():
+                    if override is False:
+                        if frame not in self.analysis_output.keys():
+                            frames_for_analysis.append(frame)
+                    if override is True:
                         frames_for_analysis.append(frame)
             if isinstance(frames, str):
                 if frames in ['all', 'everything']:
                     for frame in range(0, self.no_of_frames):
-                        if frame not in self.analysis_output.keys():
-                            frames_for_analysis.append(frame)
+                        if override is False:
+                            if frame not in self.analysis_output.keys():
+                                frames_for_analysis.append(frame)
+                            if override is True:
+                                frames_for_analysis.append(frame)
             self._analysis_parallel(frames_for_analysis, ncpus, **kwargs)
 
     def _analysis_serial(self, frame, ncpus, **kwargs):
