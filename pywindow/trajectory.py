@@ -237,7 +237,7 @@ class DLPOLY(object):
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
             molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.separate_discrete_molecules()
+        molecular_system.make_modular()
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
@@ -280,7 +280,7 @@ class DLPOLY(object):
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
             molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.separate_discrete_molecules()
+        molecular_system.make_modular()
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
@@ -547,7 +547,7 @@ class XYZ(object):
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
             molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.separate_discrete_molecules()
+        molecular_system.make_modular()
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
@@ -590,7 +590,7 @@ class XYZ(object):
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
             molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.separate_discrete_molecules()
+        molecular_system.make_modular()
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
@@ -782,7 +782,7 @@ class PDB(object):
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
             molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.separate_discrete_molecules()
+        molecular_system.make_modular()
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
@@ -825,7 +825,7 @@ class PDB(object):
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
             molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.separate_discrete_molecules()
+        molecular_system.make_modular()
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
