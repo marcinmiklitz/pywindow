@@ -21,7 +21,8 @@ def make_supercell(system, matrix, supercell=[1, 1, 1]):
 
 
 class DLPOLY(object):
-    def __init__(self):
+    def __init__(self, filepath):
+        self.filepath = filepath
         self.frames = {}
         self.analysis_output = {}
         # Image conversion - periodic boundary key.
@@ -42,12 +43,11 @@ class DLPOLY(object):
             2: 'coordinates, velocities and forces',
         }
 
-    def load_HISTORY(self, file_path):
-        """ Return file_path as a class attribute"""
-        self.file_path = file_path
+    def load_HISTORY(self):
+        """ """
         self.trajectory_map = {}
 
-        with open(file_path, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             with closing(
                     mmap(
                         trajectory_file.fileno(), 0,
@@ -93,7 +93,7 @@ class DLPOLY(object):
 
     def _decode_head(self, header_coordinates):
         start, end = header_coordinates
-        with open(self.file_path, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             with closing(
                     mmap(
                         trajectory_file.fileno(), 0,
@@ -135,7 +135,7 @@ class DLPOLY(object):
 
     def _get_frame(self, frame_coordinates, extract_data):
         start, end = frame_coordinates
-        with open(self.file_path, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             with closing(
                     mmap(
                         trajectory_file.fileno(), 0,
@@ -326,7 +326,7 @@ class DLPOLY(object):
             pool.terminate()
             raise _ParallelAnalysisError("Parallel analysis failed.")
 
-    def check_HISTORY_for_errors(self, file_path):
+    def check_HISTORY_for_errors(self):
         """
         """
 
@@ -349,7 +349,7 @@ class DLPOLY(object):
         error_1 = "Error 1: The trajectory is discontinous."
         error_2 = "Error 2: The file contains an empty line."
 
-        with open(self.file_path, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             # We open the HISTORY trajectory file
             with closing(
                     mmap(
@@ -412,15 +412,15 @@ class DLPOLY(object):
 
 
 class XYZ(object):
-    def __init__(self):
+    def __init__(self, filepath):
+        self.filepath = filepath
         self.frames = {}
         self.analysis_output = {}
 
-    def load(self, file_path):
-        """ Return file_path as a class attribute"""
-        self.file_path = file_path
+    def load(self):
+        """ Return filepath as a class attribute"""
         self.trajectory_map = {}
-        with open(file_path, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             with closing(
                     mmap(
                         trajectory_file.fileno(), 0,
@@ -481,7 +481,7 @@ class XYZ(object):
 
     def _get_frame(self, frame_coordinates, extract_data):
         start, end = frame_coordinates
-        with open(self.file_path, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             with closing(
                     mmap(
                         trajectory_file.fileno(), 0,
@@ -638,15 +638,15 @@ class XYZ(object):
 
 
 class PDB(object):
-    def __init__(self):
+    def __init__(self, filepath):
+        self.filepath = filepath
         self.frames = {}
         self.analysis_output = {}
 
-    def load(self, file_path):
-        """ Return file_path as a class attribute"""
-        self.file_path = file_path
+    def load(self):
+        """ Return filepath as a class attribute"""
         self.trajectory_map = {}
-        with open(file_path, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             with closing(
                     mmap(
                         trajectory_file.fileno(), 0,
@@ -709,7 +709,7 @@ class PDB(object):
 
     def _get_frame(self, frame_coordinates, extract_data):
         start, end = frame_coordinates
-        with open(self.file_path, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             with closing(
                     mmap(
                         trajectory_file.fileno(), 0,
