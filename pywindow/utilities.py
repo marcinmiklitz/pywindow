@@ -78,9 +78,9 @@ def unique(input_list):
 
 def make_JSON_serializable(obj):
     """
-    Return a dictionary with all arrays (two lvls down) changed to lists.
+    Return a dictionary with all arrays (three lvls down) changed to lists.
 
-    It takes a dictionary (and subdictionaries up to second level down) and
+    It takes a dictionary (and subdictionaries up to third level down) and
     searches for numpy.ndarrays that are not json serializable. It exchanges
     these arrays into lists.
 
@@ -107,6 +107,15 @@ def make_JSON_serializable(obj):
                 for key2 in obj[key].keys():
                     if isinstance(obj[key][key2], np.ndarray):
                         obj[key][key2] = obj[key][key2].tolist()
+                    try:
+                        if obj[key][key2].keys() is not None:
+                            for key3 in obj[key][key2].keys():
+                                if isinstance(obj[key][key2][key3],
+                                              np.ndarray):
+                                    obj[key][key2][key3] = obj[key][key2][
+                                        key3].tolist()
+                    except AttributeError:
+                        pass
         except AttributeError:
             pass
     return obj

@@ -32,26 +32,22 @@ class Molecule(object):
         self.coordinates = mol['coordinates']
         self.parent_system = system_name
         self.molecule_id = mol_id
-        self.properties = {}
+        self.properties = {'no_of_atoms': self.no_of_atoms}
 
     @classmethod
     def load_rdkit_mol(cls, mol, system_name='rdkit', mol_id=0):
         return cls(Input().load_rdkit_mol(mol), system_name, mol_id)
 
     def full_analysis(self, ncpus=1, **kwargs):
-        results = {
-            'no_of_atoms': self.no_of_atoms,
-            'mol_weight': self.molecular_weight,
-            'COM': self.calculate_COM(),
-            'maximum_diameter': self.calculate_maximum_diameter(),
-            'void_diameter': self.calculate_void_diameter(),
-            'void_volume': self.calculate_void_volume(),
-            'void_diameter_opt': self.calculate_void_diameter_opt(**kwargs),
-            'void_volume_opt': self.calculate_void_volume_opt(**kwargs),
-            'windows': self.calculate_windows(
-                ncpus=ncpus, **kwargs),
-        }
-        return (results)
+        self.molecular_weight()
+        self.calculate_COM()
+        self.calculate_maximum_diameter()
+        self.calculate_void_diameter()
+        self.calculate_void_volume()
+        self.calculate_void_diameter_opt(**kwargs)
+        self.calculate_void_volume_opt(**kwargs)
+        self.calculate_windows(ncpus=ncpus, **kwargs)
+        return self.properties
 
     def calculate_COM(self):
         self.centre_of_mass = center_of_mass(self.elements, self.coordinates)
@@ -115,10 +111,9 @@ class Molecule(object):
         self.coordinates = shift_com(self.elements, self.coordinates, **kwargs)
         self._update()
 
-    def molecular_weight(self, mol):
-        self.molecular_weight = molecular_weight(mol['elements'])
-        self.properties['windows'] = self.molecular_weight
-        return self.molecular_weight
+    def molecular_weight(self):
+        self.MW = molecular_weight(self.elements)
+        return self.MW
 
     def save_molecule_json(self, filepath=None, molecular=False, **kwargs):
         # We pass a copy of the properties dictionary.
@@ -167,10 +162,10 @@ class MolecularSystem(object):
         self.system_id = 0
 
     @classmethod
-    def load_file(cls, file_path):
+    def load_file(cls, filepath):
         obj = cls()
-        obj.system = obj._Input.load_file(file_path)
-        obj.filename = os.path.basename(file_path)
+        obj.system = obj._Input.load_file(filepath)
+        obj.filename = os.path.basename(filepath)
         obj.system_id = obj.filename.split(".")[0]
         obj.name, ext = os.path.splitext(obj.filename)
         return obj
@@ -182,9 +177,10 @@ class MolecularSystem(object):
         return obj
 
     @classmethod
-    def load_system(cls, dict_):
+    def load_system(cls, dict_, system_id):
         obj = cls()
         obj.system = dict_
+        obj.system_id = system_id
         return obj
 
     def reconstruct_system(self, **kwargs):

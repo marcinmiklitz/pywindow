@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
+import os
 import numpy as np
+from copy import deepcopy
 from mmap import mmap, ACCESS_READ
 from contextlib import closing
 from multiprocessing import Pool
 
 from .io_tools import Input, Output
-from .utilities import is_number, create_supercell, lattice_matrix_to_unit_cell
+from .utilities import (
+    is_number, create_supercell, lattice_matrix_to_unit_cell,
+    make_JSON_serializable,
+)
 from .molecular import MolecularSystem
 
 
@@ -45,6 +50,7 @@ class DLPOLY(object):
             2: 'coordinates, velocities and forces',
         }
         self.filepath = filepath
+        self.system_id = os.path.basename(filepath)
         self.frames = {}
         self.analysis_output = {}
         # Check the history file at init, if no errors, proceed to mapping.
@@ -209,7 +215,7 @@ class DLPOLY(object):
             frame_data['velocities'] = np.array(velocities, dtype=float)
         if forces:
             frame_data['forces'] = np.array(forces, dtype=float)
-        return MolecularSystem.load_system(frame_data)
+        return MolecularSystem.load_system(frame_data, self.system_id)
 
     def analysis(self, frames='all', ncpus=1, override=False, **kwargs):
         """ """
@@ -440,15 +446,30 @@ class DLPOLY(object):
                         )
                         raise _TrajectoryError(error)
 
-    def save_analysis(self, filepath=None):
+    def save_analysis(self, filepath=None, **kwargs):
         # We pass a copy of the analysis attribute dictionary.
         dict_obj = deepcopy(self.analysis_output)
+        # We make sure it is JSON serializable.
+        # We have to do it for each frame separately, otherwise we will
+        # exceed the level how deep the function does it.
+        for frame in dict_obj.keys():
+            dict_obj[frame] = make_JSON_serializable(dict_obj[frame])
+        # If no filepath is provided we create one.
+        if filepath is None:
+            filepath = "_".join(
+                (str(self.system_id), "pywindow_analysis")
+            )
+            filepath = '/'.join((os.getcwd(), filepath))
+        # Dump the dictionary to json file.
+        Output().dump2json(dict_obj, filepath, **kwargs)
         return
 
 
 class XYZ(object):
     def __init__(self, filepath):
         self.filepath = filepath
+        self.filename = os.path.basename(filepath)
+        self.system_id = self.filename.split(".")[0]
         self.frames = {}
         self.analysis_output = {}
         # Map the trajectory file at init.
@@ -548,7 +569,7 @@ class XYZ(object):
             coordinates.append(frame[i][1:])
         frame_data['atom_ids'] = np.array(elements)
         frame_data['coordinates'] = np.array(coordinates, dtype=float)
-        return MolecularSystem.load_system(frame_data)
+        return MolecularSystem.load_system(frame_data, self.system_id)
 
     def analysis(self, frames='all', ncpus=1, override=False, **kwargs):
         if override is True:
@@ -676,6 +697,8 @@ class XYZ(object):
 class PDB(object):
     def __init__(self, filepath):
         self.filepath = filepath
+        self.filename = os.path.basename(filepath)
+        self.system_id = self.filename.split(".")[0]
         self.frames = {}
         self.analysis_output = {}
         # Map the trajectory file at init.
@@ -784,7 +807,7 @@ class PDB(object):
                     [frame[i][30:38], frame[i][38:46], frame[i][46:54]])
         frame_data['atoms_ids'] = np.array(elements, dtype='<U8')
         frame_data['coordinates'] = np.array(coordinates, dtype=float)
-        return MolecularSystem.load_system(frame_data)
+        return MolecularSystem.load_system(frame_data, self.system_id)
 
     def analysis(self, frames='all', ncpus=1, override=False, **kwargs):
         if override is True:
