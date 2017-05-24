@@ -351,11 +351,11 @@ class DLPOLY(object):
             raise _ParallelAnalysisError("Parallel analysis failed.")
 
     @classmethod
-    def check_HISTORY(obj, filepath=None):
+    def check_HISTORY(self, *args):
         """
         """
-        if filepath is None:
-            filepath = self.filepath
+        if self.filepath is None:
+            self.filepath = args
         line = 0
         binary_step = 0
         timestep = 0
@@ -375,7 +375,7 @@ class DLPOLY(object):
         error_1 = "Error 1: The trajectory is discontinous."
         error_2 = "Error 2: The file contains an empty line."
 
-        with open(filepath, 'r') as trajectory_file:
+        with open(self.filepath, 'r') as trajectory_file:
             # We open the HISTORY trajectory file
             with closing(
                     mmap(
