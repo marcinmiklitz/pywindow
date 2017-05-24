@@ -25,6 +25,8 @@ class DLPOLY(object):
         self.filepath = filepath
         self.frames = {}
         self.analysis_output = {}
+        # Map the trajectory file at init.
+        self._map_HISTORY()
         # Image conversion - periodic boundary key.
         self._imcon = {
             0: 'nonperiodic',
@@ -43,10 +45,9 @@ class DLPOLY(object):
             2: 'coordinates, velocities and forces',
         }
 
-    def load_HISTORY(self):
+    def _map_HISTORY(self):
         """ """
         self.trajectory_map = {}
-
         with open(self.filepath, 'r') as trajectory_file:
             with closing(
                     mmap(
@@ -89,7 +90,6 @@ class DLPOLY(object):
                     progress = progress + len(bline)
             self.no_of_frames = frame
             self.get_frames = self._get_frames
-        return self
 
     def _decode_head(self, header_coordinates):
         start, end = header_coordinates
@@ -432,7 +432,6 @@ class DLPOLY(object):
             user_guide = "For more detailed description of warnings and "
             user_guide += "errors please see the pyWindow User's Guide."
             print(user_guide)
-        return self
 
 
 class XYZ(object):
@@ -440,8 +439,10 @@ class XYZ(object):
         self.filepath = filepath
         self.frames = {}
         self.analysis_output = {}
+        # Map the trajectory file at init.
+        self._map_trajectory()
 
-    def load(self):
+    def _map_trajectory(self):
         """ Return filepath as a class attribute"""
         self.trajectory_map = {}
         with open(self.filepath, 'r') as trajectory_file:
@@ -476,7 +477,6 @@ class XYZ(object):
                     progress = progress + len(bline)
             self.no_of_frames = frame + 1
             self.get_frames = self._get_frames
-        return self
 
     def _get_frames(self, frames, extract_data=True, override=False):
         if override is True:
@@ -664,8 +664,10 @@ class PDB(object):
         self.filepath = filepath
         self.frames = {}
         self.analysis_output = {}
+        # Map the trajectory file at init.
+        self._map_trajectory()
 
-    def load(self):
+    def _map_trajectory(self):
         """ Return filepath as a class attribute"""
         self.trajectory_map = {}
         with open(self.filepath, 'r') as trajectory_file:
@@ -702,7 +704,6 @@ class PDB(object):
                     progress = progress + len(bline)
             self.no_of_frames = frame
             self.get_frames = self._get_frames
-        return self
 
     def _get_frames(self, frames, extract_data=True, override=False):
         if override is True:
