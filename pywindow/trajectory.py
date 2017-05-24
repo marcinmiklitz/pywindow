@@ -351,10 +351,11 @@ class DLPOLY(object):
             raise _ParallelAnalysisError("Parallel analysis failed.")
 
     @classmethod
-    def check_HISTORY(obj, filepath):
+    def check_HISTORY(obj, filepath=None):
         """
         """
-
+        if filepath is None:
+            filepath = obj.filepath
         line = 0
         binary_step = 0
         timestep = 0
