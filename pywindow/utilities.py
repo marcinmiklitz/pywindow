@@ -624,7 +624,15 @@ def discrete_molecules(system, supercell=None):
     # We create a list containing all atoms, theirs periodic elements and
     # coordinates. As this process is quite complicated, we need a list
     # which we will gradually be reducing.
-    elements = system['elements']
+    try:
+        elements = system['elements']
+        coordinates = system['coordinates']
+    except KeyError:
+        raise _FunctionError(
+            "The 'elements' key is missing in the 'system' dictionary "
+            "attribute of the MolecularSystem object. Which means, you need to"
+            " decipher the forcefield based atom keys first (see manual)."
+        )
     coordinates = system['coordinates']
     args = (elements, coordinates)
     adj = 0

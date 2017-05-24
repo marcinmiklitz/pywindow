@@ -350,7 +350,8 @@ class DLPOLY(object):
             pool.terminate()
             raise _ParallelAnalysisError("Parallel analysis failed.")
 
-    def check_HISTORY_for_errors(self):
+    @classmethod
+    def check_HISTORY(obj):
         """
         """
 
@@ -373,7 +374,7 @@ class DLPOLY(object):
         error_1 = "Error 1: The trajectory is discontinous."
         error_2 = "Error 2: The file contains an empty line."
 
-        with open(self.filepath, 'r') as trajectory_file:
+        with open(obj.filepath, 'r') as trajectory_file:
             # We open the HISTORY trajectory file
             with closing(
                     mmap(
@@ -419,11 +420,11 @@ class DLPOLY(object):
                         errors.append("Line {0}. {1}".format(line, error_2))
 
         if len(warnings) == 0 and len(errors) == 0:
-            print('\nTrajectory file check finished. No warnings.')
+            print('Trajectory file check finished. No warnings.')
             print('Frames: {0}'.format(frame))
 
         else:
-            print('\nTrajectory file check finished.')
+            print('Trajectory file check finished.')
             print('Frames: {0}'.format(frame))
             for i in warnings:
                 print(i)
