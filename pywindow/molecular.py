@@ -11,6 +11,11 @@ from .utilities import (
 from .io_tools import Input, Output
 
 
+class _MolecularSystemError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
 class _NotAModularSystem(Exception):
     def __init__(self, message):
         self.message = message
@@ -276,15 +281,9 @@ class MolecularSystem(object):
             supercell_333 = None
         dis = discrete_molecules(self.system, supercell=supercell_333)
         self.no_of_discrete_molecules = len(dis)
-        # elements_ = []
-        # coordinates_ = []
         self.molecules = {}
         for i in range(len(dis)):
-            self.molecules[i] = Molecule(dis[i], self.name, i)
-            # [elements_.append(i) for i in dis[i]['elements']]
-            # [coordinates_.append(list(i)) for i in dis[i]['coordinates']]
-        # self.system['modular_elements'] = np.array(elements_)
-        # self.system['modular_coordinates'] = np.array(coordinates_)
+            self.molecules[i] = Molecule(dis[i], self.system_id, i)
 
     def system_to_molecule(self):
         return Molecule(self.system, self.system_id, 0)

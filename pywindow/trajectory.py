@@ -263,8 +263,9 @@ class DLPOLY(object):
             self._analysis_parallel(frames_for_analysis, ncpus, **kwargs)
 
     def _analysis_serial(self, frame, ncpus, **kwargs):
-        frame_ = self._get_frame(self.trajectory_map[frame], extract_data=True)
-        molecular_system = MolecularSystem.load_system(frame_)
+        molecular_system = self._get_frame(
+            self.trajectory_map[frame], extract_data=True
+        )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
@@ -305,8 +306,9 @@ class DLPOLY(object):
         return results
 
     def _analysis_parallel_execute(self, frame, **kwargs):
-        frame_ = self._get_frame(self.trajectory_map[frame], extract_data=True)
-        molecular_system = MolecularSystem.load_system(frame_)
+        molecular_system = self._get_frame(
+            self.trajectory_map[frame], extract_data=True
+        )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
@@ -437,6 +439,11 @@ class DLPOLY(object):
                             "Line {0}:".format(line), error_2
                         )
                         raise _TrajectoryError(error)
+
+    def save_analysis(self, filepath=None):
+        # We pass a copy of the analysis attribute dictionary.
+        dict_obj = deepcopy(self.analysis_output)
+        return
 
 
 class XYZ(object):
@@ -569,8 +576,9 @@ class XYZ(object):
             self._analysis_parallel(frames_for_analysis, ncpus, **kwargs)
 
     def _analysis_serial(self, frame, ncpus, **kwargs):
-        frame_ = self._get_frame(self.trajectory_map[frame], extract_data=True)
-        molecular_system = MolecularSystem.load_system(frame_)
+        molecular_system = self._get_frame(
+            self.trajectory_map[frame], extract_data=True
+        )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
@@ -611,8 +619,9 @@ class XYZ(object):
         return results
 
     def _analysis_parallel_execute(self, frame, **kwargs):
-        frame_ = self._get_frame(self.trajectory_map[frame], extract_data=True)
-        molecular_system = MolecularSystem.load_system(frame_)
+        molecular_system = self._get_frame(
+            self.trajectory_map[frame], extract_data=True
+        )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
@@ -803,8 +812,9 @@ class PDB(object):
             self._analysis_parallel(frames_for_analysis, ncpus, **kwargs)
 
     def _analysis_serial(self, frame, ncpus, **kwargs):
-        frame_ = self._get_frame(self.trajectory_map[frame], extract_data=True)
-        molecular_system = MolecularSystem.load_system(frame_)
+        molecular_system = self._get_frame(
+            self.trajectory_map[frame], extract_data=True
+        )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
@@ -845,8 +855,9 @@ class PDB(object):
         return results
 
     def _analysis_parallel_execute(self, frame, **kwargs):
-        frame_ = self._get_frame(self.trajectory_map[frame], extract_data=True)
-        molecular_system = MolecularSystem.load_system(frame_)
+        molecular_system = self._get_frame(
+            self.trajectory_map[frame], extract_data=True
+        )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
