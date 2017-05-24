@@ -22,12 +22,7 @@ def make_supercell(system, matrix, supercell=[1, 1, 1]):
 
 class DLPOLY(object):
     def __init__(self, filepath):
-        self.filepath = filepath
-        self.frames = {}
-        self.analysis_output = {}
-        # Map the trajectory file at init.
-        self._map_HISTORY()
-        # Image conversion - periodic boundary key.
+        # Image conventions - periodic boundary key.
         self._imcon = {
             0: 'nonperiodic',
             1: 'cubic',
@@ -44,6 +39,11 @@ class DLPOLY(object):
             1: 'coordinates and velocities',
             2: 'coordinates, velocities and forces',
         }
+        self.filepath = filepath
+        self.frames = {}
+        self.analysis_output = {}
+        # Map the trajectory file at init.
+        self._map_HISTORY()
 
     def _map_HISTORY(self):
         """ """
