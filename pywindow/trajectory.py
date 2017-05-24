@@ -354,7 +354,9 @@ class DLPOLY(object):
     def check_HISTORY(self, *args):
         """
         """
-        if self.filepath is None:
+        if self.filepath:
+            pass
+        else:
             self.filepath = args
         line = 0
         binary_step = 0
