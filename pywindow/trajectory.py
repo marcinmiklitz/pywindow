@@ -355,7 +355,7 @@ class DLPOLY(object):
         """
         """
         if filepath is None:
-            filepath = obj.filepath
+            filepath = self.filepath
         line = 0
         binary_step = 0
         timestep = 0
