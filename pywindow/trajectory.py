@@ -14,6 +14,11 @@ class _ParallelAnalysisError(Exception):
         self.message = message
 
 
+class _TrajectoryError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
 def make_supercell(system, matrix, supercell=[1, 1, 1]):
     user_supercell = [[1, supercell[0]], [1, supercell[1]], [1, supercell[1]]]
     system = create_supercell(system, matrix, supercell=user_supercell)
@@ -42,6 +47,8 @@ class DLPOLY(object):
         self.filepath = filepath
         self.frames = {}
         self.analysis_output = {}
+        # Check the history file at init, if no errors, proceed to mapping.
+        self._check_HISTORY()
         # Map the trajectory file at init.
         self._map_HISTORY()
 
@@ -350,32 +357,33 @@ class DLPOLY(object):
             pool.terminate()
             raise _ParallelAnalysisError("Parallel analysis failed.")
 
-    @classmethod
-    def check_HISTORY(self, *args):
+    def _check_HISTORY(self):
         """
         """
-        if self.filepath:
-            pass
-        else:
-            self.filepath = args
+        self.check_log = ""
         line = 0
         binary_step = 0
         timestep = 0
         timestep_flag = 'timestep'
-        frame = 0
-        warnings = []
-        errors = []
         progress = 0
 
-        warning_1 = "Warning 1: No comment line is present as the file header."
-        warning_2 = "Warning 2: Second header line is missing from the file "
-        warning_2 += "that contains information on the system's periodicity "
-        warning_2 += "and the type of the trajectory file."
-        warning_3 = "Warning 3: Comment line encountered in the middle of "
-        warning_3 += "the trajectory file."
+        warning_1 = "No comment line is present as the file header.\n"
+        warning_2 = " ".join(
+            (
+                "Second header line is missing from the file",
+                "that contains information on the system's periodicity",
+                "and the type of the trajectory file.\n"
+             )
+        )
+        warning_3 = " ".join(
+            (
+                "Comment line encountered in the middle of",
+                "the trajectory file.\n"
+            )
+        )
 
-        error_1 = "Error 1: The trajectory is discontinous."
-        error_2 = "Error 2: The file contains an empty line."
+        error_1 = "The trajectory is discontinous.\n"
+        error_2 = "The file contains an empty line.\n"
 
         with open(self.filepath, 'r') as trajectory_file:
             # We open the HISTORY trajectory file
@@ -399,43 +407,36 @@ class DLPOLY(object):
                     # Warning 1
                     if line == 1:
                         if string_line[0] != 'DLFIELD':
-                            warnings.append("Line {0}. {1}".format(line,
-                                                                   warning_1))
+                            self.check_log = " ".join(
+                                (self.check_log, "Line {0}:".format(line),
+                                 warning_1)
+                            )
 
                     # Warning 2
                     if line == 2:
                         if len(string_line) != 3:
-                            warnings.append("Line {0}. {1}".format(line,
-                                                                   warning_2))
+                            self.check_log = " ".join(
+                                (self.check_log, "Line {0}:".format(line),
+                                 warning_2)
+                            )
 
                     # Error 1
                     if string_line:
                         if string_line[0] == timestep_flag:
-                            frame += 1
                             old_timestep = timestep
                             timestep = int(string_line[1])
                             if old_timestep > timestep:
-                                errors.append("Line {0}. {1}".format(line,
-                                                                     error_1))
+                                error = " ".join(
+                                    "Line {0}:".format(line), error_1
+                                )
+                                raise _TrajectoryError(error)
 
                     # Error 2
                     if len(string_line) == 0:
-                        errors.append("Line {0}. {1}".format(line, error_2))
-
-        if len(warnings) == 0 and len(errors) == 0:
-            print('Trajectory file check finished. No warnings.')
-            print('Frames: {0}'.format(frame))
-
-        else:
-            print('Trajectory file check finished.')
-            print('Frames: {0}'.format(frame))
-            for i in warnings:
-                print(i)
-            for i in errors:
-                print(i)
-            user_guide = "For more detailed description of warnings and "
-            user_guide += "errors please see the pyWindow User's Guide."
-            print(user_guide)
+                        error = " ".join(
+                            "Line {0}:".format(line), error_2
+                        )
+                        raise _TrajectoryError(error)
 
 
 class XYZ(object):
