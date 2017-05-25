@@ -136,8 +136,7 @@ class Molecule(object):
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = "_".join(
-                (str(self.parent_system), str(self.molecule_id))
-            )
+                (str(self.parent_system), str(self.molecule_id)))
             filepath = '/'.join((os.getcwd(), filepath))
             filepath = '.'.join((filepath, 'pdb'))
         # Check if there is an 'atom_ids' keyword in the self.mol dict.
@@ -152,22 +151,35 @@ class Molecule(object):
         if include_coms is True:
             mmol = deepcopy(self.mol)
             # add centre of mass (centre of not optimised void) as 'He'.
-            mmol['elements'] = np.concatenate((mmol['elements'], np.array(['He'])))
-            mmol['atom_ids'] = np.concatenate((mmol['atom_ids'], np.array(['He'])))
-            mmol['coordinates'] = np.concatenate((mmol['coordinates'], np.array([self.properties['centre_of_mass']])))
+            mmol['elements'] = np.concatenate(
+                (mmol['elements'], np.array(['He'])))
+            mmol['atom_ids'] = np.concatenate(
+                (mmol['atom_ids'], np.array(['He'])))
+            mmol['coordinates'] = np.concatenate(
+                (mmol['coordinates'], np.array(
+                    [self.properties['centre_of_mass']])))
             # add centre of void optimised as 'Ne'.
-            mmol['elements'] = np.concatenate((mmol['elements'], np.array(['Ne'])))
-            mmol['atom_ids'] = np.concatenate((mmol['atom_ids'], np.array(['Ne'])))
-            mmol['coordinates'] = np.concatenate((mmol['coordinates'], np.array([self.properties['void_diameter_opt']['void_COM']])))
+            mmol['elements'] = np.concatenate(
+                (mmol['elements'], np.array(['Ne'])))
+            mmol['atom_ids'] = np.concatenate(
+                (mmol['atom_ids'], np.array(['Ne'])))
+            mmol['coordinates'] = np.concatenate(
+                (mmol['coordinates'], np.array(
+                    [self.properties['void_diameter_opt']['void_COM']])))
             # add centre of windows as 'Ar'.
             for com in range(len(self.properties['windows']['windows_coms'])):
-                mmol['elements'] = np.concatenate((mmol['elements'], np.array(['Ar'])))
-                mmol['atom_ids'] = np.concatenate((mmol['atom_ids'], np.array(['Ar{0}'.format(com+1)])))
-                mmol['coordinates'] = np.concatenate((mmol['coordinates'], np.array([self.properties['windows']['windows_coms'][com]])))
+                mmol['elements'] = np.concatenate(
+                    (mmol['elements'], np.array(['Ar'])))
+                mmol['atom_ids'] = np.concatenate(
+                    (mmol['atom_ids'], np.array(['Ar{0}'.format(com + 1)])))
+                mmol['coordinates'] = np.concatenate(
+                    (mmol['coordinates'], np.array(
+                        [self.properties['windows']['windows_coms'][com]])))
             self._Output.dump2file(mmol, filepath, atom_ids=atom_ids, **kwargs)
 
         else:
-            self._Output.dump2file(self.mol, filepath, atom_ids=atom_ids, **kwargs)
+            self._Output.dump2file(
+                self.mol, filepath, atom_ids=atom_ids, **kwargs)
 
     def _update(self):
         self.mol['coordinates'] = self.coordinates

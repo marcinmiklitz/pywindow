@@ -483,9 +483,8 @@ class DLPOLY(object):
         }
         settings.update(kwargs)
         if filetype.lower() not in settings.keys():
-            raise _FormatError(
-                "The '{0}' file format is not supported".format(filetype)
-            )
+            raise _FormatError("The '{0}' file format is not supported".format(
+                filetype))
         frames_to_get = []
         if isinstance(frames, int):
             frames_to_get.append(frames)
@@ -513,8 +512,7 @@ class DLPOLY(object):
                     else:
                         raise _FunctionError(
                             "The swap_atom_keys function only accepts "
-                            "'swap_atoms' argument in form of a dictionary."
-                        )
+                            "'swap_atoms' argument in form of a dictionary.")
                 frame_molsys.decipher_atom_keys(settings["forcefield"])
             ffilepath = '_'.join((filepath, str(frame)))
             if 'elements' not in frame_molsys.system.keys():
@@ -522,9 +520,9 @@ class DLPOLY(object):
                     "The frame (MolecularSystem object) needs to have "
                     "'elements' attribute within the system dictionary. "
                     "It is, therefore, neccessary that you set a decipher "
-                    "keyword to True. (see manual)"
-                )
-            settings[filetype.lower()](frame_molsys.system, ffilepath, **kwargs)
+                    "keyword to True. (see manual)")
+            settings[filetype.lower()](frame_molsys.system, ffilepath, **
+                                       kwargs)
 
 
 class XYZ(object):
