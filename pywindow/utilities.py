@@ -831,8 +831,8 @@ def window_analysis(window,
                     coordinates,
                     elements_vdw,
                     increment2=0.1,
-                    z_bounds=(None, None),
-                    lb_z=False,
+                    z_bounds=[None, None],
+                    lb_z=True,
                     **kwargs):
     """
     Return window diameter and window's centre.

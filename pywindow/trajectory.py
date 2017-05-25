@@ -24,6 +24,16 @@ class _TrajectoryError(Exception):
         self.message = message
 
 
+class _FormatError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+class _FunctionError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
 def make_supercell(system, matrix, supercell=[1, 1, 1]):
     user_supercell = [[1, supercell[0]], [1, supercell[1]], [1, supercell[1]]]
     system = create_supercell(system, matrix, supercell=user_supercell)
@@ -463,6 +473,58 @@ class DLPOLY(object):
         # Dump the dictionary to json file.
         Output().dump2json(dict_obj, filepath, **kwargs)
         return
+
+    def save_frames(self, frames, filepath=None, filetype='pdb', **kwargs):
+        settings = {
+            "pdb": Output()._save_pdb,
+            "xyz": Output()._save_xyz,
+            "decipher": True,
+            "forcefield": None,
+        }
+        settings.update(kwargs)
+        if filetype.lower() not in settings.keys():
+            raise _FormatError(
+                "The '{0}' file format is not supported".format(filetype)
+            )
+        frames_to_get = []
+        if isinstance(frames, int):
+            frames_to_get.append(frames)
+        if isinstance(frames, list):
+            frames_to_get = frames
+        if isinstance(frames, tuple):
+            for frame in range(frames[0], frames[1]):
+                frames_to_get.append(frame)
+        if isinstance(frames, str):
+            if frames in ['all', 'everything']:
+                for frame in range(0, self.no_of_frames):
+                    frames_to_get.append(frame)
+        for frame in frames_to_get:
+            if frame not in self.frames.keys():
+                _ = self._get_frames(frame)
+        # If no filepath is provided we create one.
+        if filepath is None:
+            filepath = '/'.join((os.getcwd(), str(self.system_id)))
+        for frame in frames_to_get:
+            frame_molsys = self.frames[frame]
+            if settings['decipher'] is True:
+                if "swap_atoms" in settings.keys():
+                    if isinstance(settings["swap_atoms"], dict):
+                        frame_molsys.swap_atom_keys(settings["swap_atoms"])
+                    else:
+                        raise _FunctionError(
+                            "The swap_atom_keys function only accepts "
+                            "'swap_atoms' argument in form of a dictionary."
+                        )
+                frame_molsys.decipher_atom_keys(settings["forcefield"])
+            ffilepath = '_'.join((filepath, str(frame)))
+            if 'elements' not in frame_molsys.system.keys():
+                raise _FunctionError(
+                    "The frame (MolecularSystem object) needs to have "
+                    "'elements' attribute within the system dictionary. "
+                    "It is, therefore, neccessary that you set a decipher "
+                    "keyword to True. (see manual)"
+                )
+            settings[filetype.lower()](frame_molsys.system, ffilepath, **kwargs)
 
 
 class XYZ(object):
