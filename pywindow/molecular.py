@@ -222,6 +222,8 @@ class MolecularSystem(object):
         # boundary reconstruction step.
         supercell = create_supercell(self.system, **kwargs)
         discrete = discrete_molecules(supercell)
+        # UNDER CONSTRUCTION
+        # PROBABLY WANTED TO ONLY TAKE THE MOLECULES WITHIN THE CELL
         return discrete
 
     def swap_atom_keys(self, swap_dict, dict_key='atom_ids'):

@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
-"""
-Module containing all general purpose functions shared by other modules.
+"""Module containing all general purpose functions shared by other modules.
 
+TO DO LIST
+----------
+
+- In the find_windows() function, maybe change the way the EPS value for
+  the DBSCAN() is estimates. Need to look how the distances change with the
+  increase in size of the sampling sphere.
 """
 
 import numpy as np
@@ -47,6 +52,7 @@ def is_number(number):
     -------
     bool
         True if input is a float convertable (a number), False otherwise.
+
     """
     try:
         float(number)
@@ -68,6 +74,7 @@ def unique(input_list):
     -------
     list
         A list with only unique occurances of an item.
+
     """
     output = []
     for item in input_list:
@@ -98,6 +105,7 @@ def make_JSON_serializable(obj):
     -------
     dictionary
         A processed dictionary without numpy arrays.
+
     """
     for key in obj.keys():
         if isinstance(obj[key], np.ndarray):
@@ -136,6 +144,7 @@ def distance(a, b):
     -------
     numpy.float64
         A distance between two vectors (points).
+
     """
     return (np.sum((a - b)**2))**0.5
 
@@ -153,6 +162,7 @@ def molecular_weight(elements):
     -------
     numpy.float64
         A molecular weight of a molecule.
+
     """
     return (np.array([atomic_mass[i.upper()] for i in elements]).sum())
 
@@ -171,6 +181,7 @@ def center_of_coor(coordinates):
     numpy.ndarray
         An 1d array with coordinates of the centre of coordinates excluding
         elements' masses.
+
     """
     return (np.sum(coordinates, axis=0) / coordinates.shape[0])
 
@@ -192,6 +203,7 @@ def center_of_mass(elements, coordinates):
     numpy.ndarray
         An 1d array with coordinates of the centre of mass including elements'
         masses.
+
     """
     mass = molecular_weight(elements)
     mass_array = np.array([[atomic_mass[i.upper()]] * 3 for i in elements])
@@ -238,6 +250,7 @@ def compose_atom_list(*args):
     ------
     _FunctionError : Exception
         Raised when wrong number of parameters is passed to the function.
+
     """
     if len(args) == 2:
         atom_list = [[
@@ -291,6 +304,7 @@ def decompose_atom_list(atom_list):
     -------------------
     (numpy.ndarray, numpy.ndarray, numpy.ndarray)
         A touple of elements, atom keys and coordinates arrays.
+
     """
     transpose = list(zip(*atom_list))
     if len(transpose) == 4:
@@ -317,9 +331,7 @@ def decompose_atom_list(atom_list):
 
 
 def dlf_notation(atom_key):
-    """
-    Return element for atom key using DL_F notation.
-    """
+    """Return element for atom key using DL_F notation."""
     split = list(atom_key)
     element = ''
     number = False
@@ -333,9 +345,7 @@ def dlf_notation(atom_key):
 
 
 def opls_notation(atom_key):
-    """
-    Return element for OPLS forcefield atom key.
-    """
+    """Return element for OPLS forcefield atom key."""
     # warning for Ne, He, Na types overlap
     conflicts = ['ne', 'he', 'na']
     if atom_key in conflicts:
@@ -373,6 +383,7 @@ def decipher_atom_key(atom_key, forcefield):
     str
         A string that is the periodic table element equvalent of forcefield
         atom key.
+
     """
     load_funcs = {
         'DLF': dlf_notation,
@@ -410,6 +421,7 @@ def shift_com(elements, coordinates, com_adjust=np.zeros(3)):
     -------
     numpy.ndarray
         Translated array of molecule's coordinates.
+
     """
     com = center_of_mass(elements, coordinates)
     com = np.array([com - com_adjust] * coordinates.shape[0])
@@ -446,9 +458,7 @@ def max_dim(elements, coordinates):
 
 
 def void_diameter(elements, coordinates, com=None):
-    """
-    Return void diameter of a molecule.
-    """
+    """Return void diameter of a molecule."""
     if com is None:
         com = center_of_mass(elements, coordinates)
     atom_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
@@ -460,22 +470,22 @@ def void_diameter(elements, coordinates, com=None):
 
 
 def correct_void_diameter(com, *params):
-    """
-    Return negative of a void diameter. (optimisation function)
-    """
+    """Return negative of a void diameter. (optimisation function)."""
     elements, coordinates = params
     return (-void_diameter(elements, coordinates, com)[0])
 
 
 def opt_void_diameter(elements, coordinates, bounds=None, **kwargs):
-    """
-    Return optimised void diameter and it's COM.
-    """
-    if bounds is None:
-        void_r = void_diameter(elements, coordinates)[0] / 2
-        bounds = ((-void_r, void_r), (-void_r, void_r), (-void_r, void_r))
-    com = center_of_mass(elements, coordinates)
+    """Return optimised void diameter and it's COM."""
     args = elements, coordinates
+    com = center_of_mass(elements, coordinates)
+    if bounds is None:
+        void_r = void_diameter(elements, coordinates, com=com)[0] / 2
+        bounds = (
+            (com[0]-void_r, com[0]+void_r),
+            (com[1]-void_r, com[1]+void_r),
+            (com[2]-void_r, com[2]+void_r)
+        )
     minimisation = minimize(
         correct_void_diameter, x0=com, args=args, bounds=bounds)
     voidd = void_diameter(elements, coordinates, com=minimisation.x)
@@ -483,16 +493,12 @@ def opt_void_diameter(elements, coordinates, bounds=None, **kwargs):
 
 
 def void_volume(void_radius):
-    """
-    Return the volume of a spherical void.
-    """
+    """Return the volume of a spherical void."""
     return (4 / 3 * np.pi * void_radius**3)
 
 
 def unit_cell_to_lattice_matrix(cryst):
-    """
-    Return parallelpiped unit cell lattice matrix from crystallographic param.
-    """
+    """Return parallelpiped unit cell lattice matrix."""
     # Extract unit cell edges and angles.
     a_, b_, c_, alpha, beta, gamma = cryst
     # Convert angles from degrees to radians.
@@ -517,9 +523,7 @@ def unit_cell_to_lattice_matrix(cryst):
 
 
 def lattice_matrix_to_unit_cell(lattice_matrix):
-    """
-    Return crystallographic param. from unit cell lattice matrix.
-    """
+    """Return crystallographic param. from unit cell lattice matrix."""
     cell_lengths = np.sqrt(np.sum(lattice_matrix**2, axis=1))
     cell_angles = np.array([
         np.rad2deg(np.pi / 2 - np.dot(lattice_matrix[1], lattice_matrix[2]) /
@@ -543,7 +547,7 @@ def cell_volume_from_cryst(cryst):
 
 
 def fractional_from_cartesian(coordinate, matrix):
-    """ Return a fractional coordinate from a cartesian one. """
+    """Return a fractional coordinate from a cartesian one."""
     sigma_a = np.cross(matrix[1], matrix[2])
     sigma_b = np.cross(matrix[2], matrix[0])
     sigma_c = np.cross(matrix[0], matrix[1])
@@ -558,14 +562,14 @@ def fractional_from_cartesian(coordinate, matrix):
 
 
 def cartisian_from_fractional(coordinate, matrix):
-    """ Return cartesian coordinate from a fractional one. """
+    """Return cartesian coordinate from a fractional one."""
     multiplication_matrix = np.matrix(matrix)
     orthogonal = multiplication_matrix * coordinate.reshape(-1, 1)
     return np.array(orthogonal.reshape(1, -1))
 
 
 def cart2frac_all(coordinates, matrix):
-    """ Convert all cartesian coordinates to fractional. """
+    """Convert all cartesian coordinates to fractional."""
     frac_coordinates = deepcopy(coordinates)
     for coord in range(frac_coordinates.shape[0]):
         frac_coordinates[coord] = fractional_from_cartesian(
@@ -574,7 +578,7 @@ def cart2frac_all(coordinates, matrix):
 
 
 def frac2cart_all(frac_coordinates, matrix):
-    """ Convert all fractional coordinates to cartesian. """
+    """Convert all fractional coordinates to cartesian."""
     coordinates = deepcopy(frac_coordinates)
     for coord in range(coordinates.shape[0]):
         coordinates[coord] = cartisian_from_fractional(coordinates[coord],
@@ -583,7 +587,7 @@ def frac2cart_all(frac_coordinates, matrix):
 
 
 def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
-    """ Create a supercell. """
+    """Create a supercell."""
     if 'lattice' not in system.keys():
         matrix = unit_cell_to_lattice_matrix(system['unit_cell'])
     else:
@@ -623,12 +627,12 @@ def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
 
 
 def normal_vector(origin, vectors):
-    """ Return normal vector for two vectors with same origin. """
+    """Return normal vector for two vectors with same origin."""
     return np.cross(vectors[0] - origin, vectors[1] - origin)
 
 
 def discrete_molecules(system, supercell=None):
-    """ Decompose molecular system into individual discreet molecules. """
+    """Decompose molecular system into individual discreet molecules."""
     origin = np.array([0, 0, 0])
     # We create a list containing all atoms, theirs periodic elements and
     # coordinates. As this process is quite complicated, we need a list
@@ -777,7 +781,7 @@ def discrete_molecules(system, supercell=None):
 
 
 def angle_between_vectors(x, y):
-    """ Calculate the angle between two vectors x and y """
+    """Calculate the angle between two vectors x and y."""
     first_step = abs(x[0] * y[0] + x[1] * y[1] + x[2] * y[2]) / (
         np.sqrt(x[0]**2 + x[1]**2 + x[2]**2) *
         np.sqrt(y[0]**2 + y[1]**2 + y[2]**2))
@@ -786,9 +790,7 @@ def angle_between_vectors(x, y):
 
 
 def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
-    """
-    Analyse a sampling vector's path for window analysis purpose.
-    """
+    """Analyse a sampling vector's path for window analysis purpose."""
     # Calculate number of chunks if vector length is divided by increment.
     chunks = int(np.linalg.norm(vector) // increment)
     # Create a single chunk.
@@ -809,18 +811,14 @@ def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
 
 
 def optimise_xy(xy, *args):
-    """
-    Return negative void diameter for x and y coordinates optimisation.
-    """
+    """Return negative void diameter for x and y coordinates optimisation."""
     z, elements, coordinates = args
     window_com = np.array([xy[0], xy[1], z])
     return -void_diameter(elements, coordinates, com=window_com)[0]
 
 
 def optimise_z(z, *args):
-    """
-    Return void diameter for coordinates optimisation in z direction.
-    """
+    """Return void diameter for coordinates optimisation in z direction."""
     x, y, elements, coordinates = args
     window_com = np.array([x, y, z])
     return void_diameter(elements, coordinates, com=window_com)[0]
@@ -848,6 +846,7 @@ def window_analysis(window,
     elements_vdw: numpy.array
 
     step: float
+
     """
     # Copy the coordinates as we will manipulate them.
     coordinates = deepcopy(coordinates)
@@ -974,9 +973,7 @@ def find_windows(elements,
                  increment=1.0,
                  output='all',
                  **kwargs):
-    """
-    Return windows diameters and center of masses for a molecule.
-    """
+    """Return windows diameters and center of masses for a molecule."""
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
     # Center of our cartesian system is always at origin
@@ -1016,7 +1013,7 @@ def find_windows(elements,
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
     points_per_1A_surface = number_of_points / sphere_surface_area
-    # Here I use code by Alexandre Devert for spreding points on a sphere:
+    # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
     theta = golden_angle * np.arange(number_of_points)
@@ -1078,6 +1075,8 @@ def find_windows(elements,
         return None
     else:
         # Perfomr DBSCAN to cluster the sampling points vectors.
+        # the n_jobs will be developed later.
+        # db = DBSCAN(eps=eps, n_jobs=_ncpus).fit(dataset)
         db = DBSCAN(eps=eps).fit(dataset)
         core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
         core_samples_mask[db.core_sample_indices_] = True

@@ -227,7 +227,9 @@ class DLPOLY(object):
             frame_data['forces'] = np.array(forces, dtype=float)
         return MolecularSystem.load_system(frame_data, self.system_id)
 
-    def analysis(self, frames='all', ncpus=1, _ncpus=1, override=False, **kwargs):
+    def analysis(
+            self, frames='all', ncpus=1, _ncpus=1, override=False, **kwargs
+                ):
         """ """
         frames_for_analysis = []
         # First populate the frames_for_analysis list.
@@ -282,40 +284,43 @@ class DLPOLY(object):
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
             molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.make_modular()
+        supercell = False
+        if 'supercell' in kwargs:
+            if kwargs['supercell'] is True:
+                supercell = True
+        molecular_system.make_modular(supercell=supercell)
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
-            print(mol.no_of_atoms)
             if 'size' in kwargs:
                 size = kwargs['size']
                 if isinstance(size, int):
                     if mol.no_of_atoms == size:
                         results[molecule] = mol.full_analysis(
-                            ncpus=_ncpus, **kwargs)
+                            _ncpus=_ncpus, **kwargs)
                 if isinstance(size, tuple) and isinstance(size[0], str):
                     if size[0] in ['bigger', 'greater', 'larger', 'more']:
                         if mol.no_of_atoms > size[1]:
                             results[molecule] = mol.full_analysis(
-                                ncpus=_ncpus, **kwargs)
+                                _ncpus=_ncpus, **kwargs)
                     if size[0] in ['smaller', 'less']:
                         if mol.no_of_atoms > size[1]:
                             results[molecule] = mol.full_analysis(
-                                ncpus=_ncpus, **kwargs)
+                                _ncpus=_ncpus, **kwargs)
                     if size[0] in ['not', 'isnot', 'notequal', 'different']:
                         if mol.no_of_atoms != size[1]:
                             results[molecule] = mol.full_analysis(
-                                ncpus=_ncpus, **kwargs)
+                                _ncpus=_ncpus, **kwargs)
                     if size[0] in ['is', 'equal', 'exactly']:
                         if mol.no_of_atoms == size[1]:
                             results[molecule] = mol.full_analysis(
-                                ncpus=_ncpus, **kwargs)
+                                _ncpus=_ncpus, **kwargs)
                     if size[0] in ['between', 'inbetween']:
                         if size[1] < mol.no_of_atoms < size[2]:
                             results[molecule] = mol.full_analysis(
-                                ncpus=_ncpus, **kwargs)
+                                _ncpus=_ncpus, **kwargs)
             else:
-                results[molecule] = mol.full_analysis(ncpus=_ncpus, **kwargs)
+                results[molecule] = mol.full_analysis(_ncpus=_ncpus, **kwargs)
         return results
 
     def _analysis_parallel_execute(self, frame, **kwargs):
@@ -372,7 +377,7 @@ class DLPOLY(object):
                 except TypeError:
                     print('This one has failed')
             print('printed all')
-            #results = [p.get() for p in parallel if p.get()]
+            # results = [p.get() for p in parallel if p.get()]
             pool.terminate()
             for i in results:
                 self.analysis_output[i[0]] = i[1]
