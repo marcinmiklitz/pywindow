@@ -101,10 +101,16 @@ class Molecule(object):
             if kwargs['output'] == 'windows':
                 self.properties['windows'] = {'windows_diameters': windows, }
         else:
-            self.properties['windows'] = {
-                'windows_diameters': windows[0],
-                'windows_coms': windows[1],
-            }
+            if windows is not None:
+                self.properties['windows'] = {
+                    'windows_diameters': windows[0],
+                    'windows_coms': windows[1],
+                }
+            else:
+                self.properties['windows'] = {
+                    'windows_diameters': None,
+                    'windows_coms': None,
+                }
         return windows
 
     def shift_to_origin(self, **kwargs):
