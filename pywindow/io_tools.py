@@ -127,7 +127,7 @@ class Input(object):
 
     def _read_pdb(self):
         """"""
-        if sum([i.count('END') for i in self.file_content]) > 1:
+        if sum([i.count('END ') for i in self.file_content]) > 1:
             raise _CorruptedPDBFile(
                 "Multiple 'END' keywords were found in the PDB file."
                 "If this is a trajectory, use Trajectory class, or fix it.")
