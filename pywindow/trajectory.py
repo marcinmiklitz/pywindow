@@ -369,15 +369,15 @@ class DLPOLY(object):
                     args=(frame, ),
                     kwds=kwargs) for frame in frames
             ]
-            print('print start')
-            for p in parallel:
-                print(p)
-                try:
-                    print(p.get())
-                except TypeError:
-                    print('This one has failed')
-            print('printed all')
-            # results = [p.get() for p in parallel if p.get()]
+            #print('print start')
+            #for p in parallel:
+                #print(p)
+                #try:
+                    #print(p.get())
+                #except TypeError:
+                    #print('This one has failed')
+            #print('printed all')
+            results = [p.get() for p in parallel if p.get()]
             pool.terminate()
             for i in results:
                 self.analysis_output[i[0]] = i[1]
