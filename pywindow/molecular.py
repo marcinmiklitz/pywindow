@@ -159,16 +159,22 @@ class Molecule(object):
             # add centre of mass (centre of not optimised void) as 'He'.
             mmol['elements'] = np.concatenate(
                 (mmol['elements'], np.array(['He'])))
-            mmol['atom_ids'] = np.concatenate(
-                (mmol['atom_ids'], np.array(['He'])))
+            if 'atom_ids' not in self.mol.keys():
+                pass
+            else:
+                mmol['atom_ids'] = np.concatenate(
+                    (mmol['atom_ids'], np.array(['He'])))
             mmol['coordinates'] = np.concatenate(
                 (mmol['coordinates'], np.array(
                     [self.properties['centre_of_mass']])))
             # add centre of void optimised as 'Ne'.
             mmol['elements'] = np.concatenate(
                 (mmol['elements'], np.array(['Ne'])))
-            mmol['atom_ids'] = np.concatenate(
-                (mmol['atom_ids'], np.array(['Ne'])))
+            if 'atom_ids' not in self.mol.keys():
+                pass
+            else:
+                mmol['atom_ids'] = np.concatenate(
+                    (mmol['atom_ids'], np.array(['Ne'])))
             mmol['coordinates'] = np.concatenate(
                 (mmol['coordinates'], np.array(
                     [self.properties['void_diameter_opt']['void_COM']])))
@@ -176,8 +182,12 @@ class Molecule(object):
             for com in range(len(self.properties['windows']['windows_coms'])):
                 mmol['elements'] = np.concatenate(
                     (mmol['elements'], np.array(['Ar'])))
-                mmol['atom_ids'] = np.concatenate(
-                    (mmol['atom_ids'], np.array(['Ar{0}'.format(com + 1)])))
+                if 'atom_ids' not in self.mol.keys():
+                    pass
+                else:
+                    mmol['atom_ids'] = np.concatenate(
+                        (mmol['atom_ids'],
+                         np.array(['Ar{0}'.format(com + 1)])))
                 mmol['coordinates'] = np.concatenate(
                     (mmol['coordinates'], np.array(
                         [self.properties['windows']['windows_coms'][com]])))
