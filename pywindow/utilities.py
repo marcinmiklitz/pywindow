@@ -854,6 +854,11 @@ def window_analysis(window,
     vector_ = window[window.argmax(axis=0)[1]][5:8]
     vector_analysed = vector_analysis(
         vector_, coordinates, elements_vdw, increment=increment2)
+    # A safety check, if the refined analysis give None we end the function.
+    if vector_analysed is not None:
+        pass
+    else:
+        return None
     vector = vector_analysed[5:8]
     # Unit vectors.
     vec_a = [1, 0, 0]
@@ -1114,9 +1119,26 @@ def find_windows(elements,
             pool.terminate()
     # The function returns two numpy arrays, one with windows diameters
     # in Angstrom, second with corresponding windows center's coordinates
-    windows = np.array([result[0] for result in window_results])
+    windows = np.array([result[0] for result in window_results
+                        if result is not None])
     windows_coms = np.array(
-        [np.add(result[1], initial_com) for result in window_results])
+        [np.add(result[1], initial_com) for result in window_results
+         if result is not None])
+    # Safety measures, if one of the windows is None or negative a warning
+    # should be raised.
+    for result in window_results:
+        if result is None:
+            msg_ = " ".join(
+                ['Warning. One of the analysed windows has',
+                 'returned as None. See manual.']
+            )
+            print(msg_)
+        elif result[0] < 0:
+            msg_ = " ".join(
+                ['Warning. One of the analysed windows has a vdW',
+                 'corrected diameter smaller than 0. See manual.']
+            )
+            print(msg_)
     if output == 'all':
         return (windows, windows_coms)
     if output == 'windows':
