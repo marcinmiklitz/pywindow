@@ -99,17 +99,17 @@ class Molecule(object):
         windows = find_windows(self.elements, self.coordinates, **kwargs)
         if 'output' in kwargs:
             if kwargs['output'] == 'windows':
-                self.properties['windows'] = {'diameters': windows, }
+                self.properties['windows'] = {'diameter': windows, }
         else:
             if windows is not None:
                 self.properties['windows'] = {
-                    'diameters': windows[0],
-                    'centre_of_masses': windows[1],
+                    'diameter': windows[0],
+                    'centre_of_mass': windows[1],
                 }
             else:
                 self.properties['windows'] = {
-                    'diameters': None,
-                    'centre_of_masses': None,
+                    'diameter': None,
+                    'centre_of_mass': None,
                 }
         return windows
 
