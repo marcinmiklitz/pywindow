@@ -92,7 +92,7 @@ class Molecule(object):
     def calculate_void_volume_opt(self, **kwargs):
         self.void_volume_opt = void_volume(
             self.calculate_void_diameter_opt(**kwargs) / 2)
-        self.properties['void_void_volume_opt'] = self.void_volume_opt
+        self.properties['void_volume_opt'] = self.void_volume_opt
         return self.void_volume_opt
 
     def calculate_windows(self, **kwargs):
