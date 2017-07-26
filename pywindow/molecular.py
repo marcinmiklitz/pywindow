@@ -177,9 +177,9 @@ class Molecule(object):
                     (mmol['atom_ids'], np.array(['Ne'])))
             mmol['coordinates'] = np.concatenate(
                 (mmol['coordinates'], np.array(
-                    [self.properties['void_diameter_opt']['void_COM']])))
+                    [self.properties['void_diameter_opt']['centre_of_mass']])))
             # add centre of windows as 'Ar'.
-            for com in range(len(self.properties['windows']['windows_coms'])):
+            for com in range(len(self.properties['windows']['centre_of_mass'])):
                 mmol['elements'] = np.concatenate(
                     (mmol['elements'], np.array(['Ar'])))
                 if 'atom_ids' not in self.mol.keys():
@@ -190,7 +190,7 @@ class Molecule(object):
                          np.array(['Ar{0}'.format(com + 1)])))
                 mmol['coordinates'] = np.concatenate(
                     (mmol['coordinates'], np.array(
-                        [self.properties['windows']['windows_coms'][com]])))
+                        [self.properties['windows']['centre_of_mass'][com]])))
             self._Output.dump2file(mmol, filepath, atom_ids=atom_ids, **kwargs)
 
         else:
