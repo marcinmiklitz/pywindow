@@ -121,7 +121,7 @@ class Molecule(object):
         self.MW = molecular_weight(self.elements)
         return self.MW
 
-    def save_molecule_json(self, filepath=None, molecular=False, **kwargs):
+    def dump_properties_json(self, filepath=None, molecular=False, **kwargs):
         # We pass a copy of the properties dictionary.
         dict_obj = deepcopy(self.properties)
         # If molecular data is also required we update the dictionary.
@@ -138,7 +138,7 @@ class Molecule(object):
         # Dump the dictionary to json file.
         self._Output.dump2json(dict_obj, filepath, **kwargs)
 
-    def save_molecule(self, filepath=None, include_coms=False, **kwargs):
+    def dump_molecule(self, filepath=None, include_coms=False, **kwargs):
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = "_".join(
