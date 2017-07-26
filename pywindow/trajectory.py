@@ -324,7 +324,6 @@ class DLPOLY(object):
         return results
 
     def _analysis_parallel_execute(self, frame, **kwargs):
-        print(frame)
         molecular_system = self._get_frame(
             self.trajectory_map[frame], extract_data=True
         )

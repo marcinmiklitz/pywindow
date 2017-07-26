@@ -59,8 +59,8 @@ class Molecule(object):
             self.elements, self.coordinates)
         self.properties['maximum_diameter'] = {
             'diameter': self.maximum_diameter,
-            'atom_id_1': int(self.maxd_atom_1),
-            'atom_id_2': int(self.maxd_atom_2),
+            'atom_1': int(self.maxd_atom_1),
+            'atom_2': int(self.maxd_atom_2),
         }
         return self.maximum_diameter
 
@@ -68,8 +68,8 @@ class Molecule(object):
         self.void_diameter, self.void_closest_atom = void_diameter(
             self.elements, self.coordinates)
         self.properties['void_diameter'] = {
-            'void_diameter': self.void_diameter,
-            'atom_id_1': int(self.void_closest_atom),
+            'diameter': self.void_diameter,
+            'atom': int(self.void_closest_atom),
         }
         return self.void_diameter
 
@@ -83,9 +83,9 @@ class Molecule(object):
          self.void_opt_COM) = opt_void_diameter(self.elements,
                                                 self.coordinates, **kwargs)
         self.properties['void_diameter_opt'] = {
-            'void_diameter': self.void_diameter_opt,
-            'atom_id_1': int(self.void_opt_closest_atom),
-            'void_COM': self.void_opt_COM,
+            'diameter': self.void_diameter_opt,
+            'atom_1': int(self.void_opt_closest_atom),
+            'centre_of_mass': self.void_opt_COM,
         }
         return self.void_diameter_opt
 
@@ -99,17 +99,17 @@ class Molecule(object):
         windows = find_windows(self.elements, self.coordinates, **kwargs)
         if 'output' in kwargs:
             if kwargs['output'] == 'windows':
-                self.properties['windows'] = {'windows_diameters': windows, }
+                self.properties['windows'] = {'diameters': windows, }
         else:
             if windows is not None:
                 self.properties['windows'] = {
-                    'windows_diameters': windows[0],
-                    'windows_coms': windows[1],
+                    'diameters': windows[0],
+                    'centre_of_masses': windows[1],
                 }
             else:
                 self.properties['windows'] = {
-                    'windows_diameters': None,
-                    'windows_coms': None,
+                    'diameters': None,
+                    'centre_of_masses': None,
                 }
         return windows
 
