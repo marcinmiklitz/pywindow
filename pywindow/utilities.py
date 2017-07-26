@@ -341,6 +341,12 @@ def dlf_notation(atom_key):
         count += 1
         if is_number(split[count]) is True:
             number = True
+    # In case of for example Material Studio output, integers can also be
+    # in the beginning of the string. As the dlf_notation decipher function
+    # is very general in use, we have to make sure these integers are deleted.
+    # In standard DL_F notation the string will never start with integer so it
+    # will not affect the functionality towards it.
+    element = "".join(i for i in element if not is_number(i))
     return element
 
 
