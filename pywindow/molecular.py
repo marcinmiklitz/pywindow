@@ -165,8 +165,8 @@ class Molecule(object):
                 mmol['atom_ids'] = np.concatenate(
                     (mmol['atom_ids'], np.array(['He'])))
             mmol['coordinates'] = np.concatenate(
-                (mmol['coordinates'], np.array(
-                    [self.properties['centre_of_mass']])))
+                (mmol['coordinates'],
+                 np.array([self.properties['centre_of_mass']])))
             # add centre of void optimised as 'Ne'.
             mmol['elements'] = np.concatenate(
                 (mmol['elements'], np.array(['Ne'])))
@@ -179,18 +179,22 @@ class Molecule(object):
                 (mmol['coordinates'], np.array(
                     [self.properties['void_diameter_opt']['centre_of_mass']])))
             # add centre of windows as 'Ar'.
-            for com in range(len(self.properties['windows']['centre_of_mass'])):
-                mmol['elements'] = np.concatenate(
-                    (mmol['elements'], np.array(['Ar'])))
-                if 'atom_ids' not in self.mol.keys():
-                    pass
-                else:
-                    mmol['atom_ids'] = np.concatenate(
-                        (mmol['atom_ids'],
-                         np.array(['Ar{0}'.format(com + 1)])))
-                mmol['coordinates'] = np.concatenate(
-                    (mmol['coordinates'], np.array(
-                        [self.properties['windows']['centre_of_mass'][com]])))
+            if self.properties['windows']['centre_of_mass'] is not None:
+                range_ = range(
+                    len(self.properties['windows']['centre_of_mass']))
+                for com in range_:
+                    mmol['elements'] = np.concatenate(
+                        (mmol['elements'], np.array(['Ar'])))
+                    if 'atom_ids' not in self.mol.keys():
+                        pass
+                    else:
+                        mmol['atom_ids'] = np.concatenate(
+                            (mmol['atom_ids'],
+                             np.array(['Ar{0}'.format(com + 1)])))
+                    mmol['coordinates'] = np.concatenate(
+                        (mmol['coordinates'], np.array([
+                            self.properties['windows']['centre_of_mass'][com]
+                        ])))
             self._Output.dump2file(mmol, filepath, atom_ids=atom_ids, **kwargs)
 
         else:
