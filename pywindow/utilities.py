@@ -634,6 +634,18 @@ def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
     return supercell_system
 
 
+def is_inside_polyhedron(point, polyhedron):
+    if polyhedron.shape == (1, 6):
+        matrix = unit_cell_to_lattice_matrix(polyhedron)
+    if polyhedron.shape == (3, 3):
+        matrix = polyhedron
+    frac_coordinates = cart2frac_all(point, matrix)
+    if point[0] <= 1.000 and point[1] <= 1.000 and point[2] <= 1.000:
+        return True
+    else:
+        return False
+
+
 def normal_vector(origin, vectors):
     """Return normal vector for two vectors with same origin."""
     return np.cross(vectors[0] - origin, vectors[1] - origin)
@@ -663,6 +675,7 @@ def discrete_molecules(system, supercell=None):
         args = (elements, atom_ids, coordinates)
         adj = 1
     if supercell is not None:
+        print(system['unit_cell'])
         lattice = system['lattice']
     atom_list = compose_atom_list(*args)
     atom_coor = decompose_atom_list(atom_list)[1 + adj]
@@ -686,10 +699,13 @@ def discrete_molecules(system, supercell=None):
     # boundary. We will simply decide which is the case by calculating
     # the centre of mass of the whole system.
     system_com = center_of_mass(elements, coordinates)
+    print(system_com)
+    print(origin)
+    print(np.allclose(system_com, origin, atol=1e-00))
     if np.allclose(system_com, origin, atol=1e-00):
-        boundary = [-0.5, 0.5]
+        boundary = np.array([-0.5, 0.5])
     else:
-        boundary = [0, 1]
+        boundary = np.array([0., 1.])
     # Here the final discrete molecules will be stored.
     molecules = []
     # Exceptions. Usually end-point atoms that create single bonds or
@@ -775,14 +791,19 @@ def discrete_molecules(system, supercell=None):
         bool_ = True
         # But, for periodic only if the molecule is in the initial unit cell.
         if supercell is not None:
+            print(len(final_molecule_dict['elements']))
             com = center_of_mass(final_molecule_dict['elements'],
                                  final_molecule_dict['coordinates'])
+            print(com)
             com_frac = fractional_from_cartesian(com, lattice)[0]
+            print(com_frac)
             # If we don't round the numerical errors will come up.
             com_frac_round = np.around(com_frac, decimals=8)
+            print(com_frac_round)
             bool_ = np.all(np.logical_and(com_frac_round >= boundary[0],
                                           com_frac_round < boundary[1]),
                            axis=0)
+            print(bool_)
         if bool(bool_) is True:
             molecules.append(final_molecule_dict)
     return molecules

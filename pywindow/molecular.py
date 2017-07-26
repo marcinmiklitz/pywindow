@@ -5,8 +5,8 @@ from copy import deepcopy
 
 from .utilities import (
     discrete_molecules, decipher_atom_key, molecular_weight, center_of_mass,
-    max_dim, void_diameter, opt_void_diameter, void_volume, shift_com,
-    find_windows, create_supercell, make_JSON_serializable
+    max_dim, void_diameter, opt_void_diameter, void_volume, find_windows,
+    shift_com, create_supercell, make_JSON_serializable, is_inside_polyhedron,
 )
 from .io_tools import Input, Output
 
@@ -40,7 +40,7 @@ class Molecule(object):
 
     def full_analysis(self, ncpus=1, **kwargs):
         self.molecular_weight()
-        self.calculate_COM()
+        self.calculate_centre_of_mass()
         self.calculate_maximum_diameter()
         self.calculate_void_diameter()
         self.calculate_void_volume()
@@ -49,7 +49,7 @@ class Molecule(object):
         self.calculate_windows(ncpus=ncpus, **kwargs)
         return self.properties
 
-    def calculate_COM(self):
+    def calculate_centre_of_mass(self):
         self.centre_of_mass = center_of_mass(self.elements, self.coordinates)
         self.properties['centre_of_mass'] = self.centre_of_mass
         return self.centre_of_mass
@@ -203,7 +203,7 @@ class Molecule(object):
 
     def _update(self):
         self.mol['coordinates'] = self.coordinates
-        self.calculate_COM()
+        self.calculate_centre_of_mass()
         self.calculate_void_diameter_opt()
 
 
