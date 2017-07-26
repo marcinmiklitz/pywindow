@@ -346,7 +346,9 @@ def dlf_notation(atom_key):
     # is very general in use, we have to make sure these integers are deleted.
     # In standard DL_F notation the string will never start with integer so it
     # will not affect the functionality towards it.
+    # EDIT2: also the '?' atoms, you can delete them manually or somewhere else
     element = "".join(i for i in element if not is_number(i))
+    element = "".join(i for i in element if i != '?')
     return element
 
 
