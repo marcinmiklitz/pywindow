@@ -338,7 +338,7 @@ class MolecularSystem(object):
     def system_to_molecule(self):
         return Molecule(self.system, self.system_id, 0)
 
-    def save_system(self, filepath=None, modular=False, **kwargs):
+    def dump_system(self, filepath=None, modular=False, **kwargs):
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = '/'.join((os.getcwd(), str(self.system_id)))
@@ -368,7 +368,7 @@ class MolecularSystem(object):
         self._Output.dump2file(
             system_dict, filepath, atom_ids=atom_ids, **kwargs)
 
-    def save_system_json(self, filepath=None, modular=False, **kwargs):
+    def dump_system_json(self, filepath=None, modular=False, **kwargs):
         # We pass a copy of the properties dictionary.
         dict_obj = deepcopy(self.system)
         # We make sure it is JSON serializable.

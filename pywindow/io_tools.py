@@ -302,7 +302,7 @@ class Output(object):
                 string = "\n".join([string, 'REMARK {0}'.format(remark)])
         # If there is a unit cell (crystal data) provided we need to add it.
         if settings['cryst'] in system.keys():
-            if system[settings['cryst']]:
+            if system[settings['cryst']].any():
                 cryst_line = "CRYST1"
                 cryst = system[settings['cryst']]
                 # The user have to provide the crystal data as a list/array
