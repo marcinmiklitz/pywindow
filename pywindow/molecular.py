@@ -235,16 +235,34 @@ class MolecularSystem(object):
         obj.system_id = system_id
         return obj
 
-    def reconstruct_system(self, **kwargs):
+    def rebuild_system(self, override=False, **kwargs):
         # First we create a 3x3x3 supercell with the initial unit cell in the
         # centre and the 26 unit cell translations around to provide all the
         # atom positions necessary for the molecules passing through periodic
         # boundary reconstruction step.
-        supercell = create_supercell(self.system, **kwargs)
-        discrete = discrete_molecules(supercell)
-        # UNDER CONSTRUCTION
-        # PROBABLY WANTED TO ONLY TAKE THE MOLECULES WITHIN THE CELL
-        return discrete
+        supercell_333 = create_supercell(self.system, **kwargs)
+        discrete = discrete_molecules(self.system, supercell=supercell_333)
+        # This function overrides the initial data for 'coordinates',
+        # 'atom_ids', and 'elements' instances in the 'system' dictionary.
+        coordinates = np.array([], dtype=np.float64).reshape(0, 3)
+        atom_ids = np.array([])
+        elements = np.array([])
+        for i in discrete:
+            coordinates = np.concatenate(
+                [coordinates, i['coordinates']], axis=0
+                )
+            atom_ids = np.concatenate([atom_ids, i['atom_ids']], axis=0)
+            elements = np.concatenate([elements, i['elements']], axis=0)
+        rebuild_system = {
+            'coordinates': coordinates,
+            'atom_ids': atom_ids,
+            'elements': elements
+            }
+        if override is True:
+            self.system.update(rebuild_system)
+            return None
+        else:
+            return rebuild_system
 
     def swap_atom_keys(self, swap_dict, dict_key='atom_ids'):
         """
