@@ -8,7 +8,7 @@ from multiprocessing import Pool
 
 from .io_tools import Input, Output
 from .utilities import (
-    is_number, create_supercell, lattice_matrix_to_unit_cell,
+    is_number, create_supercell, lattice_array_to_unit_cell,
     make_JSON_serializable,
 )
 from .molecular import MolecularSystem

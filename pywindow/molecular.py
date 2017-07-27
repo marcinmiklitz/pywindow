@@ -241,6 +241,8 @@ class MolecularSystem(object):
         # atom positions necessary for the molecules passing through periodic
         # boundary reconstruction step.
         supercell_333 = create_supercell(self.system, **kwargs)
+        #smolsys = self.load_system(supercell_333, self.system_id + '_311')
+        #smolsys.dump_system(override=True)
         discrete = discrete_molecules(self.system, supercell=supercell_333)
         # This function overrides the initial data for 'coordinates',
         # 'atom_ids', and 'elements' instances in the 'system' dictionary.
@@ -342,8 +344,8 @@ class MolecularSystem(object):
                     temp[element], forcefield=forcefield))
         self.system['elements'] = temp
 
-    def make_modular(self, supercell=False):
-        if supercell is True:
+    def make_modular(self, rebuild=False):
+        if rebuild is True:
             supercell_333 = create_supercell(self.system)
         else:
             supercell_333 = None

@@ -11,7 +11,7 @@ import os
 import json
 import numpy as np
 
-from .utilities import decipher_atom_key, unit_cell_to_lattice_matrix
+from .utilities import decipher_atom_key, unit_cell_to_lattice_array
 
 
 class _CorruptedPDBFile(Exception):
@@ -142,7 +142,7 @@ class Input(object):
             if i[:6] == 'CRYST1'
         ])
         if self.system['unit_cell'].any():
-            self.system['lattice'] = unit_cell_to_lattice_matrix(self.system[
+            self.system['lattice'] = unit_cell_to_lattice_array(self.system[
                 'unit_cell'])
         self.system['atom_ids'] = np.array(
             [
@@ -276,7 +276,7 @@ class Output(object):
             'connect': None,
             'remarks': None,
             'space_group': None,
-            'resName': "   ",
+            'resName': "MOL",
             'chainID': 'A',
             'resSeq': 1,
             'decipher': False,
@@ -309,7 +309,7 @@ class Output(object):
                 # of six items containing unit cell edges lengths a, b and c
                 # in x, y and z directions and three angles, or it can be.
                 # Other options are not allowed for simplicity. It can convert
-                # from the lattice matrix using function from utilities.
+                # from the lattice array using function from utilities.
                 for i in cryst[:3]:
                     cryst_line = "".join([cryst_line, "{0:9.3f}".format(i)])
                 for i in cryst[3:]:

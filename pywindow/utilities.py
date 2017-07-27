@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
-"""Module containing all general purpose functions shared by other modules.
+"""
+Module containing all general purpose functions shared by other modules.
+
+LOG
+---
+27/07/17
+    Fixed the cartesian coordinates -> fractional coordinates -> cartesian
+    coordinates conversion related functions, creation of lattice array
+    from unit cell parameters (triclinic system: so applicable to any)
+    and conversion back to unit cell parameters. WORKS! inspiration from:
+    http://www.ruppweb.org/Xray/tutorial/Coordinate%20system%20transformation.htm
+
+26/07/17
+    Changed the way bonds are determined. Now, rather then fixed value
+    a formula and covalent radii are used as explained in the Elemental_Radii
+    spreadsheet (see tables module).
 
 TO DO LIST
 ----------
@@ -17,7 +32,9 @@ from sklearn.cluster import DBSCAN
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.neighbors import KDTree
 
-from .tables import atomic_mass, atomic_vdw_radius, opls_atom_keys
+from .tables import (
+    atomic_mass, atomic_vdw_radius, opls_atom_keys, atomic_covalent_radius
+    )
 
 
 class _AtomKeyError(Exception):
@@ -505,99 +522,94 @@ def void_volume(void_radius):
     return (4 / 3 * np.pi * void_radius**3)
 
 
-def unit_cell_to_lattice_matrix(cryst):
+def unit_cell_to_lattice_array(cryst):
     """Return parallelpiped unit cell lattice matrix."""
-    # Extract unit cell edges and angles.
     a_, b_, c_, alpha, beta, gamma = cryst
     # Convert angles from degrees to radians.
-    alpha_rad = np.deg2rad(alpha)
-    beta_rad = np.deg2rad(beta)
-    gamma_rad = np.deg2rad(gamma)
-    # Calculate for each unit cell edge vectors a, b, c
-    # components in x, y and z directions and compose the matrix
+    r_alpha = np.deg2rad(alpha)
+    r_beta = np.deg2rad(beta)
+    r_gamma = np.deg2rad(gamma)
+    # Calculate unit cell volume that is neccessary.
+    volume = a_ * b_ * c_ * (
+        1 - np.cos(r_alpha)**2 - np.cos(r_beta)**2 - np.cos(r_gamma)**2 + 2 *
+        np.cos(r_alpha) * np.cos(r_beta) * np.cos(r_gamma))**0.5
+    # Create the orthogonalisation Matrix (M^-1) - lattice matrix
     a_x = a_
-    a_y = 0
-    a_z = 0
-    b_x = b_ * np.cos(gamma_rad)
-    b_y = b_ * np.sin(gamma_rad)
-    b_z = 0
-    c_x = c_ * np.cos(beta_rad)
-    c_y = c_ * (np.cos(alpha_rad) - np.cos(gamma_rad) * np.cos(beta_rad) /
-                np.sin(gamma_rad))
-    c_z = c_ * np.sin(gamma_rad) * (
-        1 - np.cos(alpha_rad)**2 - np.cos(beta_rad)**2 - np.cos(gamma_rad)**2 +
-        2 * np.cos(alpha_rad) * np.cos(beta_rad) * np.cos(gamma_rad))**0.5
-    return np.array([[a_x, a_y, a_z], [b_x, b_y, b_z], [c_x, c_y, c_z]])
+    a_y = b_ * np.cos(r_gamma)
+    a_z = c_ * np.cos(r_beta)
+    b_x = 0
+    b_y = b_ * np.sin(r_gamma)
+    b_z = c_ * (
+        np.cos(r_alpha) - np.cos(r_beta) * np.cos(r_gamma)) / np.sin(r_gamma)
+    c_x = 0
+    c_y = 0
+    c_z = volume / (a_ * b_ * np.sin(r_gamma))
+    lattice_array = np.array(
+        [[a_x, a_y, a_z], [b_x, b_y, b_z], [c_x, c_y, c_z]])
+    return lattice_array
 
 
-def lattice_matrix_to_unit_cell(lattice_matrix):
+def lattice_array_to_unit_cell(lattice_array):
     """Return crystallographic param. from unit cell lattice matrix."""
-    cell_lengths = np.sqrt(np.sum(lattice_matrix**2, axis=1))
-    cell_angles = np.array([
-        np.rad2deg(np.pi / 2 - np.dot(lattice_matrix[1], lattice_matrix[2]) /
-                   cell_lengths[1] / cell_lengths[2]),
-        np.rad2deg(np.pi / 2 - np.dot(lattice_matrix[2], lattice_matrix[0]) /
-                   cell_lengths[2] / cell_lengths[0]),
-        np.rad2deg(np.pi / 2 - np.dot(lattice_matrix[0], lattice_matrix[1]) /
-                   cell_lengths[0] / cell_lengths[1])
-    ])
+    cell_lengths = np.sqrt(np.sum(lattice_array**2, axis=0))
+    gamma_r = np.arccos(lattice_array[0][1] / cell_lengths[1])
+    beta_r = np.arccos(lattice_array[0][2] / cell_lengths[2])
+    alpha_r = np.arccos(
+        lattice_array[1][2] * np.sin(gamma_r) / cell_lengths[2]
+        + np.cos(beta_r) * np.cos(gamma_r)
+        )
+    cell_angles = [
+        np.rad2deg(alpha_r), np.rad2deg(beta_r), np.rad2deg(gamma_r)
+        ]
     return np.append(cell_lengths, cell_angles)
 
 
-def cell_volume_from_matrix(matrix):
+def volume_from_lattice_array(lattice_array):
     """Return unit cell's volume from lattice matrix."""
-    return np.linalg.det(matrix)
+    return np.linalg.det(lattice_array)
 
 
-def cell_volume_from_cryst(cryst):
+def volume_from_cell_parameters(cryst):
     """Return unit cell's volume from crystallographic parameters."""
-    return cell_volume_from_matrix(cryst_to_lattice_matrix(cryst))
+    return volume_from_lattice_array(unit_cell_to_lattice_array(cryst))
 
 
-def fractional_from_cartesian(coordinate, matrix):
+def fractional_from_cartesian(coordinate, lattice_array):
     """Return a fractional coordinate from a cartesian one."""
-    sigma_a = np.cross(matrix[1], matrix[2])
-    sigma_b = np.cross(matrix[2], matrix[0])
-    sigma_c = np.cross(matrix[0], matrix[1])
-    cell_volume = cell_volume_from_matrix(matrix)
-    sigma_a_prim = 1 / cell_volume * sigma_a
-    sigma_b_prim = 1 / cell_volume * sigma_b
-    sigma_c_prim = 1 / cell_volume * sigma_c
-    multiplication_matrix = np.matrix(
-        [sigma_a_prim, sigma_b_prim, sigma_c_prim])
-    fractional = multiplication_matrix * coordinate.reshape(-1, 1)
+    deorthogonalisation_M = np.matrix(np.linalg.inv(lattice_array))
+    fractional = deorthogonalisation_M * coordinate.reshape(-1, 1)
     return np.array(fractional.reshape(1, -1))
 
 
-def cartisian_from_fractional(coordinate, matrix):
+def cartisian_from_fractional(coordinate, lattice_array):
     """Return cartesian coordinate from a fractional one."""
-    multiplication_matrix = np.matrix(matrix)
-    orthogonal = multiplication_matrix * coordinate.reshape(-1, 1)
+    orthogonalisation_M = np.matrix(lattice_array)
+    orthogonal = orthogonalisation_M * coordinate.reshape(-1, 1)
     return np.array(orthogonal.reshape(1, -1))
 
 
-def cart2frac_all(coordinates, matrix):
+def cart2frac_all(coordinates, lattice_array):
     """Convert all cartesian coordinates to fractional."""
     frac_coordinates = deepcopy(coordinates)
     for coord in range(frac_coordinates.shape[0]):
         frac_coordinates[coord] = fractional_from_cartesian(
-            frac_coordinates[coord], matrix)
+            frac_coordinates[coord], lattice_array)
     return frac_coordinates
 
 
-def frac2cart_all(frac_coordinates, matrix):
+def frac2cart_all(frac_coordinates, lattice_array):
     """Convert all fractional coordinates to cartesian."""
     coordinates = deepcopy(frac_coordinates)
     for coord in range(coordinates.shape[0]):
         coordinates[coord] = cartisian_from_fractional(coordinates[coord],
-                                                       matrix)
+                                                       lattice_array)
     return coordinates
 
 
 def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
     """Create a supercell."""
     if 'lattice' not in system.keys():
-        matrix = unit_cell_to_lattice_matrix(system['unit_cell'])
+        matrix = unit_cell_to_lattice_array(system['unit_cell'])
     else:
         matrix = system['lattice']
     coordinates = deepcopy(system['coordinates'])
@@ -623,7 +635,7 @@ def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
     for i in range(len(updated_coordinates) - 1):
         new_elements = np.concatenate((new_elements, system['elements']))
         new_ids = np.concatenate((new_ids, system['atom_ids']))
-    cryst = lattice_matrix_to_unit_cell(matrix)
+    cryst = lattice_array_to_unit_cell(matrix)
     supercell_system = {
         'elements': new_elements,
         'atom_ids': new_ids,
@@ -636,10 +648,10 @@ def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
 
 def is_inside_polyhedron(point, polyhedron):
     if polyhedron.shape == (1, 6):
-        matrix = unit_cell_to_lattice_matrix(polyhedron)
+        matrix = unit_cell_to_lattice_array(polyhedron)
     if polyhedron.shape == (3, 3):
         matrix = polyhedron
-    frac_coordinates = cart2frac_all(point, matrix)
+    frac_coordinates = cart2frac_all(point, matrix.T)
     if point[0] <= 1.000 and point[1] <= 1.000 and point[2] <= 1.000:
         return True
     else:
@@ -651,9 +663,24 @@ def normal_vector(origin, vectors):
     return np.cross(vectors[0] - origin, vectors[1] - origin)
 
 
-def discrete_molecules(system, supercell=None):
-    """Decompose molecular system into individual discreet molecules."""
-    origin = np.array([0, 0, 0])
+def discrete_molecules(system, supercell=None, tol=0.4):
+    """
+    Decompose molecular system into individual discreet molecules.
+
+    New formula for bonds: (26/07/17)
+        The two atoms, x and y, are considered bonded if the distance between
+        them, calculated with distance matrix, is within the ranges:
+              Rcov(x) + Rcov(y) - t < R(x,y) <  Rcov(x) + Rcov(y) + t
+        where Rcov is the covalent radius and the tolarenace (t) is set to
+        0.4 Angstrom.
+    """
+    origin = np.array([0., 0., 0.])
+    if 'lattice' not in system.keys():
+        matrix = unit_cell_to_lattice_array(system['unit_cell'])
+    else:
+        matrix = system['lattice']
+    pseudo_origin_frac = np.array([0.25, 0.25, 0.25])
+    pseudo_origin = cartisian_from_fractional(pseudo_origin_frac, matrix)
     # We create a list containing all atoms, theirs periodic elements and
     # coordinates. As this process is quite complicated, we need a list
     # which we will gradually be reducing.
@@ -674,9 +701,6 @@ def discrete_molecules(system, supercell=None):
         atom_ids = system['atom_ids']
         args = (elements, atom_ids, coordinates)
         adj = 1
-    if supercell is not None:
-        print(system['unit_cell'])
-        lattice = system['lattice']
     atom_list = compose_atom_list(*args)
     atom_coor = decompose_atom_list(atom_list)[1 + adj]
     # If a supercell is also provided that encloses the unit cell for the
@@ -699,9 +723,6 @@ def discrete_molecules(system, supercell=None):
     # boundary. We will simply decide which is the case by calculating
     # the centre of mass of the whole system.
     system_com = center_of_mass(elements, coordinates)
-    print(system_com)
-    print(origin)
-    print(np.allclose(system_com, origin, atol=1e-00))
     if np.allclose(system_com, origin, atol=1e-00):
         boundary = np.array([-0.5, 0.5])
     else:
@@ -711,6 +732,13 @@ def discrete_molecules(system, supercell=None):
     # Exceptions. Usually end-point atoms that create single bonds or
     # just a separate atoms in the system.
     exceptions = ['H', 'CL', 'BR', 'F', 'HE', 'AR', 'NE', 'KR', 'XE', 'RN']
+    # The upper limit for distances analysed for bonds will be assigned for
+    # a given system (to save time). We take set('elements') and then find
+    # the largest R(cov) in the system and set the max_dist as a double
+    # of it plus the 150% tolerance (tol).
+    set_of_elements = set(system['elements'])
+    max_r_cov = max([atomic_covalent_radius[i.upper()] for i in set_of_elements])
+    max_dist = 2 * max_r_cov + tol
     # We continue untill all items in the list have been analysed and popped.
     while atom_list:
         inside_atoms_heavy = [
@@ -726,10 +754,23 @@ def discrete_molecules(system, supercell=None):
             inside_atoms_coord_heavy = decompose_atom_list(inside_atoms_heavy)[
                 1 + adj]
             dist_matrix = euclidean_distances(inside_atoms_coord_heavy,
-                                              origin.reshape(1, -1))
+                                              pseudo_origin.reshape(1, -1))
             atom_index_x, _ = np.unravel_index(dist_matrix.argmin(),
                                                dist_matrix.shape)
-            working_list = [inside_atoms_heavy[atom_index_x]]
+            # Added this so that lone atoms (even if heavy) close to the
+            # periodic boundary are not analysed, as they surely have matching
+            # symmetry equivalence that bind to a bigger atom cluster inside
+            # the unit_cell.
+            potential_starting_point = inside_atoms_heavy[atom_index_x]
+            pot_arr = np.array(potential_starting_point[1 + adj:])
+            dist_matrix = euclidean_distances(
+                atom_coor, pot_arr.reshape(1, -1)
+                )
+            idx = (dist_matrix > 0.1) * (dist_matrix < max_dist)
+            if len(idx) < 1:
+                pass
+            else:
+                working_list = [potential_starting_point]
         else:
             # Safety check.
             break
@@ -742,23 +783,39 @@ def discrete_molecules(system, supercell=None):
                 atom_coor = None
             for i in working_list:
                 if i[0].upper() not in exceptions:
+                    # It's of GREATEST importance that the i_arr variable
+                    # is assigned here before entering the atom_coor loop.!
+                    # Otherwise it will not be re-asigned when the satom_list
+                    # still iterates, but the atom_list is already empty...
+                    i_arr = np.array(i[1 + adj:])
                     if atom_coor is not None:
                         dist_matrix = euclidean_distances(
-                            atom_coor, np.array(i[1 + adj:]).reshape(1, -1))
-                        idx = (dist_matrix > 0.1) * (dist_matrix < 2.1)
+                            atom_coor, i_arr.reshape(1, -1)
+                            )
+                        idx = (dist_matrix > 0.1) * (dist_matrix < max_dist)
                         neighbours_indexes = np.where(idx)[0]
                         for j in neighbours_indexes:
-                            working_list_temp.append(atom_list[j])
+                            j_arr = np.array(atom_coor[j])
+                            r_i_j = distance(i_arr, j_arr)
+                            r_cov_i_j = atomic_covalent_radius[i[0].upper()] + atomic_covalent_radius[atom_list[j][0].upper()]
+                            if r_cov_i_j - tol < r_i_j < r_cov_i_j + tol:
+                                working_list_temp.append(atom_list[j])
                     if supercell is not None:
                         sdist_matrix = euclidean_distances(
-                            satom_coor, np.array(i[1 + adj:]).reshape(1, -1))
-                        sidx = (sdist_matrix > 0.1) * (sdist_matrix < 2.2)
+                            satom_coor, i_arr.reshape(1, -1))
+                        sidx = (sdist_matrix > 0.1) * (sdist_matrix < max_dist)
                         sneighbours_indexes = np.where(sidx)[0]
                         for j in sneighbours_indexes:
                             if satom_list[j] in atom_list:
                                 pass
                             else:
-                                working_list_temp.append(satom_list[j])
+                                j_arr = np.array(satom_coor[j])
+                                r_i_j = distance(i_arr, j_arr)
+                                r_cov_i_j = atomic_covalent_radius[
+                                    i[0].upper()
+                                    ] + atomic_covalent_radius[satom_list[j][0].upper()]
+                                if r_cov_i_j - tol < r_i_j < r_cov_i_j + tol:
+                                    working_list_temp.append(satom_list[j])
                     final_molecule.append(i)
                 else:
                     final_molecule.append(i)
@@ -791,19 +848,14 @@ def discrete_molecules(system, supercell=None):
         bool_ = True
         # But, for periodic only if the molecule is in the initial unit cell.
         if supercell is not None:
-            print(len(final_molecule_dict['elements']))
             com = center_of_mass(final_molecule_dict['elements'],
                                  final_molecule_dict['coordinates'])
-            print(com)
-            com_frac = fractional_from_cartesian(com, lattice)[0]
-            print(com_frac)
+            com_frac = fractional_from_cartesian(com, matrix)[0]
             # If we don't round the numerical errors will come up.
             com_frac_round = np.around(com_frac, decimals=8)
-            print(com_frac_round)
             bool_ = np.all(np.logical_and(com_frac_round >= boundary[0],
                                           com_frac_round < boundary[1]),
                            axis=0)
-            print(bool_)
         if bool(bool_) is True:
             molecules.append(final_molecule_dict)
     return molecules
