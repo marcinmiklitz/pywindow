@@ -186,7 +186,7 @@ class DLPOLY(object):
         }
         start_line = 1
         if frame_data['frame_info']['imcon'] in [1, 2, 3]:
-            frame_data['lattice'] = np.array(frame[1:4], dtype=float)
+            frame_data['lattice'] = np.array(frame[1:4], dtype=float).T
             frame_data['unit_cell'] = lattice_matrix_to_unit_cell(frame_data[
                 'lattice'])
             start_line = 4
