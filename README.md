@@ -1,4 +1,4 @@
-![alt tag](pyWINDOW_logo.png)
+![alt tag](docs/pyWINDOW_logo.png)
 ### Python package for analysis of structural properties of discrete porous molecules.
 
 Key structural features measured with pyWINDOW:
