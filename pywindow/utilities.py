@@ -674,13 +674,18 @@ def discrete_molecules(system, supercell=None, tol=0.4):
         where Rcov is the covalent radius and the tolarenace (t) is set to
         0.4 Angstrom.
     """
-    origin = np.array([0., 0., 0.])
-    if 'lattice' not in system.keys():
-        matrix = unit_cell_to_lattice_array(system['unit_cell'])
+    # First we check which operation mode we use.
+    #    1) Non-periodic MolecularSystem.
+    #    2) Periodic MolecularSystem without rebuilding.
+    #    3) Periodic Molecular system with rebuilding (supercell provided).
+    if supercell is not None:
+        mode = 3
     else:
-        matrix = system['lattice']
-    pseudo_origin_frac = np.array([0.25, 0.25, 0.25])
-    pseudo_origin = cartisian_from_fractional(pseudo_origin_frac, matrix)
+        if 'unit_cell' in system.keys() or 'lattice' in system.keys():
+            mode = 2
+        else:
+            mode = 1
+    print('Operation Mode is ', mode)
     # We create a list containing all atoms, theirs periodic elements and
     # coordinates. As this process is quite complicated, we need a list
     # which we will gradually be reducing.
@@ -703,30 +708,52 @@ def discrete_molecules(system, supercell=None, tol=0.4):
         adj = 1
     atom_list = compose_atom_list(*args)
     atom_coor = decompose_atom_list(atom_list)[1 + adj]
-    # If a supercell is also provided that encloses the unit cell for the
-    # purpose of reconstructing the molecules through the periodic boundary.
-    if supercell is not None:
-        selements = supercell['elements']
-        sids = supercell['atom_ids']
-        scoordinates = supercell['coordinates']
-        satom_list = compose_atom_list(selements, sids, scoordinates)
-        satom_coor = decompose_atom_list(satom_list)[1 + adj]
-    # There is one more step. We need to sort out for all the
-    # reconstructed molecules, which are the ones that belong to the
-    # unit cell. As we did the reconstruction to every chunk in the unit cell
-    # we have now some molecules that belong to neighbouring cells.
-    # The screening is simple. If the COM of a molecule translated to
-    # fractional coordinates (so that it works for parallelpiped) is
-    # within the unit cell boundaries <0, 1> then it's it. There is
-    # an exception, for the trajectories, very often the unit cell
-    # is centered at origin. Therefore we need to use <-0.5, 0.5>
-    # boundary. We will simply decide which is the case by calculating
-    # the centre of mass of the whole system.
-    system_com = center_of_mass(elements, coordinates)
-    if np.allclose(system_com, origin, atol=1e-00):
-        boundary = np.array([-0.5, 0.5])
+    # Scenario 1: We load a non-periodic MolecularSystem.
+    # We will not have 'unit_cell' nor 'lattice' keywords in the dictionary
+    # and also we do not do any re-building.
+    # Scenario 2: We load a periodic MolecularSystem. We want to only Extract
+    # complete molecules that do not have been affected by the periodic
+    # boundary.
+    # Scenario 3: We load a periodic Molecular System. We want it to be rebuild
+    # therefore, we also provide a supercell.
+    # Scenarios 2 and 3 require a lattice and also their origin is at origin.
+    # Scenario 1 should have the origin at the center of mass of the system.
+    if mode == 2 or mode == 3:
+        # Scenarios 2 or 3.
+        origin = np.array([0., 0., 0.])
+        if 'lattice' not in system.keys():
+            matrix = unit_cell_to_lattice_array(system['unit_cell'])
+        else:
+            matrix = system['lattice']
+        pseudo_origin_frac = np.array([0.25, 0.25, 0.25])
+        pseudo_origin = cartisian_from_fractional(pseudo_origin_frac, matrix)
+        # If a supercell is also provided that encloses the unit cell for the
+        # reconstruction of the molecules through the periodic boundary.
+        if supercell is not None:
+            selements = supercell['elements']
+            sids = supercell['atom_ids']
+            scoordinates = supercell['coordinates']
+            satom_list = compose_atom_list(selements, sids, scoordinates)
+            satom_coor = decompose_atom_list(satom_list)[1 + adj]
+        # There is one more step. We need to sort out for all the
+        # reconstructed molecules, which are the ones that belong to the
+        # unit cell. As we did the reconstruction to every chunk in the unit
+        # cell we have now some molecules that belong to neighbouring cells.
+        # The screening is simple. If the COM of a molecule translated to
+        # fractional coordinates (so that it works for parallelpiped) is
+        # within the unit cell boundaries <0, 1> then it's it. There is
+        # an exception, for the trajectories, very often the unit cell
+        # is centered at origin. Therefore we need to use <-0.5, 0.5>
+        # boundary. We will simply decide which is the case by calculating
+        # the centre of mass of the whole system.
+        system_com = center_of_mass(elements, coordinates)
+        if np.allclose(system_com, origin, atol=1e-00):
+            boundary = np.array([-0.5, 0.5])
+        else:
+            boundary = np.array([0., 1.])
     else:
-        boundary = np.array([0., 1.])
+        # Scenario 1.
+        pseudo_origin = center_of_mass(elements, coordinates)
     # Here the final discrete molecules will be stored.
     molecules = []
     # Exceptions. Usually end-point atoms that create single bonds or

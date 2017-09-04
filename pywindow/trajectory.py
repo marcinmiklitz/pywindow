@@ -290,17 +290,17 @@ class DLPOLY(object):
 
     def _analysis_serial(self, frame, _ncpus, **kwargs):
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True
         )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
         if 'forcefield' in kwargs:
             molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        supercell = False
+        rebuild = False
         if 'supercell' in kwargs:
             if kwargs['supercell'] is True:
-                supercell = True
-        molecular_system.make_modular(supercell=supercell)
+                rebuild = True
+        molecular_system.make_modular(rebuild=rebuild)
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
@@ -337,7 +337,7 @@ class DLPOLY(object):
 
     def _analysis_parallel_execute(self, frame, **kwargs):
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True
         )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
@@ -692,7 +692,7 @@ class XYZ(object):
 
     def _analysis_serial(self, frame, ncpus, **kwargs):
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True
         )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
@@ -735,7 +735,7 @@ class XYZ(object):
 
     def _analysis_parallel_execute(self, frame, **kwargs):
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True
         )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
@@ -942,7 +942,7 @@ class PDB(object):
 
     def _analysis_serial(self, frame, ncpus, **kwargs):
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True
         )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
@@ -985,7 +985,7 @@ class PDB(object):
 
     def _analysis_parallel_execute(self, frame, **kwargs):
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True
         )
         if 'swap_atoms' in kwargs:
             molecular_system.swap_atom_keys(kwargs['swap_atoms'])
