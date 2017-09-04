@@ -304,31 +304,31 @@ class DLPOLY(object):
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
-            if 'size' in kwargs:
-                size = kwargs['size']
-                if isinstance(size, int):
-                    if mol.no_of_atoms == size:
+            if 'molsize' in kwargs:
+                molsize = kwargs['molsize']
+                if isinstance(molsize, int):
+                    if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(
                             _ncpus=_ncpus, **kwargs)
-                if isinstance(size, tuple) and isinstance(size[0], str):
-                    if size[0] in ['bigger', 'greater', 'larger', 'more']:
-                        if mol.no_of_atoms > size[1]:
+                if isinstance(molsize, tuple) and isinstance(molsize[0], str):
+                    if molsize[0] in ['bigger', 'greater', 'larger', 'more']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 _ncpus=_ncpus, **kwargs)
-                    if size[0] in ['smaller', 'less']:
-                        if mol.no_of_atoms > size[1]:
+                    if molsize[0] in ['smaller', 'less']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 _ncpus=_ncpus, **kwargs)
-                    if size[0] in ['not', 'isnot', 'notequal', 'different']:
-                        if mol.no_of_atoms != size[1]:
+                    if molsize[0] in ['not', 'isnot', 'notequal', 'different']:
+                        if mol.no_of_atoms != molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 _ncpus=_ncpus, **kwargs)
-                    if size[0] in ['is', 'equal', 'exactly']:
-                        if mol.no_of_atoms == size[1]:
+                    if molsize[0] in ['is', 'equal', 'exactly']:
+                        if mol.no_of_atoms == molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 _ncpus=_ncpus, **kwargs)
-                    if size[0] in ['between', 'inbetween']:
-                        if size[1] < mol.no_of_atoms < size[2]:
+                    if molsize[0] in ['between', 'inbetween']:
+                        if molsize[1] < mol.no_of_atoms < molsize[2]:
                             results[molecule] = mol.full_analysis(
                                 _ncpus=_ncpus, **kwargs)
             else:
@@ -347,26 +347,26 @@ class DLPOLY(object):
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
-            if 'size' in kwargs:
-                size = kwargs['size']
-                if isinstance(size, int):
-                    if mol.no_of_atoms == size:
+            if 'molsize' in kwargs:
+                molsize = kwargs['molsize']
+                if isinstance(molsize, int):
+                    if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(**kwargs)
-                if isinstance(size, tuple) and isinstance(size[0], str):
-                    if size[0] in ['bigger', 'greater', 'larger', 'more']:
-                        if mol.no_of_atoms > size[1]:
+                if isinstance(molsize, tuple) and isinstance(molsize[0], str):
+                    if molsize[0] in ['bigger', 'greater', 'larger', 'more']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['smaller', 'less']:
-                        if mol.no_of_atoms > size[1]:
+                    if molsize[0] in ['smaller', 'less']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['not', 'isnot', 'notequal', 'different']:
-                        if mol.no_of_atoms != size[1]:
+                    if molsize[0] in ['not', 'isnot', 'notequal', 'different']:
+                        if mol.no_of_atoms != molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['is', 'equal', 'exactly']:
-                        if mol.no_of_atoms == size[1]:
+                    if molsize[0] in ['is', 'equal', 'exactly']:
+                        if mol.no_of_atoms == molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['between', 'inbetween']:
-                        if size[1] < mol.no_of_atoms < size[2]:
+                    if molsize[0] in ['between', 'inbetween']:
+                        if molsize[1] < mol.no_of_atoms < molsize[2]:
                             results[molecule] = mol.full_analysis(**kwargs)
             else:
                 results[molecule] = mol.full_analysis(**kwargs)
@@ -702,31 +702,31 @@ class XYZ(object):
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
-            if 'size' in kwargs:
-                size = kwargs['size']
-                if isinstance(size, int):
-                    if mol.no_of_atoms == size:
+            if 'molsize' in kwargs:
+                molsize = kwargs['molsize']
+                if isinstance(molsize, int):
+                    if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(
                             ncpus=ncpus, **kwargs)
-                if isinstance(size, tuple) and isinstance(size[0], str):
-                    if size[0] in ['bigger', 'greater', 'larger', 'more']:
-                        if mol.no_of_atoms > size[1]:
+                if isinstance(molsize, tuple) and isinstance(molsize[0], str):
+                    if molsize[0] in ['bigger', 'greater', 'larger', 'more']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
-                    if size[0] in ['smaller', 'less']:
-                        if mol.no_of_atoms > size[1]:
+                    if molsize[0] in ['smaller', 'less']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
-                    if size[0] in ['not', 'isnot', 'notequal', 'different']:
-                        if mol.no_of_atoms != size[1]:
+                    if molsize[0] in ['not', 'isnot', 'notequal', 'different']:
+                        if mol.no_of_atoms != molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
-                    if size[0] in ['is', 'equal', 'exactly']:
-                        if mol.no_of_atoms == size[1]:
+                    if molsize[0] in ['is', 'equal', 'exactly']:
+                        if mol.no_of_atoms == molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
-                    if size[0] in ['between', 'inbetween']:
-                        if size[1] < mol.no_of_atoms < size[2]:
+                    if molsize[0] in ['between', 'inbetween']:
+                        if molsize[1] < mol.no_of_atoms < molsize[2]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
             else:
@@ -745,26 +745,26 @@ class XYZ(object):
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
-            if 'size' in kwargs:
-                size = kwargs['size']
-                if isinstance(size, int):
-                    if mol.no_of_atoms == size:
+            if 'molsize' in kwargs:
+                molsize = kwargs['molsize']
+                if isinstance(molsize, int):
+                    if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(**kwargs)
-                if isinstance(size, tuple) and isinstance(size[0], str):
-                    if size[0] in ['bigger', 'greater', 'larger', 'more']:
-                        if mol.no_of_atoms > size[1]:
+                if isinstance(molsize, tuple) and isinstance(molsize[0], str):
+                    if molsize[0] in ['bigger', 'greater', 'larger', 'more']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['smaller', 'less']:
-                        if mol.no_of_atoms > size[1]:
+                    if molsize[0] in ['smaller', 'less']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['not', 'isnot', 'notequal', 'different']:
-                        if mol.no_of_atoms != size[1]:
+                    if molsize[0] in ['not', 'isnot', 'notequal', 'different']:
+                        if mol.no_of_atoms != molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['is', 'equal', 'exactly']:
-                        if mol.no_of_atoms == size[1]:
+                    if molsize[0] in ['is', 'equal', 'exactly']:
+                        if mol.no_of_atoms == molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['between', 'inbetween']:
-                        if size[1] < mol.no_of_atoms < size[2]:
+                    if molsize[0] in ['between', 'inbetween']:
+                        if molsize[1] < mol.no_of_atoms < molsize[2]:
                             results[molecule] = mol.full_analysis(**kwargs)
             else:
                 results[molecule] = mol.full_analysis(**kwargs)
@@ -952,31 +952,31 @@ class PDB(object):
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
-            if 'size' in kwargs:
-                size = kwargs['size']
-                if isinstance(size, int):
-                    if mol.no_of_atoms == size:
+            if 'molsize' in kwargs:
+                molsize = kwargs['molsize']
+                if isinstance(molsize, int):
+                    if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(
                             ncpus=ncpus, **kwargs)
-                if isinstance(size, tuple) and isinstance(size[0], str):
-                    if size[0] in ['bigger', 'greater', 'larger', 'more']:
-                        if mol.no_of_atoms > size[1]:
+                if isinstance(molsize, tuple) and isinstance(molsize[0], str):
+                    if molsize[0] in ['bigger', 'greater', 'larger', 'more']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
-                    if size[0] in ['smaller', 'less']:
-                        if mol.no_of_atoms > size[1]:
+                    if molsize[0] in ['smaller', 'less']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
-                    if size[0] in ['not', 'isnot', 'notequal', 'different']:
-                        if mol.no_of_atoms != size[1]:
+                    if molsize[0] in ['not', 'isnot', 'notequal', 'different']:
+                        if mol.no_of_atoms != molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
-                    if size[0] in ['is', 'equal', 'exactly']:
-                        if mol.no_of_atoms == size[1]:
+                    if molsize[0] in ['is', 'equal', 'exactly']:
+                        if mol.no_of_atoms == molsize[1]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
-                    if size[0] in ['between', 'inbetween']:
-                        if size[1] < mol.no_of_atoms < size[2]:
+                    if molsize[0] in ['between', 'inbetween']:
+                        if molsize[1] < mol.no_of_atoms < molsize[2]:
                             results[molecule] = mol.full_analysis(
                                 ncpus=ncpus, **kwargs)
             else:
@@ -995,26 +995,26 @@ class PDB(object):
         results = {}
         for molecule in molecular_system.molecules:
             mol = molecular_system.molecules[molecule]
-            if 'size' in kwargs:
-                size = kwargs['size']
-                if isinstance(size, int):
-                    if mol.no_of_atoms == size:
+            if 'molsize' in kwargs:
+                molsize = kwargs['molsize']
+                if isinstance(molsize, int):
+                    if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(**kwargs)
-                if isinstance(size, tuple) and isinstance(size[0], str):
-                    if size[0] in ['bigger', 'greater', 'larger', 'more']:
-                        if mol.no_of_atoms > size[1]:
+                if isinstance(molsize, tuple) and isinstance(molsize[0], str):
+                    if molsize[0] in ['bigger', 'greater', 'larger', 'more']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['smaller', 'less']:
-                        if mol.no_of_atoms > size[1]:
+                    if molsize[0] in ['smaller', 'less']:
+                        if mol.no_of_atoms > molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['not', 'isnot', 'notequal', 'different']:
-                        if mol.no_of_atoms != size[1]:
+                    if molsize[0] in ['not', 'isnot', 'notequal', 'different']:
+                        if mol.no_of_atoms != molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['is', 'equal', 'exactly']:
-                        if mol.no_of_atoms == size[1]:
+                    if molsize[0] in ['is', 'equal', 'exactly']:
+                        if mol.no_of_atoms == molsize[1]:
                             results[molecule] = mol.full_analysis(**kwargs)
-                    if size[0] in ['between', 'inbetween']:
-                        if size[1] < mol.no_of_atoms < size[2]:
+                    if molsize[0] in ['between', 'inbetween']:
+                        if molsize[1] < mol.no_of_atoms < molsize[2]:
                             results[molecule] = mol.full_analysis(**kwargs)
             else:
                 results[molecule] = mol.full_analysis(**kwargs)
