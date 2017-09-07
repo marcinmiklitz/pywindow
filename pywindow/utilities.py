@@ -685,7 +685,6 @@ def discrete_molecules(system, supercell=None, tol=0.4):
             mode = 2
         else:
             mode = 1
-    print('Operation Mode is ', mode)
     # We create a list containing all atoms, theirs periodic elements and
     # coordinates. As this process is quite complicated, we need a list
     # which we will gradually be reducing.
@@ -1240,13 +1239,13 @@ def find_windows(elements,
                 ['Warning. One of the analysed windows has',
                  'returned as None. See manual.']
             )
-            print(msg_)
+            # print(msg_)
         elif result[0] < 0:
             msg_ = " ".join(
                 ['Warning. One of the analysed windows has a vdW',
                  'corrected diameter smaller than 0. See manual.']
             )
-            print(msg_)
+            # print(msg_)
     if output == 'all':
         return (windows, windows_coms)
     if output == 'windows':
