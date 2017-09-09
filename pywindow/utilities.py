@@ -1250,3 +1250,216 @@ def find_windows(elements,
         return (windows, windows_coms)
     if output == 'windows':
         return windows
+
+
+def vector_analysis_reversed(vector, coordinates, elements_vdw, shpere_radius,
+                             increment=0.1):
+    """Analyse a sampling vector's path for avarge diamatere of a molecule."""
+    # Calculate number of chunks if vector length is divided by increment.
+    chunks = int(np.linalg.norm(vector) // increment)
+    # Create a single chunk.
+    chunk = vector / chunks
+    # Calculate set of points on vector's path every increment.
+    vector_pathway = [chunk * i for i in range(chunks + 1)]
+    reversed_vector_pathway = np.array(vector_pathway[::-1])
+    analysed_vector = np.array([
+        np.amin(
+            euclidean_distances(coordinates, i.reshape(1, -1)) - elements_vdw)
+        for i in reversed_vector_pathway
+    ])
+    if all(i > 0 for i in analysed_vector):
+        return None
+    else:
+        count = -1
+        for i in analysed_vector:
+            if i > 0:
+                pass
+            else:
+                break
+            count += 1
+        dist_origin = np.linalg.norm(reversed_vector_pathway[count])
+        dist_origin_corrected = dist_origin - analysed_vector[count]
+        return [dist_origin_corrected, reversed_vector_pathway[count]]
+
+
+def find_avarage_diameter(elements, coordinates, adjust=1, increment=0.1,
+                          **kwargs):
+    """Return avarage diameter for a molecule."""
+    # Copy the coordinates as will perform many opertaions on them
+    coordinates = deepcopy(coordinates)
+    # Center of our cartesian system is always at origin
+    origin = np.array([0, 0, 0])
+    # Initial center of mass to reverse translation at the end
+    initial_com = center_of_mass(elements, coordinates)
+    # We just shift the cage to the origin.
+    coordinates = shift_com(elements, coordinates)
+    # We create an array of vdw radii of elements.
+    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
+    # We calculate maximum diameter of a molecule to determine the radius
+    # of a sampling sphere neccessary to enclose the whole molecule.
+    shpere_radius = max_dim(elements, coordinates)[2]
+    sphere_surface_area = 4 * np.pi * shpere_radius**2
+    # Here we determine the number of sampling points necessary for a fine
+    # sampling. Smaller molecules require more finner density of sampling
+    # points on the sampling sphere's surface, whereas largen require less.
+    # This formula was created so that larger molecule do not take much longer
+    # to analyse, as number_sampling_points*length_of_sampling_vectors
+    # results in quadratic increase of sampling time. The 250 factor was
+    # specificly determined to produce close to 1 sampling point /Angstrom^2
+    # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
+    # sampling by changing the adjust factor.
+    number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
+    points_per_1A_surface = number_of_points / sphere_surface_area
+    # Here I use code by Alexandre Devert for spreading points on a sphere:
+    # http://blog.marmakoide.org/?p=1
+    golden_angle = np.pi * (3 - np.sqrt(5))
+    theta = golden_angle * np.arange(number_of_points)
+    z = np.linspace(1 - 1.0 / number_of_points, 1.0 / number_of_points - 1.0,
+                    number_of_points)
+    radius = np.sqrt(1 - z * z)
+    points = np.zeros((number_of_points, 3))
+    points[:, 0] = radius * np.cos(theta) * shpere_radius
+    points[:, 1] = radius * np.sin(theta) * shpere_radius
+    points[:, 2] = z * shpere_radius
+    # Here we will compute the eps parameter for the sklearn.cluster.DBSCAN
+    # (3-dimensional spatial clustering algorithm) which is the mean distance
+    # to the closest point of all points.
+    values = []
+    tree = KDTree(points)
+    for i in points:
+        dist, ind = tree.query(i.reshape(1, -1), k=10)
+        values.append(dist[0][1])
+        values.append(dist[0][2])
+        values.append(dist[0][3])
+    mean_closest_distance = np.mean(values)
+    # The best eps is parametrized when adding the mean distance and it's root.
+    eps = mean_closest_distance + mean_closest_distance**0.5
+    # Here we either run the sampling points vectors analysis in serial
+    # or parallel. The vectors that go through molecular voids return
+    # as analysed list with the increment at vector's path with largest
+    # included sphere, coordinates for this narrow channel point. vectors
+    # that find molecule on theirs path are return as NoneType object.
+    results = [
+        vector_analysis_reversed(
+            point, coordinates, elements_vdw, shpere_radius,
+            increment=increment)
+        for point in points
+    ]
+    results_cleaned = [x[0]*2 for x in results if x is not None]
+    avarage_molecule_diameter = np.mean(results_cleaned)
+    points_density = []
+    for i in np.arange(1, int(shpere_radius)+1, increment):
+        surface = 4 * np.pi * i**2
+        density = number_of_points/surface
+        points_density.append([i, density])
+    normalised = []
+    for i in points_density:
+        normalised.append([i[0], points_density[0][1]/i[1]])
+    weighted_avarage = [[] for x in range(len(normalised))]
+    for i in results_cleaned:
+        for j in range(len(normalised)-1):
+            if normalised[j][0] < i <= normalised[j+1][0]:
+                weighted_avarage[j].append(i)
+    average_1 = 0
+    average_2 = 0
+    for i, j in zip(weighted_avarage, normalised):
+        if i:
+            average_1 += np.mean(i) * j[1]
+            average_2 += j[1]
+    average = average_1 / average_2
+    return average
+
+
+def vector_analysis_pore_shape(vector, coordinates, elements_vdw,
+                               increment=1.0):
+    """Analyse a sampling vector's path for pore shape determination."""
+    # Calculate number of chunks if vector length is divided by increment.
+    chunks = int(np.linalg.norm(vector) // increment)
+    # Create a single chunk.
+    chunk = vector / chunks
+    # Calculate set of points on vector's path every increment.
+    vector_pathway = np.array([chunk * i for i in range(chunks + 1)])
+    analysed_vector = np.array([
+        np.amin(
+            euclidean_distances(coordinates, i.reshape(1, -1)) - elements_vdw)
+        for i in vector_pathway
+    ])
+    if all(i > 0 for i in analysed_vector):
+        return None
+    else:
+        count = -1
+        for i in analysed_vector:
+            if i > 0:
+                pass
+            else:
+                break
+            count += 1
+        return vector_pathway[count]
+
+
+def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
+                         **kwargs):
+    """Return avarage diameter for a molecule."""
+    # Copy the coordinates as will perform many opertaions on them
+    coordinates = deepcopy(coordinates)
+    # Center of our cartesian system is always at origin
+    origin = np.array([0, 0, 0])
+    # Initial center of mass to reverse translation at the end
+    initial_com = center_of_mass(elements, coordinates)
+    # We just shift the cage to the origin.
+    coordinates = shift_com(elements, coordinates)
+    # We create an array of vdw radii of elements.
+    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
+    # We calculate maximum diameter of a molecule to determine the radius
+    # of a sampling sphere neccessary to enclose the whole molecule.
+    shpere_radius = max_dim(elements, coordinates)[2]/2
+    sphere_surface_area = 4 * np.pi * shpere_radius**2
+    # Here we determine the number of sampling points necessary for a fine
+    # sampling. Smaller molecules require more finner density of sampling
+    # points on the sampling sphere's surface, whereas largen require less.
+    # This formula was created so that larger molecule do not take much longer
+    # to analyse, as number_sampling_points*length_of_sampling_vectors
+    # results in quadratic increase of sampling time. The 250 factor was
+    # specificly determined to produce close to 1 sampling point /Angstrom^2
+    # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
+    # sampling by changing the adjust factor.
+    number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
+    points_per_1A_surface = number_of_points / sphere_surface_area
+    # Here I use code by Alexandre Devert for spreading points on a sphere:
+    # http://blog.marmakoide.org/?p=1
+    golden_angle = np.pi * (3 - np.sqrt(5))
+    theta = golden_angle * np.arange(number_of_points)
+    z = np.linspace(1 - 1.0 / number_of_points, 1.0 / number_of_points - 1.0,
+                    number_of_points)
+    radius = np.sqrt(1 - z * z)
+    points = np.zeros((number_of_points, 3))
+    points[:, 0] = radius * np.cos(theta) * shpere_radius
+    points[:, 1] = radius * np.sin(theta) * shpere_radius
+    points[:, 2] = z * shpere_radius
+    # Here we will compute the eps parameter for the sklearn.cluster.DBSCAN
+    # (3-dimensional spatial clustering algorithm) which is the mean distance
+    # to the closest point of all points.
+    values = []
+    tree = KDTree(points)
+    for i in points:
+        dist, ind = tree.query(i.reshape(1, -1), k=10)
+        values.append(dist[0][1])
+        values.append(dist[0][2])
+        values.append(dist[0][3])
+    mean_closest_distance = np.mean(values)
+    # The best eps is parametrized when adding the mean distance and it's root.
+    eps = mean_closest_distance + mean_closest_distance**0.5
+    # Here we either run the sampling points vectors analysis in serial
+    # or parallel. The vectors that go through molecular voids return
+    # as analysed list with the increment at vector's path with largest
+    # included sphere, coordinates for this narrow channel point. vectors
+    # that find molecule on theirs path are return as NoneType object.
+    results = [
+        vector_analysis_pore_shape(
+            point, coordinates, elements_vdw, increment=increment)
+        for point in points
+    ]
+    results_cleaned = [x for x in results if x is not None]
+    ele = np.array(['He'] * len(results_cleaned))
+    coor = np.array(results_cleaned)
+    return ele, coor

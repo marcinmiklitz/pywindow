@@ -7,6 +7,7 @@ from .utilities import (
     discrete_molecules, decipher_atom_key, molecular_weight, center_of_mass,
     max_dim, void_diameter, opt_void_diameter, void_volume, find_windows,
     shift_com, create_supercell, make_JSON_serializable, is_inside_polyhedron,
+    find_avarage_diameter, calculate_pore_shape,
 )
 from .io_tools import Input, Output
 
@@ -64,6 +65,11 @@ class Molecule(object):
         }
         return self.maximum_diameter
 
+    def calculate_avarage_diameter(self, **kwargs):
+        self.avarage_diameter = find_avarage_diameter(
+            self.elements, self.coordinates, **kwargs)
+        return self.avarage_diameter
+
     def calculate_void_diameter(self):
         self.void_diameter, self.void_closest_atom = void_diameter(
             self.elements, self.coordinates)
@@ -94,6 +100,12 @@ class Molecule(object):
             self.calculate_void_diameter_opt(**kwargs) / 2)
         self.properties['void_volume_opt'] = self.void_volume_opt
         return self.void_volume_opt
+
+    def calculate_void_shape(self, filepath='shape.xyz', **kwargs):
+        shape = calculate_pore_shape(self.elements, self.coordinates, **kwargs)
+        shape_obj = {'elements': shape[0], 'coordinates': shape[1]}
+        Output()._save_xyz(shape_obj, filepath)
+        return 1
 
     def calculate_windows(self, **kwargs):
         windows = find_windows(self.elements, self.coordinates, **kwargs)
@@ -349,7 +361,7 @@ class MolecularSystem(object):
             supercell_333 = create_supercell(self.system)
         else:
             supercell_333 = None
-        dis = discrete_molecules(self.system, supercell=supercell_333)
+        dis = discrete_molecules(self.system, rebuild=supercell_333)
         self.no_of_discrete_molecules = len(dis)
         self.molecules = {}
         for i in range(len(dis)):
