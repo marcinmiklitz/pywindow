@@ -1345,7 +1345,7 @@ def find_avarage_diameter(elements, coordinates, adjust=1, increment=0.1,
             increment=increment)
         for point in points
     ]
-    results_cleaned = [x[0]*2 for x in results if x is not None]
+    results_cleaned = [x[0] for x in results if x is not None]
     avarage_molecule_diameter = np.mean(results_cleaned)
     points_density = []
     for i in np.arange(1, int(shpere_radius)+1, increment):
@@ -1367,7 +1367,7 @@ def find_avarage_diameter(elements, coordinates, adjust=1, increment=0.1,
             average_1 += np.mean(i) * j[1]
             average_2 += j[1]
     average = average_1 / average_2
-    return average
+    return average * 2
 
 
 def vector_analysis_pore_shape(vector, coordinates, elements_vdw,
