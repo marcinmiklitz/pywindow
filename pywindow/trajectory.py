@@ -289,23 +289,24 @@ class DLPOLY(object):
             self._analysis_parallel(frames_for_analysis, ncpus, **kwargs)
 
     def _analysis_serial(self, frame, _ncpus, **kwargs):
+        settings = {
+            'rebuild': False,
+            'modular': False,
+        }
+        settings.update(kwargs)
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], frame, extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True, **kwargs
         )
-        if 'swap_atoms' in kwargs:
-            molecular_system.swap_atom_keys(kwargs['swap_atoms'])
-        if 'forcefield' in kwargs:
-            molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        rebuild = False
-        if 'supercell' in kwargs:
-            if kwargs['supercell'] is True:
-                rebuild = True
-        molecular_system.make_modular(rebuild=rebuild)
+        if settings['modular'] is True:
+            molecular_system.make_modular(rebuild=settings['rebuild'])
+            molecules = molecular_system.molecules
+        else:
+            molecules = {'0': molecular_system.system_to_molecule()}
         results = {}
-        for molecule in molecular_system.molecules:
-            mol = molecular_system.molecules[molecule]
-            if 'molsize' in kwargs:
-                molsize = kwargs['molsize']
+        for molecule in molecules:
+            mol = molecules[molecule]
+            if 'molsize' in settings:
+                molsize = settings['molsize']
                 if isinstance(molsize, int):
                     if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(
@@ -336,19 +337,24 @@ class DLPOLY(object):
         return results
 
     def _analysis_parallel_execute(self, frame, **kwargs):
+        settings = {
+            'rebuild': False,
+            'modular': False,
+        }
+        settings.update(kwargs)
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], frame, extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True, **kwargs
         )
-        if 'swap_atoms' in kwargs:
-            molecular_system.swap_atom_keys(kwargs['swap_atoms'])
-        if 'forcefield' in kwargs:
-            molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.make_modular()
+        if settings['modular'] is True:
+            molecular_system.make_modular(rebuild=settings['rebuild'])
+            molecules = molecular_system.molecules
+        else:
+            molecules = {'0': molecular_system.system_to_molecule()}
         results = {}
-        for molecule in molecular_system.molecules:
-            mol = molecular_system.molecules[molecule]
-            if 'molsize' in kwargs:
-                molsize = kwargs['molsize']
+        for molecule in molecules:
+            mol = molecules[molecule]
+            if 'molsize' in settings:
+                molsize = settings['molsize']
                 if isinstance(molsize, int):
                     if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(**kwargs)
@@ -683,19 +689,24 @@ class XYZ(object):
             self._analysis_parallel(frames_for_analysis, ncpus, **kwargs)
 
     def _analysis_serial(self, frame, ncpus, **kwargs):
+        settings = {
+            'rebuild': False,
+            'modular': False,
+        }
+        settings.update(kwargs)
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], frame, extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True, **kwargs
         )
-        if 'swap_atoms' in kwargs:
-            molecular_system.swap_atom_keys(kwargs['swap_atoms'])
-        if 'forcefield' in kwargs:
-            molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.make_modular()
+        if settings['modular'] is True:
+            molecular_system.make_modular(rebuild=settings['rebuild'])
+            molecules = molecular_system.molecules
+        else:
+            molecules = {'0': molecular_system.system_to_molecule()}
         results = {}
-        for molecule in molecular_system.molecules:
-            mol = molecular_system.molecules[molecule]
-            if 'molsize' in kwargs:
-                molsize = kwargs['molsize']
+        for molecule in molecules:
+            mol = molecules[molecule]
+            if 'molsize' in settings:
+                molsize = settings['molsize']
                 if isinstance(molsize, int):
                     if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(
@@ -726,19 +737,24 @@ class XYZ(object):
         return results
 
     def _analysis_parallel_execute(self, frame, **kwargs):
+        settings = {
+            'rebuild': False,
+            'modular': False,
+        }
+        settings.update(kwargs)
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], frame, extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True, **kwargs
         )
-        if 'swap_atoms' in kwargs:
-            molecular_system.swap_atom_keys(kwargs['swap_atoms'])
-        if 'forcefield' in kwargs:
-            molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.make_modular()
+        if settings['modular'] is True:
+            molecular_system.make_modular(rebuild=settings['rebuild'])
+            molecules = molecular_system.molecules
+        else:
+            molecules = {'0': molecular_system.system_to_molecule()}
         results = {}
-        for molecule in molecular_system.molecules:
-            mol = molecular_system.molecules[molecule]
-            if 'molsize' in kwargs:
-                molsize = kwargs['molsize']
+        for molecule in molecules:
+            mol = molecules[molecule]
+            if 'molsize' in settings:
+                molsize = settings['molsize']
                 if isinstance(molsize, int):
                     if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(**kwargs)
@@ -933,19 +949,24 @@ class PDB(object):
             self._analysis_parallel(frames_for_analysis, ncpus, **kwargs)
 
     def _analysis_serial(self, frame, ncpus, **kwargs):
+        settings = {
+            'rebuild': False,
+            'modular': False,
+        }
+        settings.update(kwargs)
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], frame, extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True, **kwargs
         )
-        if 'swap_atoms' in kwargs:
-            molecular_system.swap_atom_keys(kwargs['swap_atoms'])
-        if 'forcefield' in kwargs:
-            molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.make_modular()
+        if settings['modular'] is True:
+            molecular_system.make_modular(rebuild=settings['rebuild'])
+            molecules = molecular_system.molecules
+        else:
+            molecules = {'0': molecular_system.system_to_molecule()}
         results = {}
-        for molecule in molecular_system.molecules:
-            mol = molecular_system.molecules[molecule]
-            if 'molsize' in kwargs:
-                molsize = kwargs['molsize']
+        for molecule in molecules:
+            mol = molecules[molecule]
+            if 'molsize' in settings:
+                molsize = settings['molsize']
                 if isinstance(molsize, int):
                     if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(
@@ -976,19 +997,24 @@ class PDB(object):
         return results
 
     def _analysis_parallel_execute(self, frame, **kwargs):
+        settings = {
+            'rebuild': False,
+            'modular': False,
+        }
+        settings.update(kwargs)
         molecular_system = self._get_frame(
-            self.trajectory_map[frame], frame, extract_data=True
+            self.trajectory_map[frame], frame, extract_data=True, **kwargs
         )
-        if 'swap_atoms' in kwargs:
-            molecular_system.swap_atom_keys(kwargs['swap_atoms'])
-        if 'forcefield' in kwargs:
-            molecular_system.decipher_atom_keys(kwargs['forcefield'])
-        molecular_system.make_modular()
+        if settings['modular'] is True:
+            molecular_system.make_modular(rebuild=settings['rebuild'])
+            molecules = molecular_system.molecules
+        else:
+            molecules = {'0': molecular_system.system_to_molecule()}
         results = {}
-        for molecule in molecular_system.molecules:
-            mol = molecular_system.molecules[molecule]
-            if 'molsize' in kwargs:
-                molsize = kwargs['molsize']
+        for molecule in molecules:
+            mol = molecules[molecule]
+            if 'molsize' in settings:
+                molsize = settings['molsize']
                 if isinstance(molsize, int):
                     if mol.no_of_atoms == molsize:
                         results[molecule] = mol.full_analysis(**kwargs)

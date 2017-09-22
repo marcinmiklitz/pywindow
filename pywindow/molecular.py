@@ -7,7 +7,7 @@ from .utilities import (
     discrete_molecules, decipher_atom_key, molecular_weight, center_of_mass,
     max_dim, void_diameter, opt_void_diameter, void_volume, find_windows,
     shift_com, create_supercell, make_JSON_serializable, is_inside_polyhedron,
-    find_avarage_diameter, calculate_pore_shape,
+    find_avarage_diameter, calculate_pore_shape, chen_et_al
 )
 from .io_tools import Input, Output
 
@@ -48,6 +48,7 @@ class Molecule(object):
         self.calculate_void_diameter_opt(**kwargs)
         self.calculate_void_volume_opt(**kwargs)
         self.calculate_windows(ncpus=ncpus, **kwargs)
+        #self._chen_et_al(**kwargs)
         return self.properties
 
     def calculate_centre_of_mass(self):
@@ -218,6 +219,24 @@ class Molecule(object):
         self.calculate_centre_of_mass()
         self.calculate_void_diameter_opt()
 
+    def _chen_et_al(self, **kwargs):
+        windows = chen_et_al(self.coordinates, kwargs['atom_sets'])
+        if 'output' in kwargs:
+            if kwargs['output'] == 'windows':
+                self.properties['chen_et_al'] = {'diameter': windows, }
+        else:
+            if windows is not None:
+                self.properties['chen_et_al'] = {
+                    'diameter': windows[0],
+                    'centre_of_mass': windows[1],
+                }
+            else:
+                self.properties['chen_et_al'] = {
+                    'diameter': None,
+                    'centre_of_mass': None,
+                }
+        return windows
+
 
 class MolecularSystem(object):
     def __init__(self):
@@ -255,7 +274,7 @@ class MolecularSystem(object):
         supercell_333 = create_supercell(self.system, **kwargs)
         #smolsys = self.load_system(supercell_333, self.system_id + '_311')
         #smolsys.dump_system(override=True)
-        discrete = discrete_molecules(self.system, supercell=supercell_333)
+        discrete = discrete_molecules(self.system, rebuild=supercell_333)
         # This function overrides the initial data for 'coordinates',
         # 'atom_ids', and 'elements' instances in the 'system' dictionary.
         coordinates = np.array([], dtype=np.float64).reshape(0, 3)

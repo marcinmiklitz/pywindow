@@ -1463,3 +1463,36 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
     ele = np.array(['He'] * len(results_cleaned))
     coor = np.array(results_cleaned)
     return ele, coor
+
+def chen_et_al_window(coordinates, atom_set):
+    # Calculating circumcircle
+    A = np.array(coordinates[int(atom_set[0])])
+    B = np.array(coordinates[int(atom_set[1])])
+    C = np.array(coordinates[int(atom_set[2])])
+    a = np.linalg.norm(C - B)
+    b = np.linalg.norm(C - A)
+    c = np.linalg.norm(B - A)
+    s = (a + b + c) / 2
+    # Chen et al. method is intended to only work with triads of carbons,
+    # therefore I substract the vdW radii for a carbon.
+    # These equation calculaties the window's radius.
+    R = a*b*c / 4 / np.sqrt(s * (s - a) * (s - b) * (s - c)) - 1.70
+    # This steps are used to calculate the window's COM.
+    b1 = a*a * (b*b + c*c - a*a)
+    b2 = b*b * (a*a + c*c - b*b)
+    b3 = c*c * (a*a + b*b - c*c)
+    COM = np.column_stack((A, B, C)).dot(np.hstack((b1, b2, b3)))
+    # The window's COM.
+    COM /= b1 + b2 + b3
+    return R, COM
+
+def chen_et_al(coordinates, atom_sets):
+    pld_diameter_list = []
+    pld_com_list = []
+    iter_ = 0
+    while iter_ < len(atom_sets):
+        R, COM = chen_et_al_window(coordinates, atom_sets[iter_])
+        pld_diameter_list.append(R*2)
+        pld_com_list.append(COM)
+        iter_ += 1
+    return pld_diameter_list, pld_com_list
