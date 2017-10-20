@@ -1,3 +1,4 @@
+json
 numpy
 scipy
 scikit-learn

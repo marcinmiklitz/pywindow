@@ -100,50 +100,10 @@ def unique(input_list):
     return output
 
 
-def make_JSON_serializable(obj):
-    """
-    Return a dictionary with all arrays (three lvls down) changed to lists.
-
-    It takes a dictionary (and subdictionaries up to third level down) and
-    searches for numpy.ndarrays that are not json serializable. It exchanges
-    these arrays into lists.
-
-    Parameters
-    ----------
-    obj : dictionary
-        A dictionary that is going to be dumped as json.
-
-    Modifies
-    --------
-    obj : dictionary
-        The input dictionary.
-
-    Returns
-    -------
-    dictionary
-        A processed dictionary without numpy arrays.
-
-    """
-    for key in obj.keys():
-        if isinstance(obj[key], np.ndarray):
-            obj[key] = obj[key].tolist()
-        try:
-            if obj[key].keys() is not None:
-                for key2 in obj[key].keys():
-                    if isinstance(obj[key][key2], np.ndarray):
-                        obj[key][key2] = obj[key][key2].tolist()
-                    try:
-                        if obj[key][key2].keys() is not None:
-                            for key3 in obj[key][key2].keys():
-                                if isinstance(obj[key][key2][key3],
-                                              np.ndarray):
-                                    obj[key][key2][key3] = obj[key][key2][
-                                        key3].tolist()
-                    except AttributeError:
-                        pass
-        except AttributeError:
-            pass
-    return obj
+def to_list(obj):
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    raise TypeError('Not serializable')
 
 
 def distance(a, b):

@@ -6,8 +6,8 @@ from copy import deepcopy
 from .utilities import (
     discrete_molecules, decipher_atom_key, molecular_weight, center_of_mass,
     max_dim, void_diameter, opt_void_diameter, void_volume, find_windows,
-    shift_com, create_supercell, make_JSON_serializable, is_inside_polyhedron,
-    find_avarage_diameter, calculate_pore_shape, circumcircle
+    shift_com, create_supercell, is_inside_polyhedron, to_list,
+    find_avarage_diameter, calculate_pore_shape, circumcircle,
 )
 from .io_tools import Input, Output
 
@@ -48,6 +48,7 @@ class Molecule(object):
         self.calculate_void_diameter_opt(**kwargs)
         self.calculate_void_volume_opt(**kwargs)
         self.calculate_windows(ncpus=ncpus, **kwargs)
+        self._circumcircle(**kwargs)
         return self.properties
 
     def calculate_centre_of_mass(self):
@@ -139,8 +140,6 @@ class Molecule(object):
         # If molecular data is also required we update the dictionary.
         if molecular is True:
             dict_obj.update(self.mol)
-        # We make sure it is JSON serializable.
-        dict_obj = make_JSON_serializable(dict_obj)
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = "_".join(
@@ -148,7 +147,7 @@ class Molecule(object):
             )
             filepath = '/'.join((os.getcwd(), filepath))
         # Dump the dictionary to json file.
-        self._Output.dump2json(dict_obj, filepath, **kwargs)
+        self._Output.dump2json(dict_obj, filepath, default=to_list, **kwargs)
 
     def dump_molecule(self, filepath=None, include_coms=False, **kwargs):
         # If no filepath is provided we create one.
@@ -421,8 +420,6 @@ class MolecularSystem(object):
     def dump_system_json(self, filepath=None, modular=False, **kwargs):
         # We pass a copy of the properties dictionary.
         dict_obj = deepcopy(self.system)
-        # We make sure it is JSON serializable.
-        dict_obj = make_JSON_serializable(dict_obj)
         # In case we want a modular system.
         if modular is True:
             try:
@@ -435,10 +432,9 @@ class MolecularSystem(object):
             dict_obj = {}
             for molecule in self.molecules:
                 mol_ = self.molecules[molecule]
-                mol_dict = make_JSON_serializable(mol_.mol)
-                dict_obj[molecule] = mol_dict
+                dict_obj[molecule] = mol_.mol
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = '/'.join((os.getcwd(), str(self.system_id)))
         # Dump the dictionary to json file.
-        self._Output.dump2json(dict_obj, filepath, **kwargs)
+        self._Output.dump2json(dict_obj, filepath, default=to_list, **kwargs)

@@ -8,8 +8,7 @@ from multiprocessing import Pool
 
 from .io_tools import Input, Output
 from .utilities import (
-    is_number, create_supercell, lattice_array_to_unit_cell,
-    make_JSON_serializable,
+    is_number, create_supercell, lattice_array_to_unit_cell, to_list
 )
 from .molecular import MolecularSystem
 
@@ -479,11 +478,6 @@ class DLPOLY(object):
     def save_analysis(self, filepath=None, **kwargs):
         # We pass a copy of the analysis attribute dictionary.
         dict_obj = deepcopy(self.analysis_output)
-        # We make sure it is JSON serializable.
-        # We have to do it for each frame separately, otherwise we will
-        # exceed the level how deep the function does it.
-        for frame in dict_obj.keys():
-            dict_obj[frame] = make_JSON_serializable(dict_obj[frame])
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = "_".join(
@@ -491,7 +485,7 @@ class DLPOLY(object):
             )
             filepath = '/'.join((os.getcwd(), filepath))
         # Dump the dictionary to json file.
-        Output().dump2json(dict_obj, filepath, **kwargs)
+        Output().dump2json(dict_obj, filepath, default=to_list, **kwargs)
         return
 
     def save_frames(self, frames, filepath=None, filetype='pdb', **kwargs):
@@ -795,6 +789,19 @@ class XYZ(object):
             pool.terminate()
             raise _ParallelAnalysisError("Parallel analysis failed.")
 
+    def save_analysis(self, filepath=None, **kwargs):
+        # We pass a copy of the analysis attribute dictionary.
+        dict_obj = deepcopy(self.analysis_output)
+        # If no filepath is provided we create one.
+        if filepath is None:
+            filepath = "_".join(
+                (str(self.system_id), "pywindow_analysis")
+            )
+            filepath = '/'.join((os.getcwd(), filepath))
+        # Dump the dictionary to json file.
+        Output().dump2json(dict_obj, filepath, default=to_list, **kwargs)
+        return
+
 
 class PDB(object):
     def __init__(self, filepath):
@@ -1054,3 +1061,16 @@ class PDB(object):
         except TypeError:
             pool.terminate()
             raise _ParallelAnalysisError("Parallel analysis failed.")
+
+    def save_analysis(self, filepath=None, **kwargs):
+        # We pass a copy of the analysis attribute dictionary.
+        dict_obj = deepcopy(self.analysis_output)
+        # If no filepath is provided we create one.
+        if filepath is None:
+            filepath = "_".join(
+                (str(self.system_id), "pywindow_analysis")
+            )
+            filepath = '/'.join((os.getcwd(), filepath))
+        # Dump the dictionary to json file.
+        Output().dump2json(dict_obj, filepath, default=to_list, **kwargs)
+        return
