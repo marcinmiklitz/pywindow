@@ -938,6 +938,7 @@ def window_analysis(window,
                     increment2=0.1,
                     z_bounds=[None, None],
                     lb_z=True,
+                    z_second_mini=False,
                     **kwargs):
     """
     Return window diameter and window's centre.
@@ -1049,12 +1050,16 @@ def window_analysis(window,
     # a loop of optimisations until some convergence and optimisation of
     # xyz coordinates at the same time by optimising these two optimisations.
     # In the end. I think this approach is best for cages.
-    z_args = (window_com[0], window_com[1], elements, coordinates)
-    # The z_bounds should be passed in kwargs.
-    z_optimisation = minimize(
-        optimise_z, x0=window_com[2], args=z_args, bounds=[z_bounds])
-    # Substitute the z coordinate for a minimised one.
-    window_com[2] = z_optimisation.x[0]
+    # Update 20 October 2017: I made this optional and turned off by default
+    # In many cases that worsen the quality of the results and should be used
+    # with caution.
+    if z_second_mini is not False:
+        z_args = (window_com[0], window_com[1], elements, coordinates)
+        # The z_bounds should be passed in kwargs.
+        z_optimisation = minimize(
+            optimise_z, x0=window_com[2], args=z_args, bounds=[z_bounds])
+        # Substitute the z coordinate for a minimised one.
+        window_com[2] = z_optimisation.x[0]
     # Calculate the new window diameter.
     window_diameter, _ = void_diameter(elements, coordinates, com=window_com)
     # To get the window true centre of mass we need to revere the rotation and

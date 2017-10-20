@@ -48,7 +48,6 @@ class Molecule(object):
         self.calculate_void_diameter_opt(**kwargs)
         self.calculate_void_volume_opt(**kwargs)
         self.calculate_windows(ncpus=ncpus, **kwargs)
-        self._chen_et_al(**kwargs)
         return self.properties
 
     def calculate_centre_of_mass(self):
