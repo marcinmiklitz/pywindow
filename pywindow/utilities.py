@@ -1329,8 +1329,8 @@ def find_avarage_diameter(elements, coordinates, adjust=1, increment=0.1,
     average_2 = 0
     for i, j in zip(weighted_avarage, normalised):
         if i:
-            average_1 += np.mean(i) * j[1]
-            average_2 += j[1]
+            average_1 += np.mean(i) * len(i)
+            average_2 += len(i)
     average = average_1 / average_2
     return average * 2
 
