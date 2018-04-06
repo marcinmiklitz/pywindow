@@ -163,7 +163,7 @@ class Input(object):
         return self.system
 
     def _read_mol(self):
-        """"""
+        """-V3000"""
         self.system = dict()
         if self.file_content[2] != '\n':
             self.system['remarks'] = self.file_content[2]

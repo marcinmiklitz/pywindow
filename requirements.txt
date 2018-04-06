@@ -1,5 +1,6 @@
-json
 numpy
 scipy
 scikit-learn
+rdkit
+opencv
 matplotlib

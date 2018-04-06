@@ -272,7 +272,7 @@ class MolecularSystem(object):
         supercell_333 = create_supercell(self.system, **kwargs)
         #smolsys = self.load_system(supercell_333, self.system_id + '_311')
         #smolsys.dump_system(override=True)
-        discrete = discrete_molecules(self.system, supercell=supercell_333)
+        discrete = discrete_molecules(self.system, rebuild=supercell_333)
         # This function overrides the initial data for 'coordinates',
         # 'atom_ids', and 'elements' instances in the 'system' dictionary.
         coordinates = np.array([], dtype=np.float64).reshape(0, 3)
