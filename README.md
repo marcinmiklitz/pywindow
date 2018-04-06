@@ -6,7 +6,7 @@
 Structural parameters associated with porous organic molecules that are available
 to calculate using `pywindow` software.
 
-* The circular diameter of a [window](#window)
+* The circular diameter of a [window](#windows)
 
 * COM: centre of mass of a molecule.
 * d<sub>max</sub>: the maximum diameter of a molecule.
