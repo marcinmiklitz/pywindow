@@ -16,7 +16,7 @@ to calculate using `pywindow` software.
 * V<sub>void_opt</sub>: the optimised intrinsic void volume of a molecule.
 * d<sub>window</sub>: the circular diameter of an xth window of a molecule.
 
-# Windows
+## Windows
 
 Definition.
 
