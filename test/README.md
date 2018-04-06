@@ -1,7 +1,9 @@
 The directory contains tests necessary to check if all pywindow functionality is running OK.
 
 to run tests from parent top directory run:
-`<addr>` python -m unittest discover -v
+```bash
+python -m unittest discover -v
+```
 
 List of tests:
 --------------
