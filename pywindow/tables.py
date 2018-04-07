@@ -19,6 +19,11 @@ Sources:
 Edit 1:
 [1] https://www.ccdc.cam.ac.uk/support-and-resources/ccdcresources/
     Elemental_Radii.xlsx (access date: 26 Jul 2017)
+
+Edit 2:
+Added atomic mass, atomic can der Waals radius and covalent radius that equal
+1 for a dummy atom `X`. This is for the shape descriptors calculations to use
+the function for molecular descriptors that requires mass.
 """
 
 
@@ -108,6 +113,7 @@ atomic_mass = {
     'Y': 88.906,
     'ZN': 65.39,
     'ZR': 91.224,
+    'X': 1,
 }
 
 # Atomic vdW radii dictionary (in upper case!)
@@ -196,6 +202,7 @@ atomic_vdw_radius = {
     'Y': 2,
     'ZN': 1.29,
     'ZR': 2,
+    'X': 1,
 }
 
 # Atomic covalent radii dictionary (in upper case!)
@@ -284,6 +291,7 @@ atomic_covalent_radius = {
     'Y': 1.9,
     'ZN': 1.22,
     'ZR': 1.75,
+    'X': 1,
 }
 
 # Atom symbols - atom keys pairs for deciphering OPLS force field

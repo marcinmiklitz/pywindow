@@ -1,13 +1,14 @@
-#!/usr/bin/env python3
 import os
 import numpy as np
 from copy import deepcopy
 
 from .utilities import (
     discrete_molecules, decipher_atom_key, molecular_weight, center_of_mass,
-    max_dim, void_diameter, opt_void_diameter, void_volume, find_windows,
-    shift_com, create_supercell, is_inside_polyhedron, to_list,
-    find_avarage_diameter, calculate_pore_shape, circumcircle,
+    max_dim, pore_diameter, opt_pore_diameter, sphere_volume, find_windows,
+    shift_com, create_supercell, is_inside_polyhedron, find_average_diameter,
+    calculate_pore_shape, circumcircle, to_list, align_principal_ax,
+    get_inertia_tensor, get_gyration_tensor, _asphericity, _acylidricity,
+    _relative_shape_anisotropy
 )
 from .io_tools import Input, Output
 
@@ -22,7 +23,72 @@ class _NotAModularSystem(Exception):
         self.message = message
 
 
-class Molecule(object):
+class Shape:
+    def __init__(self, shape):
+        self.shape_elem = shape[0]
+        self.shape_coor = shape[1]
+
+    @property
+    def asphericity(self):
+        return _asphericity(self.shape_elem, self.shape_coor)
+
+    @property
+    def acylidricity(self):
+        return _acylidricity(self.shape_elem, self.shape_coor)
+
+    @property
+    def relative_shape_anisotropy(self):
+        return _relative_shape_anisotropy(self.shape_elem, self.shape_coor)
+
+    @property
+    def inertia_tensor(self):
+        return get_inertia_tensor(self.shape_elem, self.shape_coor)
+
+    @property
+    def gyration_tensor(self):
+        return get_gyration_tensor(self.shape_elem, self.shape_coor)
+
+    #def plot3Dscatter(self):
+    #    fig = pyplot.figure()#
+    #    ax = Axes3D(fig)
+    #    ax.scatter(
+    #        self.shape_coor[:, 0], self.shape_coor[:, 1], self.shape_coor[:, 2]
+    #    )
+    #    pyplot.show()
+    #    return fig
+
+
+class Pore(Shape):
+    def __init__(self, elements, coordinates, shape=False, **kwargs):
+        self._elements, self._coordinates = elements, coordinates
+        self.diameter, self.closest_atom = pore_diameter(elements, coordinates)
+        self.spherical_volume = sphere_volume(self.diameter / 2)
+        self.centre_coordinates = center_of_mass(elements, coordinates)
+        self.optimised = False
+
+    def optimise(self, **kwargs):
+        (self.diameter, self.closest_atom,
+         self.centre_coordinates) = opt_pore_diameter(self._elements,
+                                                      self._coordinates,
+                                                      **kwargs)
+        self.spherical_volume = sphere_volume(self.diameter / 2)
+        self.optimised = True
+
+    def get_shape(self):
+        super().__init__(
+            calculate_pore_shape(self._elements, self._coordinates)
+        )
+
+    def reset(self):
+        self.__init__(self._elements, self._coordinates)
+
+
+class Window:
+    def __init__(self):
+        pass
+
+
+class Molecule(Shape):
     def __init__(self, mol, system_name, mol_id):
         self._Output = Output()
         self.mol = mol
@@ -43,13 +109,23 @@ class Molecule(object):
         self.molecular_weight()
         self.calculate_centre_of_mass()
         self.calculate_maximum_diameter()
-        self.calculate_void_diameter()
-        self.calculate_void_volume()
-        self.calculate_void_diameter_opt(**kwargs)
-        self.calculate_void_volume_opt(**kwargs)
+        self.calculate_pore_diameter()
+        self.calculate_pore_volume()
+        self.calculate_pore_diameter_opt(**kwargs)
+        self.calculate_pore_volume_opt(**kwargs)
         self.calculate_windows(ncpus=ncpus, **kwargs)
         self._circumcircle(**kwargs)
         return self.properties
+
+    def align_to_principal_axes(self):
+        self.coordinates = align_principal_ax(self.elements, self.coordinates)
+        self.aligned_to_principal_axes = True
+
+    def get_pore(self):
+        return Pore(self.elements, self.coordinates)
+
+    def get_shape(self, **kwargs):
+        super().__init__(self, elements, coordinates)
 
     def calculate_centre_of_mass(self):
         self.centre_of_mass = center_of_mass(self.elements, self.coordinates)
@@ -66,43 +142,43 @@ class Molecule(object):
         }
         return self.maximum_diameter
 
-    def calculate_avarage_diameter(self, **kwargs):
-        self.avarage_diameter = find_avarage_diameter(
+    def calculate_average_diameter(self, **kwargs):
+        self.average_diameter = find_average_diameter(
             self.elements, self.coordinates, **kwargs)
-        return self.avarage_diameter
+        return self.average_diameter
 
-    def calculate_void_diameter(self):
-        self.void_diameter, self.void_closest_atom = void_diameter(
+    def calculate_pore_diameter(self):
+        self.pore_diameter, self.pore_closest_atom = pore_diameter(
             self.elements, self.coordinates)
-        self.properties['void_diameter'] = {
-            'diameter': self.void_diameter,
-            'atom': int(self.void_closest_atom),
+        self.properties['pore_diameter'] = {
+            'diameter': self.pore_diameter,
+            'atom': int(self.pore_closest_atom),
         }
-        return self.void_diameter
+        return self.pore_diameter
 
-    def calculate_void_volume(self):
-        self.void_volume = void_volume(self.calculate_void_diameter() / 2)
-        self.properties['void_volume'] = self.void_volume
-        return self.void_volume
+    def calculate_pore_volume(self):
+        self.pore_volume = sphere_volume(self.calculate_pore_diameter() / 2)
+        self.properties['pore_volume'] = self.pore_volume
+        return self.pore_volume
 
-    def calculate_void_diameter_opt(self, **kwargs):
-        (self.void_diameter_opt, self.void_opt_closest_atom,
-         self.void_opt_COM) = opt_void_diameter(self.elements,
+    def calculate_pore_diameter_opt(self, **kwargs):
+        (self.pore_diameter_opt, self.pore_opt_closest_atom,
+         self.pore_opt_COM) = opt_pore_diameter(self.elements,
                                                 self.coordinates, **kwargs)
-        self.properties['void_diameter_opt'] = {
-            'diameter': self.void_diameter_opt,
-            'atom_1': int(self.void_opt_closest_atom),
-            'centre_of_mass': self.void_opt_COM,
+        self.properties['pore_diameter_opt'] = {
+            'diameter': self.pore_diameter_opt,
+            'atom_1': int(self.pore_opt_closest_atom),
+            'centre_of_mass': self.pore_opt_COM,
         }
-        return self.void_diameter_opt
+        return self.pore_diameter_opt
 
-    def calculate_void_volume_opt(self, **kwargs):
-        self.void_volume_opt = void_volume(
-            self.calculate_void_diameter_opt(**kwargs) / 2)
-        self.properties['void_volume_opt'] = self.void_volume_opt
-        return self.void_volume_opt
+    def calculate_pore_volume_opt(self, **kwargs):
+        self.pore_volume_opt = sphere_volume(
+            self.calculate_pore_diameter_opt(**kwargs) / 2)
+        self.properties['pore_volume_opt'] = self.pore_volume_opt
+        return self.pore_volume_opt
 
-    def calculate_void_shape(self, filepath='shape.xyz', **kwargs):
+    def calculate_pore_shape(self, filepath='shape.xyz', **kwargs):
         shape = calculate_pore_shape(self.elements, self.coordinates, **kwargs)
         shape_obj = {'elements': shape[0], 'coordinates': shape[1]}
         Output()._save_xyz(shape_obj, filepath)
@@ -110,20 +186,18 @@ class Molecule(object):
 
     def calculate_windows(self, **kwargs):
         windows = find_windows(self.elements, self.coordinates, **kwargs)
-        if 'output' in kwargs:
-            if kwargs['output'] == 'windows':
-                self.properties['windows'] = {'diameter': windows, }
+        if windows:
+            self.properties.update(
+                {
+                    'windows': {
+                        'diameters': windows[0], 'centre_of_mass': windows[1],
+                    }
+                }
+            )
         else:
-            if windows is not None:
-                self.properties['windows'] = {
-                    'diameter': windows[0],
-                    'centre_of_mass': windows[1],
-                }
-            else:
-                self.properties['windows'] = {
-                    'diameter': None,
-                    'centre_of_mass': None,
-                }
+            self.properties.update(
+                {'windows': {'diameters': None,  'centre_of_mass': None, }}
+            )
         return windows
 
     def shift_to_origin(self, **kwargs):
@@ -167,7 +241,7 @@ class Molecule(object):
         # First deepcopy the molecule
         if include_coms is True:
             mmol = deepcopy(self.mol)
-            # add centre of mass (centre of not optimised void) as 'He'.
+            # add centre of mass (centre of not optimised pore) as 'He'.
             mmol['elements'] = np.concatenate(
                 (mmol['elements'], np.array(['He'])))
             if 'atom_ids' not in self.mol.keys():
@@ -178,7 +252,7 @@ class Molecule(object):
             mmol['coordinates'] = np.concatenate(
                 (mmol['coordinates'],
                  np.array([self.properties['centre_of_mass']])))
-            # add centre of void optimised as 'Ne'.
+            # add centre of pore optimised as 'Ne'.
             mmol['elements'] = np.concatenate(
                 (mmol['elements'], np.array(['Ne'])))
             if 'atom_ids' not in self.mol.keys():
@@ -188,7 +262,7 @@ class Molecule(object):
                     (mmol['atom_ids'], np.array(['Ne'])))
             mmol['coordinates'] = np.concatenate(
                 (mmol['coordinates'], np.array(
-                    [self.properties['void_diameter_opt']['centre_of_mass']])))
+                    [self.properties['pore_diameter_opt']['centre_of_mass']])))
             # add centre of windows as 'Ar'.
             if self.properties['windows']['centre_of_mass'] is not None:
                 range_ = range(
@@ -215,7 +289,7 @@ class Molecule(object):
     def _update(self):
         self.mol['coordinates'] = self.coordinates
         self.calculate_centre_of_mass()
-        self.calculate_void_diameter_opt()
+        self.calculate_pore_diameter_opt()
 
     def _circumcircle(self, **kwargs):
         windows = circumcircle(self.coordinates, kwargs['atom_sets'])

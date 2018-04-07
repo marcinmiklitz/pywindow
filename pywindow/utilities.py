@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Module containing all general purpose functions shared by other modules.
 
@@ -442,44 +441,243 @@ def max_dim(elements, coordinates):
     return i1, i2, maxdim
 
 
-def void_diameter(elements, coordinates, com=None):
-    """Return void diameter of a molecule."""
+def pore_diameter(elements, coordinates, com=None):
+    """Return pore diameter of a molecule."""
     if com is None:
         com = center_of_mass(elements, coordinates)
     atom_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
     dist_matrix = euclidean_distances(coordinates, com.reshape(1, -1))
     re_dist_matrix = dist_matrix - atom_vdw
     index = np.argmin(re_dist_matrix)
-    voidd = re_dist_matrix[index][0] * 2
-    return (voidd, index)
+    pored = re_dist_matrix[index][0] * 2
+    return (pored, index)
 
 
-def correct_void_diameter(com, *params):
-    """Return negative of a void diameter. (optimisation function)."""
+def correct_pore_diameter(com, *params):
+    """Return negative of a pore diameter. (optimisation function)."""
     elements, coordinates = params
-    return (-void_diameter(elements, coordinates, com)[0])
+    return (-pore_diameter(elements, coordinates, com)[0])
 
 
-def opt_void_diameter(elements, coordinates, bounds=None, **kwargs):
-    """Return optimised void diameter and it's COM."""
+def opt_pore_diameter(elements, coordinates, bounds=None, **kwargs):
+    """Return optimised pore diameter and it's COM."""
     args = elements, coordinates
     com = center_of_mass(elements, coordinates)
     if bounds is None:
-        void_r = void_diameter(elements, coordinates, com=com)[0] / 2
+        pore_r = pore_diameter(elements, coordinates, com=com)[0] / 2
         bounds = (
-            (com[0]-void_r, com[0]+void_r),
-            (com[1]-void_r, com[1]+void_r),
-            (com[2]-void_r, com[2]+void_r)
+            (com[0]-pore_r, com[0]+pore_r),
+            (com[1]-pore_r, com[1]+pore_r),
+            (com[2]-pore_r, com[2]+pore_r)
         )
     minimisation = minimize(
-        correct_void_diameter, x0=com, args=args, bounds=bounds)
-    voidd = void_diameter(elements, coordinates, com=minimisation.x)
-    return (voidd[0], voidd[1], minimisation.x)
+        correct_pore_diameter, x0=com, args=args, bounds=bounds)
+    pored = pore_diameter(elements, coordinates, com=minimisation.x)
+    return (pored[0], pored[1], minimisation.x)
 
 
-def void_volume(void_radius):
-    """Return the volume of a spherical void."""
-    return (4 / 3 * np.pi * void_radius**3)
+def sphere_volume(sphere_radius):
+    """Return volume of a sphere."""
+    return (4 / 3 * np.pi * sphere_radius**3)
+
+
+def calc_asphericity(S):
+    return (S[0] - (S[1] + S[2]) / 2)
+
+
+def calc_acylidricity(S):
+    return (S[1] - S[2])
+
+
+def calc_relative_shape_anisotropy(S):
+    return (1 - 3 * (
+        (S[0] * S[1] + S[0] * S[2] + S[1] * S[2]) / (np.sum(S))**2))
+
+
+def get_tensor_eigenvalues(T, sort=False):
+    if sort:
+        return (sorted(np.linalg.eigvals(T), reverse=True))
+    else:
+        return (np.linalg.eigvals(T))
+
+
+def get_gyration_tensor(elements, coordinates):
+    """
+    Return the gyration tensor of a molecule.
+
+    The gyration tensor should be invariant to the molecule's position.
+    The known formulas for the gyration tensor have the correction for the
+    centre of mass of the molecule, therefore, the coordinates are first
+    corrected for the centre of mass and essentially shifted to the origin.
+
+    Parameters
+    ----------
+    elements : numpy.ndarray
+        The array containing the molecule's elemental data.
+
+    coordinates :  numpy.ndarray
+        The array containing the Cartesian coordinates of the molecule.
+
+    Returns
+    -------
+    numpy.ndarray
+        The gyration tensor of a molecule invariant to the molecule's position.
+
+    """
+    # First calculate COM for correction.
+    com = centre_of_mass(elements, coordinates)
+    # Correct the coordinates for the COM.
+    coordinates = coordinates - com
+    # Calculate diagonal and then other values of the matrix.
+    diag = np.sum(coordinates**2, axis=0)
+    xy = np.sum(coordinates[:, 0] * coordinates[:, 1])
+    xz = np.sum(coordinates[:, 0] * coordinates[:, 2])
+    yz = np.sum(coordinates[:, 1] * coordinates[:, 2])
+    S = np.array([[diag[0], xy, xz], [xy, diag[1], yz],
+                  [xz, yz, diag[2]]]) / coordinates.shape[0]
+    return (S)
+
+
+def get_inertia_tensor(elements, coordinates):
+    """
+    Return the tensor of inertia a molecule.
+
+    Parameters
+    ----------
+    elements : numpy.ndarray
+        The array containing the molecule's elemental data.
+
+    coordinates :  numpy.ndarray
+        The array containing the Cartesian coordinates of the molecule.
+
+    Returns
+    -------
+    numpy.ndarray
+        The tensor of inertia of a molecule.
+
+    """
+    pow2 = coordinates**2
+    molecular_weight = np.array(
+        [[atomic_mass[e.upper()]] for e in elements])
+
+    diag_1 = np.sum(molecular_weight * (pow2[:, 1] + pow2[:, 2]))
+    diag_2 = np.sum(molecular_weight * (pow2[:, 0] + pow2[:, 2]))
+    diag_3 = np.sum(molecular_weight * (pow2[:, 0] + pow2[:, 1]))
+
+    mxy = np.sum(-molecular_weight * coordinates[:, 0] * coordinates[:, 1])
+    mxz = np.sum(-molecular_weight * coordinates[:, 0] * coordinates[:, 2])
+    myz = np.sum(-molecular_weight * coordinates[:, 1] * coordinates[:, 2])
+
+    inertia_tensor = np.array([[diag_1, mxy, mxz], [mxy, diag_2, myz],
+                               [mxz, myz, diag_3]]) / coordinates.shape[0]
+    return (inertia_tensor)
+
+
+def principal_axes(elements, coordinates):
+    return (np.linalg.eig(inertia_tensor(elements, coordinates))[1].T)
+
+
+def normalize_vector(vector):
+    """
+    Normalizes the given vector.
+
+    A new vector is returned, the original vector is not modified.
+
+    Parameters
+    ----------
+    vector : np.array
+        The vector to be normalized.
+
+    Returns
+    -------
+    np.array
+        The normalized vector.
+
+    """
+
+    v = np.divide(vector, np.linalg.norm(vector))
+    return np.round(v, decimals=4)
+
+
+def rotation_matrix_arbitrary_axis(angle, axis):
+    """
+
+    Returns a rotation matrix of `angle` radians about `axis`.
+
+    Parameters
+    ----------
+    angle : int or float
+        The size of the rotation in radians.
+
+    axis : numpy.array
+        A 3 element aray which represents a vector. The vector is the
+        axis about which the rotation is carried out.
+
+    Returns
+    -------
+    numpy.array
+        A 3x3 array representing a rotation matrix.
+
+    """
+
+    axis = normalize_vector(axis)
+
+    a = np.cos(angle / 2)
+    b, c, d = axis * np.sin(angle / 2)
+
+    e11 = np.square(a) + np.square(b) - np.square(c) - np.square(d)
+    e12 = 2 * (b * c - a * d)
+    e13 = 2 * (b * d + a * c)
+
+    e21 = 2 * (b * c + a * d)
+    e22 = np.square(a) + np.square(c) - np.square(b) - np.square(d)
+    e23 = 2 * (c * d - a * b)
+
+    e31 = 2 * (b * d - a * c)
+    e32 = 2 * (c * d + a * b)
+    e33 = np.square(a) + np.square(d) - np.square(b) - np.square(c)
+
+    return np.array([[e11, e12, e13], [e21, e22, e23], [e31, e32, e33]])
+
+
+def align_principal_ax(elements, coordinates):
+    coor = copy.deepcopy(coordinates)
+    new_coor = []
+    for i, j in zip([2, 1, 0], [[1, 0, 0], [0, 1, 0], [0, 0, 1]]):
+        p_axes = principal_axes(elements, coordinates)
+
+        r_vec = np.cross(p_axes[i], np.array(j))
+        sin = np.linalg.norm(r_vec)
+        cos = np.dot(p_axes[i], np.array(j))
+        ang = np.arctan2(sin, cos)
+
+        R_mat = np.matrix(rotation_matrix_arbitrary_axis(ang, r_vec))
+
+        for i in coor:
+            new_coord = R_mat * i.reshape(-1, 1)
+            new_coor.append(np.array(new_coord.reshape(1, -1))[0])
+        new_coor = np.array(new_coor)
+        coor = new_coor
+        new_coor = []
+    return (coor)
+
+
+def _asphericity(elements, coordinates):
+    inertia_tensor = get_inertia_tensor(elements, coordinates)
+    tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
+    return calc_asphericity(tensor_eigenvalues)
+
+
+def _acylidricity(elements, coordinates):
+    inertia_tensor = get_inertia_tensor(elements, coordinates)
+    tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
+    return calc_acylidricity(tensor_eigenvalues)
+
+
+def _relative_shape_anisotropy(elements, coordinates):
+    inertia_tensor = get_inertia_tensor(elements, coordinates)
+    tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
+    return calc_relative_shape_anisotropy(tensor_eigenvalues)
 
 
 def unit_cell_to_lattice_array(cryst):
@@ -641,8 +839,16 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     if rebuild is not None:
         mode = 3
     else:
-        if 'unit_cell' in system.keys() or 'lattice' in system.keys():
-            mode = 2
+        if 'unit_cell' in system.keys():
+            if system['unit_cell'].shape == (6,):
+                mode = 2
+            else:
+                mode = 1
+        elif 'lattice' in system.keys():
+            if system['lattice'].shape == (3, 3):
+                mode = 2
+            else:
+                mode = 1
         else:
             mode = 1
     # We create a list containing all atoms, theirs periodic elements and
@@ -878,17 +1084,17 @@ def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
 
 
 def optimise_xy(xy, *args):
-    """Return negative void diameter for x and y coordinates optimisation."""
+    """Return negative pore diameter for x and y coordinates optimisation."""
     z, elements, coordinates = args
     window_com = np.array([xy[0], xy[1], z])
-    return -void_diameter(elements, coordinates, com=window_com)[0]
+    return -pore_diameter(elements, coordinates, com=window_com)[0]
 
 
 def optimise_z(z, *args):
-    """Return void diameter for coordinates optimisation in z direction."""
+    """Return pore diameter for coordinates optimisation in z direction."""
     x, y, elements, coordinates = args
     window_com = np.array([x, y, z])
-    return void_diameter(elements, coordinates, com=window_com)[0]
+    return pore_diameter(elements, coordinates, com=window_com)[0]
 
 
 def window_analysis(window,
@@ -983,12 +1189,12 @@ def window_analysis(window,
     window_com = np.array([0, 0, 0], dtype=float)
     # The lb_z parameter is 'lower bound equal to z' which means,
     # that we set the lower bound for the z optimisation to be equal
-    # to the -new_z as in some cages it's the COM - void that is the
+    # to the -new_z as in some cages it's the COM - pore that is the
     # limiting diameter. But, no lower than new_z because we don't want to
     # move into the other direction.
     if lb_z:
         z_bounds[0] = -new_z
-    window_diameter, _ = void_diameter(elements, coordinates, com=window_com)
+    window_diameter, _ = pore_diameter(elements, coordinates, com=window_com)
     # SciPy minimisation on z coordinate.
     z_args = (window_com[0], window_com[1], elements, coordinates)
     z_optimisation = minimize(
@@ -1021,7 +1227,7 @@ def window_analysis(window,
         # Substitute the z coordinate for a minimised one.
         window_com[2] = z_optimisation.x[0]
     # Calculate the new window diameter.
-    window_diameter, _ = void_diameter(elements, coordinates, com=window_com)
+    window_diameter, _ = pore_diameter(elements, coordinates, com=window_com)
     # To get the window true centre of mass we need to revere the rotation and
     # translation operations on the window com.
     # Reverse the translation by substracting the new_z.
@@ -1043,12 +1249,11 @@ def window_analysis(window,
 
 def find_windows(elements,
                  coordinates,
-                 ncpus=1,
+                 processes=None,
                  mol_size=None,
                  adjust=1,
-                 void_opt=True,
+                 pore_opt=True,
                  increment=1.0,
-                 output='all',
                  **kwargs):
     """Return windows diameters and center of masses for a molecule."""
     # Copy the coordinates as will perform many opertaions on them
@@ -1058,15 +1263,15 @@ def find_windows(elements,
     # Initial center of mass to reverse translation at the end
     initial_com = center_of_mass(elements, coordinates)
     # Shift the cage to the origin using either the standard center of mass
-    # or if void_opt flag is True, the optimised void center as center of mass
-    if void_opt is True:
-        # Normally the void is calculated from the COM of a molecule.
-        # So, esentially the molecule's COM is the void's center.
-        # To shift the molecule so that the center of the optimised void
+    # or if pore_opt flag is True, the optimised pore center as center of mass
+    if pore_opt is True:
+        # Normally the pore is calculated from the COM of a molecule.
+        # So, esentially the molecule's COM is the pore center.
+        # To shift the molecule so that the center of the optimised pore
         # is at the origin of the system and not the center of the not
         # optimised one, we need to adjust the shift. We also have to update
         # the initial com.
-        com_adjust = initial_com - opt_void_diameter(elements, coordinates, **
+        com_adjust = initial_com - opt_pore_diameter(elements, coordinates, **
                                                      kwargs)[2]
         initial_com = initial_com - com_adjust
         coordinates = shift_com(elements, coordinates, com_adjust=com_adjust)
@@ -1115,21 +1320,13 @@ def find_windows(elements,
     # The best eps is parametrized when adding the mean distance and it's root.
     eps = mean_closest_distance + mean_closest_distance**0.5
     # Here we either run the sampling points vectors analysis in serial
-    # or parallel. The vectors that go through molecular voids return
+    # or parallel. The vectors that go through molecular pores return
     # as analysed list with the increment at vector's path with largest
     # included sphere, coordinates for this narrow channel point. vectors
     # that find molecule on theirs path are return as NoneType object.
-    if ncpus == 1:
-        results = [
-            vector_analysis(
-                point, coordinates, elements_vdw, increment=increment)
-            for point in points
-        ]
-        results = [x for x in results if x is not None]
-        dataset = np.array([x[5:8] for x in results])
     # Parralel analysis on user's defined number of CPUs.
-    if ncpus > 1:
-        pool = Pool(processes=ncpus)
+    if processes:
+        pool = Pool(processes=processes)
         parallel = [
             pool.apply_async(
                 vector_analysis,
@@ -1142,6 +1339,14 @@ def find_windows(elements,
         results = [p.get() for p in parallel if p.get() is not None]
         pool.terminate()
         # Dataset is an array of sampling points coordinates.
+        dataset = np.array([x[5:8] for x in results])
+    else:
+        results = [
+            vector_analysis(
+                point, coordinates, elements_vdw, increment=increment)
+            for point in points
+        ]
+        results = [x for x in results if x is not None]
         dataset = np.array([x[5:8] for x in results])
     # If not a single vector was returned from the analysis it mean that
     # no molecular channels (what we call windows here) connects the
@@ -1170,15 +1375,8 @@ def find_windows(elements,
         # We also pass user defined settings for window analysis.
         # Again either in serlia or in parallel.
         # Noisy points get a cluster label -1, therefore we have to exclude it.
-        if ncpus == 1:
-            window_results = [
-                window_analysis(
-                    np.array(clustered_results[cluster]), elements,
-                    coordinates, elements_vdw, **kwargs)
-                for cluster in clustered_results if cluster != -1
-            ]
-        elif ncpus > 1:
-            pool = Pool(processes=ncpus)
+        if processes:
+            pool = Pool(processes=processes)
             parallel = [
                 pool.apply_async(
                     window_analysis,
@@ -1189,6 +1387,13 @@ def find_windows(elements,
             ]
             window_results = [p.get() for p in parallel if p.get() is not None]
             pool.terminate()
+        else:
+            window_results = [
+                window_analysis(
+                    np.array(clustered_results[cluster]), elements,
+                    coordinates, elements_vdw, **kwargs)
+                for cluster in clustered_results if cluster != -1
+            ]
     # The function returns two numpy arrays, one with windows diameters
     # in Angstrom, second with corresponding windows center's coordinates
     windows = np.array([result[0] for result in window_results
@@ -1211,14 +1416,11 @@ def find_windows(elements,
                  'corrected diameter smaller than 0. See manual.']
             )
             # print(msg_)
-    if output == 'all':
-        return (windows, windows_coms)
-    if output == 'windows':
-        return windows
+    return (windows, windows_coms)
 
 
 def vector_analysis_reversed(vector, coordinates, elements_vdw, shpere_radius,
-                             increment=0.1):
+                             increment):
     """Analyse a sampling vector's path for avarge diamatere of a molecule."""
     # Calculate number of chunks if vector length is divided by increment.
     chunks = int(np.linalg.norm(vector) // increment)
@@ -1247,9 +1449,9 @@ def vector_analysis_reversed(vector, coordinates, elements_vdw, shpere_radius,
         return [dist_origin_corrected, reversed_vector_pathway[count]]
 
 
-def find_avarage_diameter(elements, coordinates, adjust=1, increment=0.1,
-                          **kwargs):
-    """Return avarage diameter for a molecule."""
+def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
+                          processes=None, **kwargs):
+    """Return average diameter for a molecule."""
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
     # Center of our cartesian system is always at origin
@@ -1286,53 +1488,28 @@ def find_avarage_diameter(elements, coordinates, adjust=1, increment=0.1,
     points[:, 0] = radius * np.cos(theta) * shpere_radius
     points[:, 1] = radius * np.sin(theta) * shpere_radius
     points[:, 2] = z * shpere_radius
-    # Here we will compute the eps parameter for the sklearn.cluster.DBSCAN
-    # (3-dimensional spatial clustering algorithm) which is the mean distance
-    # to the closest point of all points.
-    values = []
-    tree = KDTree(points)
-    for i in points:
-        dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.append(dist[0][1])
-        values.append(dist[0][2])
-        values.append(dist[0][3])
-    mean_closest_distance = np.mean(values)
-    # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
-    # Here we either run the sampling points vectors analysis in serial
-    # or parallel. The vectors that go through molecular voids return
-    # as analysed list with the increment at vector's path with largest
-    # included sphere, coordinates for this narrow channel point. vectors
-    # that find molecule on theirs path are return as NoneType object.
-    results = [
-        vector_analysis_reversed(
-            point, coordinates, elements_vdw, shpere_radius,
-            increment=increment)
-        for point in points
-    ]
+    # Here we analyse the vectors and retain the ones that create the molecule
+    # outline.
+    if processes:
+        pool = Pool(processes=processes)
+        parallel = [
+            pool.apply_async(
+                vector_analysis_reversed,
+                args=(
+                    point, coordinates, elements_vdw, shpere_radius, increment)
+                ) for point in points
+        ]
+        results = [p.get() for p in parallel if p.get() is not None]
+        pool.terminate()
+    else:
+        results = [
+            vector_analysis_reversed(
+                point, coordinates, elements_vdw, shpere_radius, increment)
+            for point in points
+        ]
     results_cleaned = [x[0] for x in results if x is not None]
-    avarage_molecule_diameter = np.mean(results_cleaned)
-    points_density = []
-    for i in np.arange(1, int(shpere_radius)+1, increment):
-        surface = 4 * np.pi * i**2
-        density = number_of_points/surface
-        points_density.append([i, density])
-    normalised = []
-    for i in points_density:
-        normalised.append([i[0], points_density[0][1]/i[1]])
-    weighted_avarage = [[] for x in range(len(normalised))]
-    for i in results_cleaned:
-        for j in range(len(normalised)-1):
-            if normalised[j][0] < i <= normalised[j+1][0]:
-                weighted_avarage[j].append(i)
-    average_1 = 0
-    average_2 = 0
-    for i, j in zip(weighted_avarage, normalised):
-        if i:
-            average_1 += np.mean(i) * len(i)
-            average_2 += len(i)
-    average = average_1 / average_2
-    return average * 2
+    return np.mean(results_cleaned)*2
+
 
 
 def vector_analysis_pore_shape(vector, coordinates, elements_vdw,
@@ -1364,7 +1541,7 @@ def vector_analysis_pore_shape(vector, coordinates, elements_vdw,
 
 def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
                          **kwargs):
-    """Return avarage diameter for a molecule."""
+    """Return average diameter for a molecule."""
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
     # Center of our cartesian system is always at origin
@@ -1425,7 +1602,7 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
         for point in points
     ]
     results_cleaned = [x for x in results if x is not None]
-    ele = np.array(['He'] * len(results_cleaned))
+    ele = np.array(['X'] * len(results_cleaned))
     coor = np.array(results_cleaned)
     return ele, coor
 
