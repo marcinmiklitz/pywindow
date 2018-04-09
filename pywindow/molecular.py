@@ -332,7 +332,7 @@ class MolecularSystem(object):
         return obj
 
     @classmethod
-    def load_system(cls, dict_, system_id):
+    def load_system(cls, dict_, system_id='system'):
         obj = cls()
         obj.system = dict_
         obj.system_id = system_id
