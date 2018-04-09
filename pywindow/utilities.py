@@ -884,19 +884,19 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     # Scenarios 2 and 3 require a lattice and also their origin is at origin.
     # Scenario 1 should have the origin at the center of mass of the system.
     # EDIT 09-04-18: All origins/pseudo_origin had to be skewed towards some
-    # direction (x + 0.001) so that there would be no ambiguity in periodic
+    # direction (x + 0.01) so that there would be no ambiguity in periodic
     # ang highly symmetric systems where the choice of the closest atom would
     # be random from a set of equally far choices - bug found in the testing
     # this way rebuild system should always look the same from the same input
     # and on different machines.
     if mode == 2 or mode == 3:
         # Scenarios 2 or 3.
-        origin = np.array([0.001, 0., 0.])
+        origin = np.array([0.01, 0., 0.])
         if 'lattice' not in system.keys():
             matrix = unit_cell_to_lattice_array(system['unit_cell'])
         else:
             matrix = system['lattice']
-        pseudo_origin_frac = np.array([0.251, 0.25, 0.25])
+        pseudo_origin_frac = np.array([0.26, 0.25, 0.25])
         pseudo_origin = cartisian_from_fractional(pseudo_origin_frac, matrix)
         # If a supercell is also provided that encloses the unit cell for the
         # reconstruction of the molecules through the periodic boundary.
@@ -925,7 +925,7 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     else:
         # Scenario 1.
         pseudo_origin = center_of_mass(
-            elements, coordinates) + np.array([0.001, 0., 0.])
+            elements, coordinates) + np.array([0.01, 0., 0.])
     # Here the final discrete molecules will be stored.
     molecules = []
     # Exceptions. Usually end-point atoms that create single bonds or
