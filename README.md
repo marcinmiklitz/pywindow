@@ -7,7 +7,7 @@ Structural parameters associated with porous organic molecules that are availabl
 to calculate using `pywindow` software.
 
 * The circular diameter of a [window](#windows)
-
+* Average diameter of a molecule
 * COM: centre of mass of a molecule.
 * d<sub>max</sub>: the maximum diameter of a molecule.
 * d<sub>void</sub>: the intrinsic void diameter of a molecule.
@@ -15,6 +15,8 @@ to calculate using `pywindow` software.
 * d<sub>void_opt</sub>: the optimised intrinsic void diameter of a molecule.
 * V<sub>void_opt</sub>: the optimised intrinsic void volume of a molecule.
 * d<sub>window</sub>: the circular diameter of an xth window of a molecule.
+
+Instructions and examples how to calculate these structural parameters are in form of Jupyter notebooks in the examples diretory.
 
 ### Windows
 
