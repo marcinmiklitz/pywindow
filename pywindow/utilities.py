@@ -1426,6 +1426,319 @@ def find_windows(elements,
     return (windows, windows_coms)
 
 
+def window_shape(window,
+                 elements,
+                 coordinates,
+                 increment2=0.1,
+                 z_bounds=[None, None],
+                 lb_z=True,
+                 z_second_mini=False,
+                 **kwargs):
+    """
+    Return window diameter and window's centre.
+
+    Parameters
+    ----------
+    widnow: list
+
+    elements: numpy.array
+
+    coordinates: numpy.array
+
+    elements_vdw: numpy.array
+
+    step: float
+
+    """
+    # Copy the coordinates as we will manipulate them.
+    coordinates = deepcopy(coordinates)
+    # We create an array of vdw radii of elements.
+    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
+    # Find the vector with the largest window sampling diameter from the pool.
+    vector_ = window[window.argmax(axis=0)[1]][5:8]
+    vector_analysed = vector_analysis(
+        vector_, coordinates, elements_vdw, increment=increment2)
+    # A safety check, if the refined analysis give None we end the function.
+    if vector_analysed is not None:
+        pass
+    else:
+        return None
+    vector = vector_analysed[5:8]
+    # Unit vectors.
+    vec_a = [1, 0, 0]
+    vec_b = [0, 1, 0]
+    vec_c = [0, 0, 1]
+    # Angles needed for rotation (in radians) to rotate and translate the
+    # molecule for the vector to become the Z-axis.
+    angle_1 = angle_between_vectors(np.array([vector[0], vector[1], 0]), vec_a)
+    angle_2 = angle_between_vectors(vector, vec_c)
+    # Depending in which cartesian coordinate system area the vector is
+    # We need a rotation into a different direction and by different value.
+    if vector[0] >= 0 and vector[1] >= 0 and vector[2] >= 0:
+        angle_1 = -angle_1
+        angle_2 = -angle_2
+    if vector[0] < 0 and vector[1] >= 0 and vector[2] >= 0:
+        angle_1 = np.pi * 2 + angle_1
+        angle_2 = angle_2
+    if vector[0] >= 0 and vector[1] < 0 and vector[2] >= 0:
+        angle_1 = angle_1
+        angle_2 = -angle_2
+    if vector[0] < 0 and vector[1] < 0 and vector[2] >= 0:
+        angle_1 = np.pi * 2 - angle_1
+    if vector[0] >= 0 and vector[1] >= 0 and vector[2] < 0:
+        angle_1 = -angle_1
+        angle_2 = np.pi + angle_2
+    if vector[0] < 0 and vector[1] >= 0 and vector[2] < 0:
+        angle_2 = np.pi - angle_2
+    if vector[0] >= 0 and vector[1] < 0 and vector[2] < 0:
+        angle_2 = angle_2 + np.pi
+    if vector[0] < 0 and vector[1] < 0 and vector[2] < 0:
+        angle_1 = -angle_1
+        angle_2 = np.pi - angle_2
+    # Rotation matrix for rotation around Z-axis with angle_1.
+    rotation_around_z = np.array([[np.cos(angle_1), -np.sin(angle_1), 0],
+                                  [np.sin(angle_1), np.cos(angle_1), 0],
+                                  [0, 0, 1]])
+    # Rotate the whole molecule around with rotation_around_z.
+    coordinates = np.array([np.dot(rotation_around_z, i) for i in coordinates])
+    # Rotation matrix for rotation around Y-axis with angle_2
+    rotation_around_y = np.array([[np.cos(angle_2), 0, np.sin(angle_2)],
+                                  [0, 1, 0],
+                                  [-np.sin(angle_2), 0, np.cos(angle_2)]])
+    # Rotate the whole molecule around with rotation_around_y.
+    coordinates = np.array([np.dot(rotation_around_y, i) for i in coordinates])
+    # Third step is translation. We are now at [0, 0, -z].
+    # We shift the molecule so that center of the window is at the origin.
+    # The `z` is from original vector analysis. It is the point on the vector
+    # where the largest sampling sphere was (vector_analysed[0]).
+    new_z = vector_analysed[0]
+    # Translate the whole molecule to shift window's center to origin.
+    coordinates = coordinates - np.array([[0, 0, new_z]] *
+                                         coordinates.shape[0])
+    # !!!Here the window center (xy and z) optimisation take place!!!
+    window_com = np.array([0, 0, 0], dtype=float)
+    # The lb_z parameter is 'lower bound equal to z' which means,
+    # that we set the lower bound for the z optimisation to be equal
+    # to the -new_z as in some cages it's the COM - pore that is the
+    # limiting diameter. But, no lower than new_z because we don't want to
+    # move into the other direction.
+    if lb_z:
+        z_bounds[0] = -new_z
+    window_diameter, _ = pore_diameter(elements, coordinates, com=window_com)
+    # SciPy minimisation on z coordinate.
+    z_args = (window_com[0], window_com[1], elements, coordinates)
+    z_optimisation = minimize(
+        optimise_z, x0=window_com[2], args=z_args, bounds=[z_bounds])
+    # Substitute the z coordinate for a minimised one.
+    window_com[2] = z_optimisation.x[0]
+    # SciPy brute optimisation on x and y coordinates in window plane.
+    xy_args = (window_com[2], elements, coordinates)
+    xy_bounds = ((-window_diameter / 2, window_diameter / 2),
+                 (-window_diameter / 2, window_diameter / 2))
+    xy_optimisation = brute(
+        optimise_xy, xy_bounds, args=xy_args, full_output=True, finish=fmin)
+    # Substitute the x and y coordinates for the optimised ones.
+    window_com[0] = xy_optimisation[0][0]
+    window_com[1] = xy_optimisation[0][1]
+    # Additional SciPy minimisation on z coordinate. Added on 18 May 2017.
+    # We can argue which aproach is best. Whether z opt and then xy opt
+    # or like now z opt -> xy opt -> additional z opt etc. I have also tested
+    # a loop of optimisations until some convergence and optimisation of
+    # xyz coordinates at the same time by optimising these two optimisations.
+    # In the end. I think this approach is best for cages.
+    # Update 20 October 2017: I made this optional and turned off by default
+    # In many cases that worsen the quality of the results and should be used
+    # with caution.
+    if z_second_mini is not False:
+        z_args = (window_com[0], window_com[1], elements, coordinates)
+        # The z_bounds should be passed in kwargs.
+        z_optimisation = minimize(
+            optimise_z, x0=window_com[2], args=z_args, bounds=[z_bounds])
+        # Substitute the z coordinate for a minimised one.
+        window_com[2] = z_optimisation.x[0]
+    # Getting the 2D plane crosssection of a window in XY plain. (10-04-18)
+    # First translation around Z axis.
+    vectors_translated = [
+        [
+            np.dot(rotation_around_z, i[5:])[0],
+            np.dot(rotation_around_z, i[5:])[1],
+            np.dot(rotation_around_z, i[5:])[2],
+        ] for i in window
+    ]
+    # Second rotation around Y axis.
+    vectors_translated = [
+        [
+            np.dot(rotation_around_y, i)[0],
+            np.dot(rotation_around_y, i)[1],
+            np.dot(rotation_around_y, i)[2]
+        ] for i in vectors_translated
+    ]
+    ref_distance = (new_z - window_com[2]) / np.linalg.norm(vector)
+    # Cutting the XY plane.
+    XY_plane = np.array(
+        [
+            [i[0] * ref_distance, i[1] * ref_distance]
+            for i in vectors_translated
+        ]
+    )
+    return XY_plane
+
+
+def find_windows_new(elements,
+                     coordinates,
+                     processes=None,
+                     mol_size=None,
+                     adjust=1,
+                     pore_opt=True,
+                     increment=1.0,
+                     **kwargs):
+    """Return windows diameters and center of masses for a molecule."""
+    # Copy the coordinates as will perform many opertaions on them
+    coordinates = deepcopy(coordinates)
+    # Center of our cartesian system is always at origin
+    origin = np.array([0, 0, 0])
+    # Initial center of mass to reverse translation at the end
+    initial_com = center_of_mass(elements, coordinates)
+    # Shift the cage to the origin using either the standard center of mass
+    # or if pore_opt flag is True, the optimised pore center as center of mass
+    if pore_opt is True:
+        # Normally the pore is calculated from the COM of a molecule.
+        # So, esentially the molecule's COM is the pore center.
+        # To shift the molecule so that the center of the optimised pore
+        # is at the origin of the system and not the center of the not
+        # optimised one, we need to adjust the shift. We also have to update
+        # the initial com.
+        com_adjust = initial_com - opt_pore_diameter(elements, coordinates, **
+                                                     kwargs)[2]
+        initial_com = initial_com - com_adjust
+        coordinates = shift_com(elements, coordinates, com_adjust=com_adjust)
+    else:
+        # Otherwise, we just shift the cage to the origin.
+        coordinates = shift_com(elements, coordinates)
+    # We create an array of vdw radii of elements.
+    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
+    # We calculate maximum diameter of a molecule to determine the radius
+    # of a sampling sphere neccessary to enclose the whole molecule.
+    shpere_radius = max_dim(elements, coordinates)[2] / 2
+    sphere_surface_area = 4 * np.pi * shpere_radius**2
+    # Here we determine the number of sampling points necessary for a fine
+    # sampling. Smaller molecules require more finner density of sampling
+    # points on the sampling sphere's surface, whereas largen require less.
+    # This formula was created so that larger molecule do not take much longer
+    # to analyse, as number_sampling_points*length_of_sampling_vectors
+    # results in quadratic increase of sampling time. The 250 factor was
+    # specificly determined to produce close to 1 sampling point /Angstrom^2
+    # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
+    # sampling by changing the adjust factor.
+    number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
+    points_per_1A_surface = number_of_points / sphere_surface_area
+    # Here I use code by Alexandre Devert for spreading points on a sphere:
+    # http://blog.marmakoide.org/?p=1
+    golden_angle = np.pi * (3 - np.sqrt(5))
+    theta = golden_angle * np.arange(number_of_points)
+    z = np.linspace(1 - 1.0 / number_of_points, 1.0 / number_of_points - 1.0,
+                    number_of_points)
+    radius = np.sqrt(1 - z * z)
+    points = np.zeros((number_of_points, 3))
+    points[:, 0] = radius * np.cos(theta) * shpere_radius
+    points[:, 1] = radius * np.sin(theta) * shpere_radius
+    points[:, 2] = z * shpere_radius
+    # Here we will compute the eps parameter for the sklearn.cluster.DBSCAN
+    # (3-dimensional spatial clustering algorithm) which is the mean distance
+    # to the closest point of all points.
+    values = []
+    tree = KDTree(points)
+    for i in points:
+        dist, ind = tree.query(i.reshape(1, -1), k=10)
+        values.append(dist[0][1])
+        values.append(dist[0][2])
+        values.append(dist[0][3])
+    mean_closest_distance = np.mean(values)
+    # The best eps is parametrized when adding the mean distance and it's root.
+    eps = mean_closest_distance + mean_closest_distance**0.5
+    # Here we either run the sampling points vectors analysis in serial
+    # or parallel. The vectors that go through molecular pores return
+    # as analysed list with the increment at vector's path with largest
+    # included sphere, coordinates for this narrow channel point. vectors
+    # that find molecule on theirs path are return as NoneType object.
+    # Parralel analysis on user's defined number of CPUs.
+    if processes:
+        pool = Pool(processes=processes)
+        parallel = [
+            pool.apply_async(
+                vector_analysis,
+                args=(
+                    point,
+                    coordinates,
+                    elements_vdw, ),
+                kwds={'increment': increment}) for point in points
+        ]
+        results = [p.get() for p in parallel if p.get() is not None]
+        pool.terminate()
+        # Dataset is an array of sampling points coordinates.
+        dataset = np.array([x[5:8] for x in results])
+    else:
+        results = [
+            vector_analysis(
+                point, coordinates, elements_vdw, increment=increment)
+            for point in points
+        ]
+        results = [x for x in results if x is not None]
+        dataset = np.array([x[5:8] for x in results])
+    # If not a single vector was returned from the analysis it mean that
+    # no molecular channels (what we call windows here) connects the
+    # molecule's interior with the surroungsings (exterior space).
+    # The number of windows in that case equals zero and zero is returned.
+    # Otherwise we continue our search for windows.
+    if len(results) == 0:
+        return None
+    else:
+        # Perfomr DBSCAN to cluster the sampling points vectors.
+        # the n_jobs will be developed later.
+        # db = DBSCAN(eps=eps, n_jobs=_ncpus).fit(dataset)
+        db = DBSCAN(eps=eps).fit(dataset)
+        core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+        core_samples_mask[db.core_sample_indices_] = True
+        labels = set(db.labels_)
+        # Assing cluster label to a sampling point.
+        clusters = [[i, j] for i, j in zip(results, db.labels_)]
+        clustered_results = {label: [] for label in labels}
+        # Create a dictionary of clusters with points listed.
+        [clustered_results[i[1]].append(i[0]) for i in clusters]
+        return clustered_results, elements, coordinates, initial_com
+
+
+def calculate_window_diameter(window, elements, coordinates, **kwargs):
+    elements_vdw = np.array(
+        [[atomic_vdw_radius[x.upper()]] for x in elements]
+    )
+    window_results = window_analysis(
+        np.array(window), elements, coordinates, elements_vdw, **kwargs
+    )
+    # The function returns two numpy arrays, one with windows diameters
+    # in Angstrom, second with corresponding windows center's coordinates
+    if window_results:
+        return window_results[0]
+    else:
+        return None
+
+
+def get_window_com(window, elements, coordinates, initial_com, **kwargs):
+    elements_vdw = np.array(
+        [[atomic_vdw_radius[x.upper()]] for x in elements]
+    )
+    window_results = window_analysis(
+        np.array(window), elements, coordinates, elements_vdw, **kwargs
+    )
+    # The function returns two numpy arrays, one with windows diameters
+    # in Angstrom, second with corresponding windows center's coordinates
+    if window_results:
+        # I correct the COM of window for the initial COM of the cage
+        return np.add(window_results[1], initial_com)
+    else:
+        return None
+
+
 def vector_analysis_reversed(vector, coordinates, elements_vdw, shpere_radius,
                              increment):
     """Analyse a sampling vector's path for avarge diamatere of a molecule."""

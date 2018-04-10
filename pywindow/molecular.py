@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from copy import deepcopy
+from scipy.spatial import ConvexHull
 
 from .utilities import (
     discrete_molecules, decipher_atom_key, molecular_weight, center_of_mass,
@@ -8,7 +9,8 @@ from .utilities import (
     shift_com, create_supercell, is_inside_polyhedron, find_average_diameter,
     calculate_pore_shape, circumcircle, to_list, align_principal_ax,
     get_inertia_tensor, get_gyration_tensor, _asphericity, _acylidricity,
-    _relative_shape_anisotropy
+    _relative_shape_anisotropy, find_windows_new, calculate_window_diameter,
+    get_window_com, window_shape
 )
 from .io_tools import Input, Output
 
@@ -84,8 +86,42 @@ class Pore(Shape):
 
 
 class Window:
-    def __init__(self):
-        pass
+    def __init__(self, window, key, elements, coordinates, com_adjust):
+        self.raw_data = window
+        self.index = key
+        self.mol_coordinates = coordinates
+        self.mol_elements = elements
+        self.com_correction = com_adjust
+        self.shape = None
+
+    def calculate_diameter(self, **kwargs):
+        diameter = calculate_window_diameter(
+            self.raw_data, self.mol_elements, self.mol_coordinates, **kwargs
+        )
+        return diameter
+
+    def get_centre_of_mass(self, **kwargs):
+        com = get_window_com(
+            self.raw_data, self.mol_elements, self.mol_coordinates,
+            self.com_correction, **kwargs
+        )
+        return com
+
+    def get_shape(self, **kwargs):
+        self.shape = window_shape(
+            self.raw_data, self.mol_elements, self.mol_coordinates
+        )
+        return self.shape
+
+    def shape_convexhull(self):
+        hull = ConvexHull(self.shape)
+        verticesx = np.append(
+            self.shape[hull.vertices, 0], self.shape[hull.vertices, 0][0]
+        )
+        verticesy = np.append(
+            self.shape[hull.vertices, 1], self.shape[hull.vertices, 1][0]
+        )
+        return verticesx, verticesy
 
 
 class Molecule(Shape):
@@ -100,6 +136,7 @@ class Molecule(Shape):
         self.parent_system = system_name
         self.molecule_id = mol_id
         self.properties = {'no_of_atoms': self.no_of_atoms}
+        self.windows = None
 
     @classmethod
     def load_rdkit_mol(cls, mol, system_name='rdkit', mol_id=0):
@@ -126,6 +163,18 @@ class Molecule(Shape):
 
     def get_shape(self, **kwargs):
         super().__init__(self, elements, coordinates)
+
+    def get_windows(self, **kwargs):
+        windows = find_windows_new(self.elements, self.coordinates, **kwargs)
+        if windows:
+            self.windows = [
+                Window(np.array(windows[0][window]), window, windows[1],
+                       windows[2], windows[3])
+                for window in windows[0] if window != -1
+            ]
+            return self.windows
+        else:
+            return None
 
     def calculate_centre_of_mass(self):
         self.centre_of_mass = center_of_mass(self.elements, self.coordinates)
