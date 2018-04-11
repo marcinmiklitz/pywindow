@@ -1,5 +1,3 @@
 numpy
 scipy
 scikit-learn
-opencv
-matplotlib
