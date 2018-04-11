@@ -1,7 +1,9 @@
 ![alt tag](docs/pyWINDOW_logo.png)
 ### Python package for the analysis of structural properties of porous molecules.
 
+### How to install `pywindow` with `conda`:
 
+`$ conda install --channel https://conda.anaconda.org/marcinmiklitz pywindow`
 
 Structural parameters associated with porous organic molecules that are available
 to calculate using `pywindow` software.
