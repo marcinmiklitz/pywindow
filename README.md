@@ -23,4 +23,4 @@ Instructions and examples how to calculate these structural parameters are in fo
 Definition.
 
 ---------------------------------------------------------------
-MIT License | Copyright (c) 2017 Marcin Miklitz
+MIT License | Copyright (c) 2017 Marcin Miklitz, Jelfs Materials Group
