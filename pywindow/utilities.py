@@ -459,10 +459,11 @@ def correct_pore_diameter(com, *params):
     return (-pore_diameter(elements, coordinates, com)[0])
 
 
-def opt_pore_diameter(elements, coordinates, bounds=None, **kwargs):
+def opt_pore_diameter(elements, coordinates, bounds=None, com=None, **kwargs):
     """Return optimised pore diameter and it's COM."""
     args = elements, coordinates
-    com = center_of_mass(elements, coordinates)
+    if com is None:
+        com = center_of_mass(elements, coordinates)
     if bounds is None:
         pore_r = pore_diameter(elements, coordinates, com=com)[0] / 2
         bounds = (
@@ -574,7 +575,7 @@ def get_inertia_tensor(elements, coordinates):
 
 
 def principal_axes(elements, coordinates):
-    return (np.linalg.eig(inertia_tensor(elements, coordinates))[1].T)
+    return (np.linalg.eig(get_inertia_tensor(elements, coordinates))[1].T)
 
 
 def normalize_vector(vector):
@@ -641,8 +642,9 @@ def rotation_matrix_arbitrary_axis(angle, axis):
 
 
 def align_principal_ax(elements, coordinates):
-    coor = copy.deepcopy(coordinates)
+    coor = deepcopy(coordinates)
     new_coor = []
+    rot = []
     for i, j in zip([2, 1, 0], [[1, 0, 0], [0, 1, 0], [0, 0, 1]]):
         p_axes = principal_axes(elements, coordinates)
 
@@ -652,6 +654,7 @@ def align_principal_ax(elements, coordinates):
         ang = np.arctan2(sin, cos)
 
         R_mat = np.matrix(rotation_matrix_arbitrary_axis(ang, r_vec))
+        rot.append(R_mat)
 
         for i in coor:
             new_coord = R_mat * i.reshape(-1, 1)
@@ -659,7 +662,7 @@ def align_principal_ax(elements, coordinates):
         new_coor = np.array(new_coor)
         coor = new_coor
         new_coor = []
-    return (coor)
+    return (coor, rot)
 
 
 def _asphericity(elements, coordinates):

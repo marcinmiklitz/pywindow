@@ -154,8 +154,15 @@ class Molecule(Shape):
         self._circumcircle(**kwargs)
         return self.properties
 
-    def align_to_principal_axes(self):
-        self.coordinates = align_principal_ax(self.elements, self.coordinates)
+    def align_to_principal_axes(self, align_molsys=False):
+        if align_molsys:
+            self.coordinates[0] = align_principal_ax_all(
+                self.elements, self.coordinates
+                )
+        else:
+            self.coordinates[0] = align_principal_ax(
+                self.elements, self.coordinates
+                )
         self.aligned_to_principal_axes = True
 
     def get_pore(self):
@@ -508,7 +515,7 @@ class MolecularSystem(object):
             self.molecules[i] = Molecule(dis[i], self.system_id, i)
 
     def system_to_molecule(self):
-        return Molecule(self.system, self.system_id, 0)
+        return Molecule(self.system, self.system_id, 0, self)
 
     def dump_system(self, filepath=None, modular=False, **kwargs):
         # If no filepath is provided we create one.
