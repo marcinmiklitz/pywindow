@@ -1,5 +1,5 @@
 ![alt tag](docs/pyWINDOW_logo.png)
-### Python package for the analysis of structural properties of porous molecules.
+### Python package for the analysis of structural properties of porous molecules (*porous organic cages*, but also *MOFs* and *metalorganic cages* - see examples directory).
 
 ### How to install `pywindow` with `conda`:
 
@@ -19,6 +19,7 @@ to calculate using `pywindow` software.
 * d<sub>window</sub>: the circular diameter of an xth window of a molecule.
 
 Instructions and examples how to calculate these structural parameters are in form of Jupyter notebooks in the examples diretory.
+
 
 ### Windows
 
