@@ -515,7 +515,7 @@ class MolecularSystem(object):
             self.molecules[i] = Molecule(dis[i], self.system_id, i)
 
     def system_to_molecule(self):
-        return Molecule(self.system, self.system_id, 0, self)
+        return Molecule(self.system, self.system_id, 0)
 
     def dump_system(self, filepath=None, modular=False, **kwargs):
         # If no filepath is provided we create one.
