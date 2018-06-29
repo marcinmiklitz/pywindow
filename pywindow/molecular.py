@@ -151,7 +151,7 @@ class Molecule(Shape):
         self.calculate_pore_diameter_opt(**kwargs)
         self.calculate_pore_volume_opt(**kwargs)
         self.calculate_windows(ncpus=ncpus, **kwargs)
-        self._circumcircle(**kwargs)
+        #self._circumcircle(**kwargs)
         return self.properties
 
     def align_to_principal_axes(self, align_molsys=False):
