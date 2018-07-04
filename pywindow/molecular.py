@@ -1,18 +1,62 @@
+"""
+Defines classes which describe molecular systems and molecules.
+
+This module is the most important part of the ``pywindow`` package, as it is
+at the frontfront of the interaction with the user. It is designed to handle
+input in form of single molecules or assamblies of molecules (the molecular
+system) with the two main classes defined here: :class:`MolecularSystem` and
+:class:`Molecule`. These are used to load and refine input data in form of a
+molecular system, extract individual molecules and perform the analysis. The
+:class:`Shape`, :class:`Window` and :class:`Pore` classes facilitate furthure
+analysis of molecular pore's features: its shape, windows and intrinsic pore.
+The more detailed description of each of the classes is provided below:
+
+The :class:`MolecularSystem` is used as a first step to the analysis. It allows
+to load data, refine it and extract single molecules for analysis.
+
+The :class:`Molecule` is designed to contain
+a single molecule. Here the analysis is performed.
+
+The :class:`Shape`,
+
+The :class:`Window`
+
+The :class:`Pore` allow to extract the information on the
+shape of the molecule, its windows (and their 2D shape) as separate objects
+and the information on the pore (and its 3D shape) to facilitate analysis.
+"""
 import os
 import numpy as np
 from copy import deepcopy
 from scipy.spatial import ConvexHull
 
-from .utilities import (
-    discrete_molecules, decipher_atom_key, molecular_weight, center_of_mass,
-    max_dim, pore_diameter, opt_pore_diameter, sphere_volume, find_windows,
-    shift_com, create_supercell, is_inside_polyhedron, find_average_diameter,
-    calculate_pore_shape, circumcircle, to_list, align_principal_ax,
-    get_inertia_tensor, get_gyration_tensor, _asphericity, _acylidricity,
-    _relative_shape_anisotropy, find_windows_new, calculate_window_diameter,
-    get_window_com, window_shape
-)
 from .io_tools import Input, Output
+from .utilities import (discrete_molecules,
+                        decipher_atom_key,
+                        molecular_weight,
+                        center_of_mass,
+                        max_dim,
+                        pore_diameter,
+                        opt_pore_diameter,
+                        sphere_volume,
+                        find_windows,
+                        shift_com,
+                        create_supercell,
+                        is_inside_polyhedron,
+                        find_average_diameter,
+                        calculate_pore_shape,
+                        circumcircle,
+                        to_list,
+                        align_principal_ax,
+                        get_inertia_tensor,
+                        get_gyration_tensor,
+                        _asphericity,
+                        _acylidricity,
+                        _relative_shape_anisotropy,
+                        find_windows_new,
+                        calculate_window_diameter,
+                        get_window_com,
+                        window_shape)
 
 
 class _MolecularSystemError(Exception):
@@ -50,15 +94,6 @@ class Shape:
     def gyration_tensor(self):
         return get_gyration_tensor(self.shape_elem, self.shape_coor)
 
-    #def plot3Dscatter(self):
-    #    fig = pyplot.figure()#
-    #    ax = Axes3D(fig)
-    #    ax.scatter(
-    #        self.shape_coor[:, 0], self.shape_coor[:, 1], self.shape_coor[:, 2]
-    #    )
-    #    pyplot.show()
-    #    return fig
-
 
 class Pore(Shape):
     def __init__(self, elements, coordinates, shape=False, **kwargs):
@@ -86,13 +121,20 @@ class Pore(Shape):
 
 
 class Window:
+    """
+    Return a window
+    """
     def __init__(self, window, key, elements, coordinates, com_adjust):
+        """
+        Return
+        """
         self.raw_data = window
         self.index = key
         self.mol_coordinates = coordinates
         self.mol_elements = elements
         self.com_correction = com_adjust
         self.shape = None
+        self.convexhull = None
 
     def calculate_diameter(self, **kwargs):
         diameter = calculate_window_diameter(
@@ -113,7 +155,7 @@ class Window:
         )
         return self.shape
 
-    def shape_convexhull(self):
+    def get_convexhull(self):
         hull = ConvexHull(self.shape)
         verticesx = np.append(
             self.shape[hull.vertices, 0], self.shape[hull.vertices, 0][0]
@@ -121,7 +163,8 @@ class Window:
         verticesy = np.append(
             self.shape[hull.vertices, 1], self.shape[hull.vertices, 1][0]
         )
-        return verticesx, verticesy
+        self.convexhull = verticesx, verticesy
+        return self.convexhull
 
 
 class Molecule(Shape):
@@ -400,8 +443,8 @@ class MolecularSystem(object):
         # atom positions necessary for the molecules passing through periodic
         # boundary reconstruction step.
         supercell_333 = create_supercell(self.system, **kwargs)
-        #smolsys = self.load_system(supercell_333, self.system_id + '_311')
-        #smolsys.dump_system(override=True)
+        # smolsys = self.load_system(supercell_333, self.system_id + '_311')
+        # smolsys.dump_system(override=True)
         discrete = discrete_molecules(self.system, rebuild=supercell_333)
         # This function overrides the initial data for 'coordinates',
         # 'atom_ids', and 'elements' instances in the 'system' dictionary.

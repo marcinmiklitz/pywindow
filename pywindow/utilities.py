@@ -100,6 +100,7 @@ def unique(input_list):
 
 
 def to_list(obj):
+    """ """
     if isinstance(obj, np.ndarray):
         return obj.tolist()
     raise TypeError('Not serializable')
@@ -580,7 +581,7 @@ def principal_axes(elements, coordinates):
 
 def normalize_vector(vector):
     """
-    Normalizes the given vector.
+    Normalize a vector.
 
     A new vector is returned, the original vector is not modified.
 
@@ -595,15 +596,13 @@ def normalize_vector(vector):
         The normalized vector.
 
     """
-
     v = np.divide(vector, np.linalg.norm(vector))
     return np.round(v, decimals=4)
 
 
 def rotation_matrix_arbitrary_axis(angle, axis):
     """
-
-    Returns a rotation matrix of `angle` radians about `axis`.
+    Return a rotation matrix of `angle` radians about `axis`.
 
     Parameters
     ----------
@@ -620,7 +619,6 @@ def rotation_matrix_arbitrary_axis(angle, axis):
         A 3x3 array representing a rotation matrix.
 
     """
-
     axis = normalize_vector(axis)
 
     a = np.cos(angle / 2)
@@ -642,6 +640,7 @@ def rotation_matrix_arbitrary_axis(angle, axis):
 
 
 def align_principal_ax(elements, coordinates):
+    """ """
     coor = deepcopy(coordinates)
     new_coor = []
     rot = []
@@ -939,7 +938,8 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     # the largest R(cov) in the system and set the max_dist as a double
     # of it plus the 150% tolerance (tol).
     set_of_elements = set(system['elements'])
-    max_r_cov = max([atomic_covalent_radius[i.upper()] for i in set_of_elements])
+    max_r_cov = max([
+        atomic_covalent_radius[i.upper()] for i in set_of_elements])
     max_dist = 2 * max_r_cov + tol
     # We continue untill all items in the list have been analysed and popped.
     while atom_list:
@@ -999,7 +999,9 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                         for j in neighbours_indexes:
                             j_arr = np.array(atom_coor[j])
                             r_i_j = distance(i_arr, j_arr)
-                            r_cov_i_j = atomic_covalent_radius[i[0].upper()] + atomic_covalent_radius[atom_list[j][0].upper()]
+                            r_cov_i_j = atomic_covalent_radius[
+                                i[0].upper()] + atomic_covalent_radius[
+                                    atom_list[j][0].upper()]
                             if r_cov_i_j - tol < r_i_j < r_cov_i_j + tol:
                                 working_list_temp.append(atom_list[j])
                     if rebuild is not None:
@@ -1015,7 +1017,8 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                                 r_i_j = distance(i_arr, j_arr)
                                 r_cov_i_j = atomic_covalent_radius[
                                     i[0].upper()
-                                    ] + atomic_covalent_radius[satom_list[j][0].upper()]
+                                    ] + atomic_covalent_radius[
+                                        satom_list[j][0].upper()]
                                 if r_cov_i_j - tol < r_i_j < r_cov_i_j + tol:
                                     working_list_temp.append(satom_list[j])
                     final_molecule.append(i)
@@ -1304,7 +1307,6 @@ def find_windows(elements,
     # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    points_per_1A_surface = number_of_points / sphere_surface_area
     # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
@@ -1323,12 +1325,9 @@ def find_windows(elements,
     tree = KDTree(points)
     for i in points:
         dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.append(dist[0][1])
-        values.append(dist[0][2])
-        values.append(dist[0][3])
-    mean_closest_distance = np.mean(values)
+        values.extend(dist)
     # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+    eps = np.mean(values)
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular pores return
     # as analysed list with the increment at vector's path with largest
@@ -1634,7 +1633,6 @@ def find_windows_new(elements,
     # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    points_per_1A_surface = number_of_points / sphere_surface_area
     # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
@@ -1653,12 +1651,8 @@ def find_windows_new(elements,
     tree = KDTree(points)
     for i in points:
         dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.append(dist[0][1])
-        values.append(dist[0][2])
-        values.append(dist[0][3])
-    mean_closest_distance = np.mean(values)
-    # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+        values.extend(dist)
+    eps = np.mean(values)
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular pores return
     # as analysed list with the increment at vector's path with largest
@@ -1799,7 +1793,6 @@ def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
     # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    points_per_1A_surface = number_of_points / sphere_surface_area
     # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
@@ -1832,7 +1825,6 @@ def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
         ]
     results_cleaned = [x[0] for x in results if x is not None]
     return np.mean(results_cleaned)*2
-
 
 
 def vector_analysis_pore_shape(vector, coordinates, elements_vdw,
@@ -1889,7 +1881,6 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
     # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    points_per_1A_surface = number_of_points / sphere_surface_area
     # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
@@ -1908,12 +1899,8 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
     tree = KDTree(points)
     for i in points:
         dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.append(dist[0][1])
-        values.append(dist[0][2])
-        values.append(dist[0][3])
-    mean_closest_distance = np.mean(values)
-    # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+        values.extend(dist)
+    eps = np.mean(values)
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular voids return
     # as analysed list with the increment at vector's path with largest
@@ -1928,6 +1915,7 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
     ele = np.array(['X'] * len(results_cleaned))
     coor = np.array(results_cleaned)
     return ele, coor
+
 
 def circumcircle_window(coordinates, atom_set):
     # Calculating circumcircle
@@ -1950,6 +1938,7 @@ def circumcircle_window(coordinates, atom_set):
     # The window's COM.
     COM /= b1 + b2 + b3
     return R, COM
+
 
 def circumcircle(coordinates, atom_sets):
     pld_diameter_list = []
