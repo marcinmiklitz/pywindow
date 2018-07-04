@@ -1328,7 +1328,7 @@ def find_windows(elements,
         values.extend(dist)
     mean_distance = np.mean(values)
     # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+    eps = mean_distance + mean_distance**0.5
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular pores return
     # as analysed list with the increment at vector's path with largest
@@ -1655,7 +1655,7 @@ def find_windows_new(elements,
         values.extend(dist)
     mean_distance = np.mean(values)
     # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+    eps = mean_distance + mean_distance**0.5
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular pores return
     # as analysed list with the increment at vector's path with largest
@@ -1905,7 +1905,7 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
         values.extend(dist)
     mean_distance = np.mean(values)
     # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+    eps = mean_distance + mean_distance**0.5
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular voids return
     # as analysed list with the increment at vector's path with largest
