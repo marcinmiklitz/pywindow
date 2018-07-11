@@ -1096,6 +1096,32 @@ def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
             [dist, analysed_vector[pos] * 2, *chunk * pos, *vector])
 
 
+def vector_preanalysis(vector, coordinates, elements_vdw, increment=1.0):
+    norm_vec = vector/np.linalg.norm(vector)
+    intersections = []
+    origin = center_of_coor(coordinates)
+    L = coordinates - origin
+    t_ca = np.dot(L, norm_vec)
+    d = np.sqrt(np.einsum('ij,ij->i', L, L) - t_ca**2)
+    under_sqrt = elements_vdw**2 - d**2
+    diag = under_sqrt.diagonal()
+    positions = np.argwhere(diag > 0)
+    for pos in positions:
+        t_hc = np.sqrt(diag[pos[0]])
+        t_0 = t_ca[pos][0] - t_hc
+        t_1 = t_ca[pos][0] + t_hc
+
+        P_0 = origin + np.dot(t_0, norm_vec)
+        P_1 = origin + np.dot(t_1, norm_vec)
+        # print(np.linalg.norm(P_0), np.linalg.norm(P_1))
+        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
+            intersections.append(1)
+        else:
+            intersections.append(0)
+    if sum(intersections) == 0:
+        return vector_analysis(vector, coordinates, elements_vdw, increment)
+
+
 def optimise_xy(xy, *args):
     """Return negative pore diameter for x and y coordinates optimisation."""
     z, elements, coordinates = args
@@ -1339,7 +1365,7 @@ def find_windows(elements,
         pool = Pool(processes=processes)
         parallel = [
             pool.apply_async(
-                vector_analysis,
+                vector_preanalysis,
                 args=(
                     point,
                     coordinates,
@@ -1352,7 +1378,7 @@ def find_windows(elements,
         dataset = np.array([x[5:8] for x in results])
     else:
         results = [
-            vector_analysis(
+            vector_preanalysis(
                 point, coordinates, elements_vdw, increment=increment)
             for point in points
         ]
@@ -1666,7 +1692,7 @@ def find_windows_new(elements,
         pool = Pool(processes=processes)
         parallel = [
             pool.apply_async(
-                vector_analysis,
+                vector_preanalysis,
                 args=(
                     point,
                     coordinates,
@@ -1679,7 +1705,7 @@ def find_windows_new(elements,
         dataset = np.array([x[5:8] for x in results])
     else:
         results = [
-            vector_analysis(
+            vector_preanalysis(
                 point, coordinates, elements_vdw, increment=increment)
             for point in points
         ]
@@ -1739,34 +1765,29 @@ def get_window_com(window, elements, coordinates, initial_com, **kwargs):
         return None
 
 
-def vector_analysis_reversed(vector, coordinates, elements_vdw, shpere_radius,
-                             increment):
-    """Analyse a sampling vector's path for avarge diamatere of a molecule."""
-    # Calculate number of chunks if vector length is divided by increment.
-    chunks = int(np.linalg.norm(vector) // increment)
-    # Create a single chunk.
-    chunk = vector / chunks
-    # Calculate set of points on vector's path every increment.
-    vector_pathway = [chunk * i for i in range(chunks + 1)]
-    reversed_vector_pathway = np.array(vector_pathway[::-1])
-    analysed_vector = np.array([
-        np.amin(
-            euclidean_distances(coordinates, i.reshape(1, -1)) - elements_vdw)
-        for i in reversed_vector_pathway
-    ])
-    if all(i > 0 for i in analysed_vector):
-        return None
-    else:
-        count = -1
-        for i in analysed_vector:
-            if i > 0:
-                pass
-            else:
-                break
-            count += 1
-        dist_origin = np.linalg.norm(reversed_vector_pathway[count])
-        dist_origin_corrected = dist_origin - analysed_vector[count]
-        return [dist_origin_corrected, reversed_vector_pathway[count]]
+def vector_analysis_reversed(vector, coordinates, elements_vdw):
+    norm_vec = vector/np.linalg.norm(vector)
+    intersections = []
+    origin = center_of_coor(coordinates)
+    L = coordinates - origin
+    t_ca = np.dot(L, norm_vec)
+    d = np.sqrt(np.einsum('ij,ij->i', L, L) - t_ca**2)
+    under_sqrt = elements_vdw**2 - d**2
+    diag = under_sqrt.diagonal()
+    positions = np.argwhere(diag > 0)
+    for pos in positions:
+        t_hc = np.sqrt(diag[pos[0]])
+        t_0 = t_ca[pos][0] - t_hc
+        t_1 = t_ca[pos][0] + t_hc
+
+        P_0 = origin + np.dot(t_0, norm_vec)
+        P_1 = origin + np.dot(t_1, norm_vec)
+        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
+            intersections.append([np.linalg.norm(P_1),  P_1])
+    if intersections:
+        intersection = sorted(intersections, reverse=True)[0][1]
+        dist_origin = np.linalg.norm(intersection)
+        return [dist_origin, intersection]
 
 
 def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
@@ -1815,7 +1836,7 @@ def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
             pool.apply_async(
                 vector_analysis_reversed,
                 args=(
-                    point, coordinates, elements_vdw, shpere_radius, increment)
+                    point, coordinates, elements_vdw)
                 ) for point in points
         ]
         results = [p.get() for p in parallel if p.get() is not None]
@@ -1823,38 +1844,35 @@ def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
     else:
         results = [
             vector_analysis_reversed(
-                point, coordinates, elements_vdw, shpere_radius, increment)
+                point, coordinates, elements_vdw)
             for point in points
         ]
     results_cleaned = [x[0] for x in results if x is not None]
     return np.mean(results_cleaned)*2
 
 
-def vector_analysis_pore_shape(vector, coordinates, elements_vdw,
-                               increment=1.0):
-    """Analyse a sampling vector's path for pore shape determination."""
-    # Calculate number of chunks if vector length is divided by increment.
-    chunks = int(np.linalg.norm(vector) // increment)
-    # Create a single chunk.
-    chunk = vector / chunks
-    # Calculate set of points on vector's path every increment.
-    vector_pathway = np.array([chunk * i for i in range(chunks + 1)])
-    analysed_vector = np.array([
-        np.amin(
-            euclidean_distances(coordinates, i.reshape(1, -1)) - elements_vdw)
-        for i in vector_pathway
-    ])
-    if all(i > 0 for i in analysed_vector):
-        return None
-    else:
-        count = -1
-        for i in analysed_vector:
-            if i > 0:
-                pass
-            else:
-                break
-            count += 1
-        return vector_pathway[count]
+def vector_analysis_pore_shape(vector, coordinates, elements_vdw):
+    norm_vec = vector/np.linalg.norm(vector)
+    intersections = []
+    origin = center_of_coor(coordinates)
+    L = coordinates - origin
+    t_ca = np.dot(L, norm_vec)
+    d = np.sqrt(np.einsum('ij,ij->i', L, L) - t_ca**2)
+    under_sqrt = elements_vdw**2 - d**2
+    diag = under_sqrt.diagonal()
+    positions = np.argwhere(diag > 0)
+    for pos in positions:
+        t_hc = np.sqrt(diag[pos[0]])
+        t_0 = t_ca[pos][0] - t_hc
+        t_1 = t_ca[pos][0] + t_hc
+
+        P_0 = origin + np.dot(t_0, norm_vec)
+        P_1 = origin + np.dot(t_1, norm_vec)
+        # print(np.linalg.norm(P_0), np.linalg.norm(P_1))
+        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
+            intersections.append([np.linalg.norm(P_0), P_0])
+    if intersections:
+        return sorted(intersections)[0][1]
 
 
 def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
@@ -1912,8 +1930,7 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
     # included sphere, coordinates for this narrow channel point. vectors
     # that find molecule on theirs path are return as NoneType object.
     results = [
-        vector_analysis_pore_shape(
-            point, coordinates, elements_vdw, increment=increment)
+        vector_analysis_pore_shape(point, coordinates, elements_vdw)
         for point in points
     ]
     results_cleaned = [x for x in results if x is not None]

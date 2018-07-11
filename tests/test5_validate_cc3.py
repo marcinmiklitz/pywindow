@@ -213,7 +213,7 @@ class TestValidateCC3(unittest.TestCase):
         mol = molsys.system_to_molecule()
 
         np.testing.assert_almost_equal(mol.calculate_average_diameter(),
-                                       13.86153160277016, decimal=3)
+                                       13.832017514255472, decimal=3)
 
     def test_calculate_pore_diameter(self):
         molsys = pw.MolecularSystem.load_system(system, 'test')
@@ -248,18 +248,23 @@ class TestValidateCC3(unittest.TestCase):
         mol = molsys.system_to_molecule()
         windows = mol.calculate_windows()
 
+        win_ref = np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512])
+        com_ref = np.array([[10.77105705, 10.77097707, 14.02893956],
+                            [14.01544846, 14.0154126,  14.01539845],
+                            [10.77542236, 14.02453217, 10.77546634],
+                            [13.92965524, 10.87029766, 10.87034163]])
+
+        p = windows[0].argsort()
+        p_ref = win_ref.argsort()
+
         np.testing.assert_almost_equal(
-            windows[0], np.array(
-                [3.63778746, 3.63562103, 3.63707237, 3.62896512]
-            ), decimal=3
+            windows[0][p], win_ref[p_ref], decimal=3
         )
+
         np.testing.assert_almost_equal(
-            windows[1], np.array(
-                [
-                    [10.77105705, 10.77097707, 14.02893956],
-                    [14.01544846, 14.0154126 , 14.01539845],
-                    [10.77542236, 14.02453217, 10.77546634],
-                    [13.92965524, 10.87029766, 10.87034163]
-                ]
-            ), decimal=3
+            windows[1][p], com_ref[p_ref], decimal=3
         )
+
+
+if __name__ == '__main__':
+    unittest.main()

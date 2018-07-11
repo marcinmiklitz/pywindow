@@ -112,7 +112,7 @@ class Pore(Shape):
         self.optimised = True
 
     def get_shape(self):
-        super().__init__(
+        return super().__init__(
             calculate_pore_shape(self._elements, self._coordinates)
         )
 

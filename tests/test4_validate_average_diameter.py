@@ -1291,35 +1291,35 @@ class TestAverageDiameter(unittest.TestCase):
         mol = molsys.system_to_molecule()
 
         np.testing.assert_almost_equal(mol.calculate_average_diameter(),
-                                       12.42177943, decimal=3)
+                                       12.38895620, decimal=3)
 
     def test_case_2(self):
         molsys = pw.MolecularSystem.load_system(case_2, 'case_2')
         mol = molsys.system_to_molecule()
 
         np.testing.assert_almost_equal(mol.calculate_average_diameter(),
-                                       13.47018026, decimal=3)
+                                       13.36606775, decimal=3)
 
     def test_case_3(self):
         molsys = pw.MolecularSystem.load_system(case_3, 'case_3')
         mol = molsys.system_to_molecule()
 
         np.testing.assert_almost_equal(mol.calculate_average_diameter(),
-                                       18.12716413, decimal=3)
+                                       18.10740925, decimal=3)
 
     def test_case_4(self):
         molsys = pw.MolecularSystem.load_system(case_4, 'case_4')
         mol = molsys.system_to_molecule()
 
         np.testing.assert_almost_equal(mol.calculate_average_diameter(),
-                                       19.26131945, decimal=3)
+                                       19.23547068, decimal=3)
 
     def test_case_5(self):
         molsys = pw.MolecularSystem.load_system(case_5, 'case_5')
         mol = molsys.system_to_molecule()
 
         np.testing.assert_almost_equal(mol.calculate_average_diameter(),
-                                       24.06570804, decimal=3)
+                                       24.03139233, decimal=3)
 
 
 if __name__ == '__main__':
