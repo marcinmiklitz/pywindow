@@ -98,9 +98,13 @@ class Shape:
 class Pore(Shape):
     def __init__(self, elements, coordinates, shape=False, **kwargs):
         self._elements, self._coordinates = elements, coordinates
-        self.diameter, self.closest_atom = pore_diameter(elements, coordinates)
+        self.diameter, self.closest_atom = pore_diameter(
+            elements, coordinates, **kwargs)
         self.spherical_volume = sphere_volume(self.diameter / 2)
-        self.centre_coordinates = center_of_mass(elements, coordinates)
+        if 'com' in kwargs.keys():
+            self.centre_coordinates = kwargs['com']
+        else:
+            self.centre_coordinates = center_of_mass(elements, coordinates)
         self.optimised = False
 
     def optimise(self, **kwargs):
@@ -559,6 +563,16 @@ class MolecularSystem(object):
 
     def system_to_molecule(self):
         return Molecule(self.system, self.system_id, 0)
+
+    def get_pores(self, sampling_points):
+        pores = []
+        for point in sampling_points:
+            pores.append(
+                Pore(
+                    self.system['elements'],
+                    self.system['coordinates'],
+                    com=point))
+        return pores
 
     def dump_system(self, filepath=None, modular=False, **kwargs):
         # If no filepath is provided we create one.
