@@ -109,9 +109,11 @@ class Pore(Shape):
 
     def optimise(self, **kwargs):
         (self.diameter, self.closest_atom,
-         self.centre_coordinates) = opt_pore_diameter(self._elements,
-                                                      self._coordinates,
-                                                      **kwargs)
+         self.centre_coordinates) = opt_pore_diameter(
+             self._elements,
+             self._coordinates,
+             com=self.centre_coordinates,
+             **kwargs)
         self.spherical_volume = sphere_volume(self.diameter / 2)
         self.optimised = True
 

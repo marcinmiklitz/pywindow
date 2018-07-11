@@ -460,11 +460,11 @@ def correct_pore_diameter(com, *params):
     return (-pore_diameter(elements, coordinates, com)[0])
 
 
-def opt_pore_diameter(elements, coordinates, bounds=None, **kwargs):
+def opt_pore_diameter(elements, coordinates, bounds=None, com=None, **kwargs):
     """Return optimised pore diameter and it's COM."""
     args = elements, coordinates
-    if 'com' in kwargs.keys():
-        com = kwargs['com']
+    if com.any():
+        pass
     else:
         com = center_of_mass(elements, coordinates)
     if bounds is None:
@@ -813,8 +813,11 @@ def is_inside_polyhedron(point, polyhedron):
         matrix = unit_cell_to_lattice_array(polyhedron)
     if polyhedron.shape == (3, 3):
         matrix = polyhedron
-    frac_coordinates = cart2frac_all(point, matrix.T)
-    if point[0] <= 1.000 and point[1] <= 1.000 and point[2] <= 1.000:
+
+    frac_coord = pw.utilities.fractional_from_cartesian(point, matrix.T)[0]
+
+    if 0 <= frac_coord[0] <= 1.000 and 0 <= frac_coord[
+            1] <= 1.000 and 0 <= frac_coord[2] <= 1.000:
         return True
     else:
         return False
