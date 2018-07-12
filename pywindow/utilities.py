@@ -814,7 +814,7 @@ def is_inside_polyhedron(point, polyhedron):
     if polyhedron.shape == (3, 3):
         matrix = polyhedron
 
-    frac_coord = pw.utilities.fractional_from_cartesian(point, matrix.T)[0]
+    frac_coord = pw.utilities.fractional_from_cartesian(point, matrix)[0]
 
     if 0 <= frac_coord[0] <= 1.000 and 0 <= frac_coord[
             1] <= 1.000 and 0 <= frac_coord[2] <= 1.000:
