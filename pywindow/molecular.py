@@ -148,7 +148,7 @@ class Window:
         )
         return diameter
 
-    def get_centre_of_mass(self, **kwargs):
+    def calculate_centre_of_mass(self, **kwargs):
         com = get_window_com(
             self.raw_data, self.mol_elements, self.mol_coordinates,
             self.com_correction, **kwargs
@@ -303,7 +303,7 @@ class Molecule(Shape):
             self.properties.update(
                 {'windows': {'diameters': None,  'centre_of_mass': None, }}
             )
-        return windows
+        return windows[0]
 
     def shift_to_origin(self, **kwargs):
         self.coordinates = shift_com(self.elements, self.coordinates, **kwargs)
