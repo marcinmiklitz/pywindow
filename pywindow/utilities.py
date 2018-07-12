@@ -463,7 +463,7 @@ def correct_pore_diameter(com, *params):
 def opt_pore_diameter(elements, coordinates, bounds=None, com=None, **kwargs):
     """Return optimised pore diameter and it's COM."""
     args = elements, coordinates
-    if com.any():
+    if com is not None:
         pass
     else:
         com = center_of_mass(elements, coordinates)
