@@ -493,7 +493,6 @@ class DLPOLY(object):
             "pdb": Output()._save_pdb,
             "xyz": Output()._save_xyz,
             "decipher": True,
-            "forcefield": None,
         }
         settings.update(kwargs)
         if filetype.lower() not in settings.keys():
