@@ -559,7 +559,7 @@ class MolecularSystem(object):
             self.system.update(rebuild_system)
             return None
         else:
-            return rebuild_system
+            return self.load_system(rebuild_system)
 
     def swap_atom_keys(self, swap_dict, dict_key='atom_ids'):
         """
