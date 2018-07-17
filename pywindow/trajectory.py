@@ -513,7 +513,7 @@ class DLPOLY(object):
                     frames_to_get.append(frame)
         for frame in frames_to_get:
             if frame not in self.frames.keys():
-                _ = self._get_frame(frame)
+                _ = self.get_frames(frame)
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = '/'.join((os.getcwd(), str(self.system_id)))
