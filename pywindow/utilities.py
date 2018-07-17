@@ -485,15 +485,15 @@ def sphere_volume(sphere_radius):
     return (4 / 3 * np.pi * sphere_radius**3)
 
 
-def calc_asphericity(S):
+def asphericity(S):
     return (S[0] - (S[1] + S[2]) / 2)
 
 
-def calc_acylidricity(S):
+def acylidricity(S):
     return (S[1] - S[2])
 
 
-def calc_relative_shape_anisotropy(S):
+def relative_shape_anisotropy(S):
     return (1 - 3 * (
         (S[0] * S[1] + S[0] * S[2] + S[1] * S[2]) / (np.sum(S))**2))
 
@@ -666,22 +666,22 @@ def align_principal_ax(elements, coordinates):
     return (coor, rot)
 
 
-def _asphericity(elements, coordinates):
+def calc_asphericity(elements, coordinates):
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
-    return calc_asphericity(tensor_eigenvalues)
+    return asphericity(tensor_eigenvalues)
 
 
-def _acylidricity(elements, coordinates):
+def calc_acylidricity(elements, coordinates):
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
-    return calc_acylidricity(tensor_eigenvalues)
+    return acylidricity(tensor_eigenvalues)
 
 
-def _relative_shape_anisotropy(elements, coordinates):
+def calc_relative_shape_anisotropy(elements, coordinates):
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
-    return calc_relative_shape_anisotropy(tensor_eigenvalues)
+    return relative_shape_anisotropy(tensor_eigenvalues)
 
 
 def unit_cell_to_lattice_array(cryst):
@@ -1941,7 +1941,7 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
     results_cleaned = [x for x in results if x is not None]
     ele = np.array(['X'] * len(results_cleaned))
     coor = np.array(results_cleaned)
-    return ele, coor
+    return coor
 
 
 def circumcircle_window(coordinates, atom_set):

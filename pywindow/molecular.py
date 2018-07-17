@@ -1,8 +1,15 @@
 """
-Defines classes which describe molecular systems and molecules.
+Defines MolecularSystem and Molecule class.
 
 This module is the most important part of the ``pywindow`` package, as it is
-at the frontfront of the interaction with the user. It is designed to handle
+at the frontfront of the interaction with the user. The two main classes
+defined here: :class:`MolecularSystem` and :class:`Molecule` are used to
+store and analyse single molecules or assemblies of single molecules. The
+:class:`MolecularSystem` contains hooks to the :module:io_tools that allow
+to load molecules from various input types.
+
+
+It is designed to handle
 input in form of single molecules or assamblies of molecules (the molecular
 system) with the two main classes defined here: :class:`MolecularSystem` and
 :class:`Molecule`. These are used to load and refine input data in form of a
@@ -12,10 +19,13 @@ analysis of molecular pore's features: its shape, windows and intrinsic pore.
 The more detailed description of each of the classes is provided below:
 
 The :class:`MolecularSystem` is used as a first step to the analysis. It allows
-to load data, refine it and extract single molecules for analysis.
+to load data, refine it (rebuild molecule in periodic systems with
+:method:`rebuild()``, extract individual molecules with
+:method:`make_modular()` and decipher force field dependent atom keys with
+:method:`decipher_atom_keys()`) and extract single molecules for analysis.
 
-The :class:`Molecule` is designed to contain
-a single molecule. Here the analysis is performed.
+The :class:`Molecule` is designed to contain a single molecule. Here the
+analysis is performed.
 
 The :class:`Shape`,
 
@@ -25,6 +35,7 @@ The :class:`Pore` allow to extract the information on the
 shape of the molecule, its windows (and their 2D shape) as separate objects
 and the information on the pore (and its 3D shape) to facilitate analysis.
 """
+
 import os
 import numpy as np
 from copy import deepcopy
@@ -50,9 +61,9 @@ from .utilities import (discrete_molecules,
                         align_principal_ax,
                         get_inertia_tensor,
                         get_gyration_tensor,
-                        _asphericity,
-                        _acylidricity,
-                        _relative_shape_anisotropy,
+                        calc_asphericity,
+                        calc_acylidricity,
+                        calc_relative_shape_anisotropy,
                         find_windows_new,
                         calculate_window_diameter,
                         get_window_com,
@@ -70,29 +81,106 @@ class _NotAModularSystem(Exception):
 
 
 class Shape:
-    def __init__(self, shape):
-        self.shape_elem = shape[0]
-        self.shape_coor = shape[1]
+    """
+    Class containing shape descriptors.
+
+    This class allows other classes, such as :class:`Pore` and
+    :class:`Molecule`, inherit shape descriptors (applicable to any set of
+    points in a 3D Cartesian space, let it be a shape of an intrinsic pore or
+    shape of a molecule) such as asphericity, acylidricity and relative shape
+    anisotropy. This class should not be used by itself.
+
+    """
 
     @property
-    def asphericity(self):
-        return _asphericity(self.shape_elem, self.shape_coor)
+    def _asphericity(self):
+        """
+        Return asphericity of a shape. NOT READY!!!
+
+        The asphericity of a shape is weighted by the mass assigned to each
+        coordinate (associated with the element). In case if `elements` is
+        `None`, mass of each element = 1 and this returns a non-weighted value.
+
+        Returns
+        -------
+        :class:`float`
+           The asphericity of a shape.
+
+        """
+        return calc_asphericity(self.elements, self.coordinates)
 
     @property
-    def acylidricity(self):
-        return _acylidricity(self.shape_elem, self.shape_coor)
+    def _acylidricity(self):
+        """
+        Return acylidricity of a shape. NOT READY!!!
+
+        The acylidricity of a shape is weighted by the mass assigned to each
+        coordinate (associated with the element). In case if `elements` is
+        `None`, mass of each element = 1 and this returns a non-weighted value.
+
+        Returns
+        -------
+        :class:`float`
+           The acylidricity of a shape.
+
+        """
+        return calc_acylidricity(self.elements, self.coordinates)
 
     @property
-    def relative_shape_anisotropy(self):
-        return _relative_shape_anisotropy(self.shape_elem, self.shape_coor)
+    def _relative_shape_anisotropy(self):
+        """
+        Return relative shape anisotropy of a shape. NOT READY!!!
+
+        The relative shape anisotropy of a shape is weighted by the mass
+        assigned to each coordinate (associated with the element). In case if
+        `elements` is `None`, mass of each element = 1 and this returns a
+        non-weighted value.
+
+        Returns
+        -------
+        :class:`float`
+           The relative shape anisotropy of a shape.
+
+        """
+        return calc_relative_shape_anisotropy(
+            self.elements, self.coordinates
+            )
 
     @property
     def inertia_tensor(self):
-        return get_inertia_tensor(self.shape_elem, self.shape_coor)
+        """
+        Return inertia tensor of a shape.
+
+        The inertia tensor of a shape is weighted by the mass assigned to each
+        coordinate (associated with the element). In case if `elements` is
+        `None`, mass of each element = 1 and this returns a non-weighted value.
+
+        Returns
+        -------
+        :class:`numpy.array`
+           The inertia tensor of a shape.
+
+        """
+        return get_inertia_tensor(
+            self.elements, self.coordinates
+            )
 
     @property
     def gyration_tensor(self):
-        return get_gyration_tensor(self.shape_elem, self.shape_coor)
+        """
+        Return gyration tensor of a shape.
+
+        The gyration tensor of a shape is weighted by the mass assigned to each
+        coordinate (associated with the element). In case if `elements` is
+        `None`, mass of each element = 1 and this returns a non-weighted value.
+
+        Returns
+        -------
+        :class:`numpy.array`
+           The gyration tensor of a shape.
+
+        """
+        return get_gyration_tensor(self.elements, self.coordinates)
 
 
 class Pore(Shape):
@@ -118,9 +206,7 @@ class Pore(Shape):
         self.optimised = True
 
     def get_shape(self):
-        return super().__init__(
-            calculate_pore_shape(self._elements, self._coordinates)
-        )
+        super().__init__(calculate_pore_shape(self._coordinates))
 
     def reset(self):
         self.__init__(self._elements, self._coordinates)
@@ -200,7 +286,7 @@ class Molecule(Shape):
         self.calculate_pore_diameter_opt(**kwargs)
         self.calculate_pore_volume_opt(**kwargs)
         self.calculate_windows(ncpus=ncpus, **kwargs)
-        #self._circumcircle(**kwargs)
+        # self._circumcircle(**kwargs)
         return self.properties
 
     def align_to_principal_axes(self, align_molsys=False):
@@ -218,7 +304,7 @@ class Molecule(Shape):
         return Pore(self.elements, self.coordinates)
 
     def get_shape(self, **kwargs):
-        super().__init__(self, elements, coordinates)
+        super().__init__(self.coordinates, elements=self.elements)
 
     def get_windows(self, **kwargs):
         windows = find_windows_new(self.elements, self.coordinates, **kwargs)
@@ -299,11 +385,12 @@ class Molecule(Shape):
                     }
                 }
             )
+            return windows[0]
         else:
             self.properties.update(
                 {'windows': {'diameters': None,  'centre_of_mass': None, }}
             )
-        return windows[0]
+        return None
 
     def shift_to_origin(self, **kwargs):
         self.coordinates = shift_com(self.elements, self.coordinates, **kwargs)
