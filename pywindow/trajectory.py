@@ -493,6 +493,7 @@ class DLPOLY(object):
             "pdb": Output()._save_pdb,
             "xyz": Output()._save_xyz,
             "decipher": True,
+            "forcefield": None,
         }
         settings.update(kwargs)
         if filetype.lower() not in settings.keys():
@@ -518,7 +519,8 @@ class DLPOLY(object):
             filepath = '/'.join((os.getcwd(), str(self.system_id)))
         for frame in frames_to_get:
             frame_molsys = self.frames[frame]
-            if settings['decipher'] is True:
+            if settings[
+                    'decipher'] is True and settings['forcefield'] is not None:
                 if "swap_atoms" in settings.keys():
                     if isinstance(settings["swap_atoms"], dict):
                         frame_molsys.swap_atom_keys(settings["swap_atoms"])
