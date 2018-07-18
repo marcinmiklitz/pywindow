@@ -260,6 +260,60 @@ class Window:
 
 
 class Molecule(Shape):
+    """
+    Container for a single molecule.
+
+    This class is ment for the analysis of single molecules, molecular pores
+    especially. The object passed to this class should therefore be a finite
+    and interconnected individuum. This class should not be initialised
+    directly, but through the :method:system_to_molecule
+    of :class:MolecularSystem, if the former condition is met, or result from
+    the :method:make_modular of :class:MolecularSystem that returns a list of
+    :class:Molecule objects.
+
+    The methods in :class:Molecule allow the analysis of structural features
+    associated with molecular pores, such as intrinsic pore dimensions or
+    window diameters, but some general to any molecule, such as molecular
+    weight, maximum dimension of a molecule or it's average diameterself.
+
+    Short description of molecular features (for details see documentation):
+
+
+    Attributes
+    ----------
+    mol : : dict
+        The :attribute:system of :class:MolecularSystem passed to the
+        :class:Molecule which is esentially a container of the information
+        that compose a molecular entity, such as coordinates and
+        atom ids and/or elements.
+
+    no_of_atoms : : int
+        The number of atoms in the molecule.
+
+    elements : : numpy.array
+        An array containing the elements, as strings, composing the molecule
+
+    atom_ids : : numpy.array (conditional)
+        If the :attribute:mol contains 'atom_ids' keyword, the force field
+        ids of the elements
+
+    coordinates : : numpy.array
+        The x, y and z atomic Cartesian coordinates of all elements
+
+    parent_system : : str
+        The :attribute:name of :class:MolecularSystem passed to :class:Molecule
+
+    molecule_id : : any
+        The molecule id passed when initialising :class:Molecule
+
+    properties : : dict
+        A dictionary that is populated by the output of :class:Molecule methods
+
+    windows : : None
+        Attribute that is populated with the :class:Windows objects when
+        :method:get_windows of :class:Molecule is used.
+
+    """
     def __init__(self, mol, system_name, mol_id):
         self._Output = Output()
         self.mol = mol
