@@ -3785,7 +3785,7 @@ class TestMoleculeClass(unittest.TestCase):
         mol = molsys.system_to_molecule()
 
         np.testing.assert_almost_equal(mol.calculate_average_diameter(),
-                                       13.86153160277016)
+                                       13.832017514255472)
 
     def test_calculate_pore_diameter(self):
         molsys = pw.MolecularSystem.load_system(system, 'test')
@@ -3852,16 +3852,19 @@ class TestMoleculeClass(unittest.TestCase):
         mol = molsys.system_to_molecule()
         windows = mol.calculate_windows()
 
-        np.testing.assert_almost_equal(
-            windows[0],
-            np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512]))
-        np.testing.assert_almost_equal(
-            windows[1],
-            np.array([
-                [10.77105705, 10.77097707, 14.02893956],
-                [14.01544846, 14.0154126 , 14.01539845],
-                [10.77542236, 14.02453217, 10.77546634],
-                [13.92965524, 10.87029766, 10.87034163]]))
+        p = windows[0].argsort()
+
+        ref_win = np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512])
+        ref_com = np.array([
+                        [10.77105705, 10.77097707, 14.02893956],
+                        [14.01544846, 14.0154126,  14.01539845],
+                        [10.77542236, 14.02453217, 10.77546634],
+                        [13.92965524, 10.87029766, 10.87034163]])
+
+        p_ref = ref_win.argsort()
+
+        np.testing.assert_almost_equal(windows[0][p], ref_win[p_ref])
+        np.testing.assert_almost_equal(windows[1][p], ref_com[p_ref])
 
     def test_molecular_weight(self):
         molsys = pw.MolecularSystem.load_system(system, 'test')

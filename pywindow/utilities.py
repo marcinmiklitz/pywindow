@@ -100,6 +100,7 @@ def unique(input_list):
 
 
 def to_list(obj):
+    """ """
     if isinstance(obj, np.ndarray):
         return obj.tolist()
     raise TypeError('Not serializable')
@@ -459,10 +460,13 @@ def correct_pore_diameter(com, *params):
     return (-pore_diameter(elements, coordinates, com)[0])
 
 
-def opt_pore_diameter(elements, coordinates, bounds=None, **kwargs):
+def opt_pore_diameter(elements, coordinates, bounds=None, com=None, **kwargs):
     """Return optimised pore diameter and it's COM."""
     args = elements, coordinates
-    com = center_of_mass(elements, coordinates)
+    if com is not None:
+        pass
+    else:
+        com = center_of_mass(elements, coordinates)
     if bounds is None:
         pore_r = pore_diameter(elements, coordinates, com=com)[0] / 2
         bounds = (
@@ -481,15 +485,15 @@ def sphere_volume(sphere_radius):
     return (4 / 3 * np.pi * sphere_radius**3)
 
 
-def calc_asphericity(S):
+def asphericity(S):
     return (S[0] - (S[1] + S[2]) / 2)
 
 
-def calc_acylidricity(S):
+def acylidricity(S):
     return (S[1] - S[2])
 
 
-def calc_relative_shape_anisotropy(S):
+def relative_shape_anisotropy(S):
     return (1 - 3 * (
         (S[0] * S[1] + S[0] * S[2] + S[1] * S[2]) / (np.sum(S))**2))
 
@@ -574,12 +578,12 @@ def get_inertia_tensor(elements, coordinates):
 
 
 def principal_axes(elements, coordinates):
-    return (np.linalg.eig(inertia_tensor(elements, coordinates))[1].T)
+    return (np.linalg.eig(get_inertia_tensor(elements, coordinates))[1].T)
 
 
 def normalize_vector(vector):
     """
-    Normalizes the given vector.
+    Normalize a vector.
 
     A new vector is returned, the original vector is not modified.
 
@@ -594,15 +598,13 @@ def normalize_vector(vector):
         The normalized vector.
 
     """
-
     v = np.divide(vector, np.linalg.norm(vector))
     return np.round(v, decimals=4)
 
 
 def rotation_matrix_arbitrary_axis(angle, axis):
     """
-
-    Returns a rotation matrix of `angle` radians about `axis`.
+    Return a rotation matrix of `angle` radians about `axis`.
 
     Parameters
     ----------
@@ -619,7 +621,6 @@ def rotation_matrix_arbitrary_axis(angle, axis):
         A 3x3 array representing a rotation matrix.
 
     """
-
     axis = normalize_vector(axis)
 
     a = np.cos(angle / 2)
@@ -641,8 +642,10 @@ def rotation_matrix_arbitrary_axis(angle, axis):
 
 
 def align_principal_ax(elements, coordinates):
-    coor = copy.deepcopy(coordinates)
+    """ """
+    coor = deepcopy(coordinates)
     new_coor = []
+    rot = []
     for i, j in zip([2, 1, 0], [[1, 0, 0], [0, 1, 0], [0, 0, 1]]):
         p_axes = principal_axes(elements, coordinates)
 
@@ -652,6 +655,7 @@ def align_principal_ax(elements, coordinates):
         ang = np.arctan2(sin, cos)
 
         R_mat = np.matrix(rotation_matrix_arbitrary_axis(ang, r_vec))
+        rot.append(R_mat)
 
         for i in coor:
             new_coord = R_mat * i.reshape(-1, 1)
@@ -659,25 +663,25 @@ def align_principal_ax(elements, coordinates):
         new_coor = np.array(new_coor)
         coor = new_coor
         new_coor = []
-    return (coor)
+    return (coor, rot)
 
 
-def _asphericity(elements, coordinates):
+def calc_asphericity(elements, coordinates):
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
-    return calc_asphericity(tensor_eigenvalues)
+    return asphericity(tensor_eigenvalues)
 
 
-def _acylidricity(elements, coordinates):
+def calc_acylidricity(elements, coordinates):
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
-    return calc_acylidricity(tensor_eigenvalues)
+    return acylidricity(tensor_eigenvalues)
 
 
-def _relative_shape_anisotropy(elements, coordinates):
+def calc_relative_shape_anisotropy(elements, coordinates):
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
-    return calc_relative_shape_anisotropy(tensor_eigenvalues)
+    return relative_shape_anisotropy(tensor_eigenvalues)
 
 
 def unit_cell_to_lattice_array(cryst):
@@ -809,8 +813,11 @@ def is_inside_polyhedron(point, polyhedron):
         matrix = unit_cell_to_lattice_array(polyhedron)
     if polyhedron.shape == (3, 3):
         matrix = polyhedron
-    frac_coordinates = cart2frac_all(point, matrix.T)
-    if point[0] <= 1.000 and point[1] <= 1.000 and point[2] <= 1.000:
+
+    frac_coord = pw.utilities.fractional_from_cartesian(point, matrix)[0]
+
+    if 0 <= frac_coord[0] <= 1.000 and 0 <= frac_coord[
+            1] <= 1.000 and 0 <= frac_coord[2] <= 1.000:
         return True
     else:
         return False
@@ -936,7 +943,8 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     # the largest R(cov) in the system and set the max_dist as a double
     # of it plus the 150% tolerance (tol).
     set_of_elements = set(system['elements'])
-    max_r_cov = max([atomic_covalent_radius[i.upper()] for i in set_of_elements])
+    max_r_cov = max([
+        atomic_covalent_radius[i.upper()] for i in set_of_elements])
     max_dist = 2 * max_r_cov + tol
     # We continue untill all items in the list have been analysed and popped.
     while atom_list:
@@ -996,7 +1004,9 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                         for j in neighbours_indexes:
                             j_arr = np.array(atom_coor[j])
                             r_i_j = distance(i_arr, j_arr)
-                            r_cov_i_j = atomic_covalent_radius[i[0].upper()] + atomic_covalent_radius[atom_list[j][0].upper()]
+                            r_cov_i_j = atomic_covalent_radius[
+                                i[0].upper()] + atomic_covalent_radius[
+                                    atom_list[j][0].upper()]
                             if r_cov_i_j - tol < r_i_j < r_cov_i_j + tol:
                                 working_list_temp.append(atom_list[j])
                     if rebuild is not None:
@@ -1012,7 +1022,8 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                                 r_i_j = distance(i_arr, j_arr)
                                 r_cov_i_j = atomic_covalent_radius[
                                     i[0].upper()
-                                    ] + atomic_covalent_radius[satom_list[j][0].upper()]
+                                    ] + atomic_covalent_radius[
+                                        satom_list[j][0].upper()]
                                 if r_cov_i_j - tol < r_i_j < r_cov_i_j + tol:
                                     working_list_temp.append(satom_list[j])
                     final_molecule.append(i)
@@ -1088,6 +1099,32 @@ def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
         dist = np.linalg.norm(chunk * pos)
         return np.array(
             [dist, analysed_vector[pos] * 2, *chunk * pos, *vector])
+
+
+def vector_preanalysis(vector, coordinates, elements_vdw, increment=1.0):
+    norm_vec = vector/np.linalg.norm(vector)
+    intersections = []
+    origin = center_of_coor(coordinates)
+    L = coordinates - origin
+    t_ca = np.dot(L, norm_vec)
+    d = np.sqrt(np.einsum('ij,ij->i', L, L) - t_ca**2)
+    under_sqrt = elements_vdw**2 - d**2
+    diag = under_sqrt.diagonal()
+    positions = np.argwhere(diag > 0)
+    for pos in positions:
+        t_hc = np.sqrt(diag[pos[0]])
+        t_0 = t_ca[pos][0] - t_hc
+        t_1 = t_ca[pos][0] + t_hc
+
+        P_0 = origin + np.dot(t_0, norm_vec)
+        P_1 = origin + np.dot(t_1, norm_vec)
+        # print(np.linalg.norm(P_0), np.linalg.norm(P_1))
+        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
+            intersections.append(1)
+        else:
+            intersections.append(0)
+    if sum(intersections) == 0:
+        return vector_analysis(vector, coordinates, elements_vdw, increment)
 
 
 def optimise_xy(xy, *args):
@@ -1301,7 +1338,6 @@ def find_windows(elements,
     # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    points_per_1A_surface = number_of_points / sphere_surface_area
     # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
@@ -1320,12 +1356,10 @@ def find_windows(elements,
     tree = KDTree(points)
     for i in points:
         dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.append(dist[0][1])
-        values.append(dist[0][2])
-        values.append(dist[0][3])
-    mean_closest_distance = np.mean(values)
+        values.extend(dist)
+    mean_distance = np.mean(values)
     # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+    eps = mean_distance + mean_distance**0.5
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular pores return
     # as analysed list with the increment at vector's path with largest
@@ -1336,7 +1370,7 @@ def find_windows(elements,
         pool = Pool(processes=processes)
         parallel = [
             pool.apply_async(
-                vector_analysis,
+                vector_preanalysis,
                 args=(
                     point,
                     coordinates,
@@ -1349,7 +1383,7 @@ def find_windows(elements,
         dataset = np.array([x[5:8] for x in results])
     else:
         results = [
-            vector_analysis(
+            vector_preanalysis(
                 point, coordinates, elements_vdw, increment=increment)
             for point in points
         ]
@@ -1631,7 +1665,6 @@ def find_windows_new(elements,
     # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    points_per_1A_surface = number_of_points / sphere_surface_area
     # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
@@ -1650,12 +1683,10 @@ def find_windows_new(elements,
     tree = KDTree(points)
     for i in points:
         dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.append(dist[0][1])
-        values.append(dist[0][2])
-        values.append(dist[0][3])
-    mean_closest_distance = np.mean(values)
+        values.extend(dist)
+    mean_distance = np.mean(values)
     # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+    eps = mean_distance + mean_distance**0.5
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular pores return
     # as analysed list with the increment at vector's path with largest
@@ -1666,7 +1697,7 @@ def find_windows_new(elements,
         pool = Pool(processes=processes)
         parallel = [
             pool.apply_async(
-                vector_analysis,
+                vector_preanalysis,
                 args=(
                     point,
                     coordinates,
@@ -1679,7 +1710,7 @@ def find_windows_new(elements,
         dataset = np.array([x[5:8] for x in results])
     else:
         results = [
-            vector_analysis(
+            vector_preanalysis(
                 point, coordinates, elements_vdw, increment=increment)
             for point in points
         ]
@@ -1739,34 +1770,29 @@ def get_window_com(window, elements, coordinates, initial_com, **kwargs):
         return None
 
 
-def vector_analysis_reversed(vector, coordinates, elements_vdw, shpere_radius,
-                             increment):
-    """Analyse a sampling vector's path for avarge diamatere of a molecule."""
-    # Calculate number of chunks if vector length is divided by increment.
-    chunks = int(np.linalg.norm(vector) // increment)
-    # Create a single chunk.
-    chunk = vector / chunks
-    # Calculate set of points on vector's path every increment.
-    vector_pathway = [chunk * i for i in range(chunks + 1)]
-    reversed_vector_pathway = np.array(vector_pathway[::-1])
-    analysed_vector = np.array([
-        np.amin(
-            euclidean_distances(coordinates, i.reshape(1, -1)) - elements_vdw)
-        for i in reversed_vector_pathway
-    ])
-    if all(i > 0 for i in analysed_vector):
-        return None
-    else:
-        count = -1
-        for i in analysed_vector:
-            if i > 0:
-                pass
-            else:
-                break
-            count += 1
-        dist_origin = np.linalg.norm(reversed_vector_pathway[count])
-        dist_origin_corrected = dist_origin - analysed_vector[count]
-        return [dist_origin_corrected, reversed_vector_pathway[count]]
+def vector_analysis_reversed(vector, coordinates, elements_vdw):
+    norm_vec = vector/np.linalg.norm(vector)
+    intersections = []
+    origin = center_of_coor(coordinates)
+    L = coordinates - origin
+    t_ca = np.dot(L, norm_vec)
+    d = np.sqrt(np.einsum('ij,ij->i', L, L) - t_ca**2)
+    under_sqrt = elements_vdw**2 - d**2
+    diag = under_sqrt.diagonal()
+    positions = np.argwhere(diag > 0)
+    for pos in positions:
+        t_hc = np.sqrt(diag[pos[0]])
+        t_0 = t_ca[pos][0] - t_hc
+        t_1 = t_ca[pos][0] + t_hc
+
+        P_0 = origin + np.dot(t_0, norm_vec)
+        P_1 = origin + np.dot(t_1, norm_vec)
+        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
+            intersections.append([np.linalg.norm(P_1),  P_1])
+    if intersections:
+        intersection = sorted(intersections, reverse=True)[0][1]
+        dist_origin = np.linalg.norm(intersection)
+        return [dist_origin, intersection]
 
 
 def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
@@ -1796,7 +1822,6 @@ def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
     # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    points_per_1A_surface = number_of_points / sphere_surface_area
     # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
@@ -1816,7 +1841,7 @@ def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
             pool.apply_async(
                 vector_analysis_reversed,
                 args=(
-                    point, coordinates, elements_vdw, shpere_radius, increment)
+                    point, coordinates, elements_vdw)
                 ) for point in points
         ]
         results = [p.get() for p in parallel if p.get() is not None]
@@ -1824,39 +1849,35 @@ def find_average_diameter(elements, coordinates, adjust=1, increment=0.1,
     else:
         results = [
             vector_analysis_reversed(
-                point, coordinates, elements_vdw, shpere_radius, increment)
+                point, coordinates, elements_vdw)
             for point in points
         ]
     results_cleaned = [x[0] for x in results if x is not None]
     return np.mean(results_cleaned)*2
 
 
+def vector_analysis_pore_shape(vector, coordinates, elements_vdw):
+    norm_vec = vector/np.linalg.norm(vector)
+    intersections = []
+    origin = center_of_coor(coordinates)
+    L = coordinates - origin
+    t_ca = np.dot(L, norm_vec)
+    d = np.sqrt(np.einsum('ij,ij->i', L, L) - t_ca**2)
+    under_sqrt = elements_vdw**2 - d**2
+    diag = under_sqrt.diagonal()
+    positions = np.argwhere(diag > 0)
+    for pos in positions:
+        t_hc = np.sqrt(diag[pos[0]])
+        t_0 = t_ca[pos][0] - t_hc
+        t_1 = t_ca[pos][0] + t_hc
 
-def vector_analysis_pore_shape(vector, coordinates, elements_vdw,
-                               increment=1.0):
-    """Analyse a sampling vector's path for pore shape determination."""
-    # Calculate number of chunks if vector length is divided by increment.
-    chunks = int(np.linalg.norm(vector) // increment)
-    # Create a single chunk.
-    chunk = vector / chunks
-    # Calculate set of points on vector's path every increment.
-    vector_pathway = np.array([chunk * i for i in range(chunks + 1)])
-    analysed_vector = np.array([
-        np.amin(
-            euclidean_distances(coordinates, i.reshape(1, -1)) - elements_vdw)
-        for i in vector_pathway
-    ])
-    if all(i > 0 for i in analysed_vector):
-        return None
-    else:
-        count = -1
-        for i in analysed_vector:
-            if i > 0:
-                pass
-            else:
-                break
-            count += 1
-        return vector_pathway[count]
+        P_0 = origin + np.dot(t_0, norm_vec)
+        P_1 = origin + np.dot(t_1, norm_vec)
+        # print(np.linalg.norm(P_0), np.linalg.norm(P_1))
+        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
+            intersections.append([np.linalg.norm(P_0), P_0])
+    if intersections:
+        return sorted(intersections)[0][1]
 
 
 def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
@@ -1886,7 +1907,6 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
     # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
     # sampling by changing the adjust factor.
     number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    points_per_1A_surface = number_of_points / sphere_surface_area
     # Here I use code by Alexandre Devert for spreading points on a sphere:
     # http://blog.marmakoide.org/?p=1
     golden_angle = np.pi * (3 - np.sqrt(5))
@@ -1905,26 +1925,24 @@ def calculate_pore_shape(elements, coordinates, adjust=1, increment=0.1,
     tree = KDTree(points)
     for i in points:
         dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.append(dist[0][1])
-        values.append(dist[0][2])
-        values.append(dist[0][3])
-    mean_closest_distance = np.mean(values)
+        values.extend(dist)
+    mean_distance = np.mean(values)
     # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_closest_distance + mean_closest_distance**0.5
+    eps = mean_distance + mean_distance**0.5
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular voids return
     # as analysed list with the increment at vector's path with largest
     # included sphere, coordinates for this narrow channel point. vectors
     # that find molecule on theirs path are return as NoneType object.
     results = [
-        vector_analysis_pore_shape(
-            point, coordinates, elements_vdw, increment=increment)
+        vector_analysis_pore_shape(point, coordinates, elements_vdw)
         for point in points
     ]
     results_cleaned = [x for x in results if x is not None]
     ele = np.array(['X'] * len(results_cleaned))
     coor = np.array(results_cleaned)
-    return ele, coor
+    return coor
+
 
 def circumcircle_window(coordinates, atom_set):
     # Calculating circumcircle
@@ -1947,6 +1965,7 @@ def circumcircle_window(coordinates, atom_set):
     # The window's COM.
     COM /= b1 + b2 + b3
     return R, COM
+
 
 def circumcircle(coordinates, atom_sets):
     pld_diameter_list = []

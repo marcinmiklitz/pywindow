@@ -513,13 +513,14 @@ class DLPOLY(object):
                     frames_to_get.append(frame)
         for frame in frames_to_get:
             if frame not in self.frames.keys():
-                _ = self._get_frames(frame)
+                _ = self.get_frames(frame)
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = '/'.join((os.getcwd(), str(self.system_id)))
         for frame in frames_to_get:
             frame_molsys = self.frames[frame]
-            if settings['decipher'] is True:
+            if settings[
+                    'decipher'] is True and settings['forcefield'] is not None:
                 if "swap_atoms" in settings.keys():
                     if isinstance(settings["swap_atoms"], dict):
                         frame_molsys.swap_atom_keys(settings["swap_atoms"])
@@ -926,7 +927,7 @@ class PDB(object):
                 elements.append(frame[i][12:16].strip())
                 coordinates.append(
                     [frame[i][30:38], frame[i][38:46], frame[i][46:54]])
-        frame_data['atoms_ids'] = np.array(elements, dtype='<U8')
+        frame_data['atom_ids'] = np.array(elements, dtype='<U8')
         frame_data['coordinates'] = np.array(coordinates, dtype=float)
         return frame_data
 

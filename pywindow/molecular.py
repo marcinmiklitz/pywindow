@@ -1,18 +1,73 @@
+"""
+Defines MolecularSystem and Molecule class.
+
+This module is the most important part of the ``pywindow`` package, as it is
+at the frontfront of the interaction with the user. The two main classes
+defined here: :class:`MolecularSystem` and :class:`Molecule` are used to
+store and analyse single molecules or assemblies of single molecules. The
+:class:`MolecularSystem` contains hooks to the :module:io_tools that allow
+to load molecules from various input types.
+
+
+It is designed to handle
+input in form of single molecules or assamblies of molecules (the molecular
+system) with the two main classes defined here: :class:`MolecularSystem` and
+:class:`Molecule`. These are used to load and refine input data in form of a
+molecular system, extract individual molecules and perform the analysis. The
+:class:`Shape`, :class:`Window` and :class:`Pore` classes facilitate furthure
+analysis of molecular pore's features: its shape, windows and intrinsic pore.
+The more detailed description of each of the classes is provided below:
+
+The :class:`MolecularSystem` is used as a first step to the analysis. It allows
+to load data, refine it (rebuild molecule in periodic systems with
+:method:`rebuild()``, extract individual molecules with
+:method:`make_modular()` and decipher force field dependent atom keys with
+:method:`decipher_atom_keys()`) and extract single molecules for analysis.
+
+The :class:`Molecule` is designed to contain a single molecule. Here the
+analysis is performed.
+
+The :class:`Shape`,
+
+The :class:`Window`
+
+The :class:`Pore` allow to extract the information on the
+shape of the molecule, its windows (and their 2D shape) as separate objects
+and the information on the pore (and its 3D shape) to facilitate analysis.
+"""
+
 import os
 import numpy as np
 from copy import deepcopy
 from scipy.spatial import ConvexHull
 
-from .utilities import (
-    discrete_molecules, decipher_atom_key, molecular_weight, center_of_mass,
-    max_dim, pore_diameter, opt_pore_diameter, sphere_volume, find_windows,
-    shift_com, create_supercell, is_inside_polyhedron, find_average_diameter,
-    calculate_pore_shape, circumcircle, to_list, align_principal_ax,
-    get_inertia_tensor, get_gyration_tensor, _asphericity, _acylidricity,
-    _relative_shape_anisotropy, find_windows_new, calculate_window_diameter,
-    get_window_com, window_shape
-)
 from .io_tools import Input, Output
+from .utilities import (discrete_molecules,
+                        decipher_atom_key,
+                        molecular_weight,
+                        center_of_mass,
+                        max_dim,
+                        pore_diameter,
+                        opt_pore_diameter,
+                        sphere_volume,
+                        find_windows,
+                        shift_com,
+                        create_supercell,
+                        is_inside_polyhedron,
+                        find_average_diameter,
+                        calculate_pore_shape,
+                        circumcircle,
+                        to_list,
+                        align_principal_ax,
+                        get_inertia_tensor,
+                        get_gyration_tensor,
+                        calc_asphericity,
+                        calc_acylidricity,
+                        calc_relative_shape_anisotropy,
+                        find_windows_new,
+                        calculate_window_diameter,
+                        get_window_com,
+                        window_shape)
 
 
 class _MolecularSystemError(Exception):
@@ -26,73 +81,152 @@ class _NotAModularSystem(Exception):
 
 
 class Shape:
-    def __init__(self, shape):
-        self.shape_elem = shape[0]
-        self.shape_coor = shape[1]
+    """
+    Class containing shape descriptors.
+
+    This class allows other classes, such as :class:`Pore` and
+    :class:`Molecule`, inherit shape descriptors (applicable to any set of
+    points in a 3D Cartesian space, let it be a shape of an intrinsic pore or
+    shape of a molecule) such as asphericity, acylidricity and relative shape
+    anisotropy. This class should not be used by itself.
+
+    """
 
     @property
-    def asphericity(self):
-        return _asphericity(self.shape_elem, self.shape_coor)
+    def _asphericity(self):
+        """
+        Return asphericity of a shape. NOT READY!!!
+
+        The asphericity of a shape is weighted by the mass assigned to each
+        coordinate (associated with the element). In case if `elements` is
+        `None`, mass of each element = 1 and this returns a non-weighted value.
+
+        Returns
+        -------
+        :class:`float`
+           The asphericity of a shape.
+
+        """
+        return calc_asphericity(self.elements, self.coordinates)
 
     @property
-    def acylidricity(self):
-        return _acylidricity(self.shape_elem, self.shape_coor)
+    def _acylidricity(self):
+        """
+        Return acylidricity of a shape. NOT READY!!!
+
+        The acylidricity of a shape is weighted by the mass assigned to each
+        coordinate (associated with the element). In case if `elements` is
+        `None`, mass of each element = 1 and this returns a non-weighted value.
+
+        Returns
+        -------
+        :class:`float`
+           The acylidricity of a shape.
+
+        """
+        return calc_acylidricity(self.elements, self.coordinates)
 
     @property
-    def relative_shape_anisotropy(self):
-        return _relative_shape_anisotropy(self.shape_elem, self.shape_coor)
+    def _relative_shape_anisotropy(self):
+        """
+        Return relative shape anisotropy of a shape. NOT READY!!!
+
+        The relative shape anisotropy of a shape is weighted by the mass
+        assigned to each coordinate (associated with the element). In case if
+        `elements` is `None`, mass of each element = 1 and this returns a
+        non-weighted value.
+
+        Returns
+        -------
+        :class:`float`
+           The relative shape anisotropy of a shape.
+
+        """
+        return calc_relative_shape_anisotropy(
+            self.elements, self.coordinates
+            )
 
     @property
     def inertia_tensor(self):
-        return get_inertia_tensor(self.shape_elem, self.shape_coor)
+        """
+        Return inertia tensor of a shape.
+
+        The inertia tensor of a shape is weighted by the mass assigned to each
+        coordinate (associated with the element). In case if `elements` is
+        `None`, mass of each element = 1 and this returns a non-weighted value.
+
+        Returns
+        -------
+        :class:`numpy.array`
+           The inertia tensor of a shape.
+
+        """
+        return get_inertia_tensor(
+            self.elements, self.coordinates
+            )
 
     @property
     def gyration_tensor(self):
-        return get_gyration_tensor(self.shape_elem, self.shape_coor)
+        """
+        Return gyration tensor of a shape.
 
-    #def plot3Dscatter(self):
-    #    fig = pyplot.figure()#
-    #    ax = Axes3D(fig)
-    #    ax.scatter(
-    #        self.shape_coor[:, 0], self.shape_coor[:, 1], self.shape_coor[:, 2]
-    #    )
-    #    pyplot.show()
-    #    return fig
+        The gyration tensor of a shape is weighted by the mass assigned to each
+        coordinate (associated with the element). In case if `elements` is
+        `None`, mass of each element = 1 and this returns a non-weighted value.
+
+        Returns
+        -------
+        :class:`numpy.array`
+           The gyration tensor of a shape.
+
+        """
+        return get_gyration_tensor(self.elements, self.coordinates)
 
 
 class Pore(Shape):
     def __init__(self, elements, coordinates, shape=False, **kwargs):
         self._elements, self._coordinates = elements, coordinates
-        self.diameter, self.closest_atom = pore_diameter(elements, coordinates)
+        self.diameter, self.closest_atom = pore_diameter(
+            elements, coordinates, **kwargs)
         self.spherical_volume = sphere_volume(self.diameter / 2)
-        self.centre_coordinates = center_of_mass(elements, coordinates)
+        if 'com' in kwargs.keys():
+            self.centre_coordinates = kwargs['com']
+        else:
+            self.centre_coordinates = center_of_mass(elements, coordinates)
         self.optimised = False
 
     def optimise(self, **kwargs):
         (self.diameter, self.closest_atom,
-         self.centre_coordinates) = opt_pore_diameter(self._elements,
-                                                      self._coordinates,
-                                                      **kwargs)
+         self.centre_coordinates) = opt_pore_diameter(
+             self._elements,
+             self._coordinates,
+             com=self.centre_coordinates,
+             **kwargs)
         self.spherical_volume = sphere_volume(self.diameter / 2)
         self.optimised = True
 
     def get_shape(self):
-        super().__init__(
-            calculate_pore_shape(self._elements, self._coordinates)
-        )
+        super().__init__(calculate_pore_shape(self._coordinates))
 
     def reset(self):
         self.__init__(self._elements, self._coordinates)
 
 
 class Window:
+    """
+    Return a window
+    """
     def __init__(self, window, key, elements, coordinates, com_adjust):
+        """
+        Return
+        """
         self.raw_data = window
         self.index = key
         self.mol_coordinates = coordinates
         self.mol_elements = elements
         self.com_correction = com_adjust
         self.shape = None
+        self.convexhull = None
 
     def calculate_diameter(self, **kwargs):
         diameter = calculate_window_diameter(
@@ -100,7 +234,7 @@ class Window:
         )
         return diameter
 
-    def get_centre_of_mass(self, **kwargs):
+    def calculate_centre_of_mass(self, **kwargs):
         com = get_window_com(
             self.raw_data, self.mol_elements, self.mol_coordinates,
             self.com_correction, **kwargs
@@ -113,7 +247,7 @@ class Window:
         )
         return self.shape
 
-    def shape_convexhull(self):
+    def get_convexhull(self):
         hull = ConvexHull(self.shape)
         verticesx = np.append(
             self.shape[hull.vertices, 0], self.shape[hull.vertices, 0][0]
@@ -121,7 +255,8 @@ class Window:
         verticesy = np.append(
             self.shape[hull.vertices, 1], self.shape[hull.vertices, 1][0]
         )
-        return verticesx, verticesy
+        self.convexhull = verticesx, verticesy
+        return self.convexhull
 
 
 class Molecule(Shape):
@@ -151,18 +286,25 @@ class Molecule(Shape):
         self.calculate_pore_diameter_opt(**kwargs)
         self.calculate_pore_volume_opt(**kwargs)
         self.calculate_windows(ncpus=ncpus, **kwargs)
-        self._circumcircle(**kwargs)
+        # self._circumcircle(**kwargs)
         return self.properties
 
-    def align_to_principal_axes(self):
-        self.coordinates = align_principal_ax(self.elements, self.coordinates)
+    def align_to_principal_axes(self, align_molsys=False):
+        if align_molsys:
+            self.coordinates[0] = align_principal_ax_all(
+                self.elements, self.coordinates
+                )
+        else:
+            self.coordinates[0] = align_principal_ax(
+                self.elements, self.coordinates
+                )
         self.aligned_to_principal_axes = True
 
     def get_pore(self):
         return Pore(self.elements, self.coordinates)
 
     def get_shape(self, **kwargs):
-        super().__init__(self, elements, coordinates)
+        super().__init__(self.coordinates, elements=self.elements)
 
     def get_windows(self, **kwargs):
         windows = find_windows_new(self.elements, self.coordinates, **kwargs)
@@ -243,11 +385,12 @@ class Molecule(Shape):
                     }
                 }
             )
+            return windows[0]
         else:
             self.properties.update(
                 {'windows': {'diameters': None,  'centre_of_mass': None, }}
             )
-        return windows
+        return None
 
     def shift_to_origin(self, **kwargs):
         self.coordinates = shift_com(self.elements, self.coordinates, **kwargs)
@@ -393,8 +536,8 @@ class MolecularSystem(object):
         # atom positions necessary for the molecules passing through periodic
         # boundary reconstruction step.
         supercell_333 = create_supercell(self.system, **kwargs)
-        #smolsys = self.load_system(supercell_333, self.system_id + '_311')
-        #smolsys.dump_system(override=True)
+        # smolsys = self.load_system(supercell_333, self.system_id + '_311')
+        # smolsys.dump_system(override=True)
         discrete = discrete_molecules(self.system, rebuild=supercell_333)
         # This function overrides the initial data for 'coordinates',
         # 'atom_ids', and 'elements' instances in the 'system' dictionary.
@@ -416,7 +559,7 @@ class MolecularSystem(object):
             self.system.update(rebuild_system)
             return None
         else:
-            return rebuild_system
+            return self.load_system(rebuild_system)
 
     def swap_atom_keys(self, swap_dict, dict_key='atom_ids'):
         """
@@ -509,6 +652,16 @@ class MolecularSystem(object):
 
     def system_to_molecule(self):
         return Molecule(self.system, self.system_id, 0)
+
+    def get_pores(self, sampling_points):
+        pores = []
+        for point in sampling_points:
+            pores.append(
+                Pore(
+                    self.system['elements'],
+                    self.system['coordinates'],
+                    com=point))
+        return pores
 
     def dump_system(self, filepath=None, modular=False, **kwargs):
         # If no filepath is provided we create one.

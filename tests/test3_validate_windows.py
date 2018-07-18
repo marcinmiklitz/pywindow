@@ -1134,12 +1134,15 @@ class TestWindows(unittest.TestCase):
         mol = molsys.system_to_molecule()
         windows = mol.calculate_windows()
 
+        p = windows[0].argsort()
+        p_ref = results_2['windows_diam'].argsort()
+
         np.testing.assert_almost_equal(
-            windows[0], results_2['windows_diam'], decimal=3
+            windows[0][p], results_2['windows_diam'][p_ref], decimal=3
         )
 
         np.testing.assert_almost_equal(
-            windows[1], results_2['windows_coms'], decimal=3
+            windows[1][p], results_2['windows_coms'][p_ref], decimal=3
         )
 
     def test_case_2_new(self):
@@ -1148,15 +1151,17 @@ class TestWindows(unittest.TestCase):
         mol = molsys.system_to_molecule()
         windows = mol.get_windows()
 
-        for window, reference in zip(windows, results_2['windows_diam']):
-            np.testing.assert_almost_equal(
-                window.calculate_diameter(), reference, decimal=3
-            )
+        win = np.array([window.calculate_diameter() for window in windows])
+        com = np.array([window.get_centre_of_mass() for window in windows])
 
-        for window, reference in zip(windows, results_2['windows_coms']):
-            np.testing.assert_almost_equal(
-                window.get_centre_of_mass(), reference, decimal=3
-            )
+        p = win.argsort()
+        p_ref = results_2['windows_diam'].argsort()
+
+        np.testing.assert_almost_equal(
+            win[p], results_2['windows_diam'][p_ref], decimal=3)
+
+        np.testing.assert_almost_equal(
+            com[p], results_2['windows_coms'][p_ref], decimal=3)
 
     def test_case_3(self):
         """Case with 3 windows."""
@@ -1164,29 +1169,34 @@ class TestWindows(unittest.TestCase):
         mol = molsys.system_to_molecule()
         windows = mol.calculate_windows()
 
+        p = windows[0].argsort()
+        p_ref = results_3['windows_diam'].argsort()
+
         np.testing.assert_almost_equal(
-            windows[0], results_3['windows_diam'], decimal=3
+            windows[0][p], results_3['windows_diam'][p_ref], decimal=3
         )
 
         np.testing.assert_almost_equal(
-            windows[1], results_3['windows_coms'], decimal=3
+            windows[1][p], results_3['windows_coms'][p_ref], decimal=3
         )
 
     def test_case_3_new(self):
         """Case with 3 windows."""
-        molsys = pw.MolecularSystem.load_system(case_3, 'case_2')
+        molsys = pw.MolecularSystem.load_system(case_3, 'case_3')
         mol = molsys.system_to_molecule()
         windows = mol.get_windows()
 
-        for window, reference in zip(windows, results_3['windows_diam']):
-            np.testing.assert_almost_equal(
-                window.calculate_diameter(), reference, decimal=3
-            )
+        win = np.array([window.calculate_diameter() for window in windows])
+        com = np.array([window.get_centre_of_mass() for window in windows])
 
-        for window, reference in zip(windows, results_3['windows_coms']):
-            np.testing.assert_almost_equal(
-                window.get_centre_of_mass(), reference, decimal=3
-            )
+        p = win.argsort()
+        p_ref = results_3['windows_diam'].argsort()
+
+        np.testing.assert_almost_equal(
+            win[p], results_3['windows_diam'][p_ref], decimal=3)
+
+        np.testing.assert_almost_equal(
+            com[p], results_3['windows_coms'][p_ref], decimal=3)
 
     def test_case_4(self):
         """Case with 4 windows."""
@@ -1194,29 +1204,34 @@ class TestWindows(unittest.TestCase):
         mol = molsys.system_to_molecule()
         windows = mol.calculate_windows()
 
+        p = windows[0].argsort()
+        p_ref = results_4['windows_diam'].argsort()
+
         np.testing.assert_almost_equal(
-            windows[0], results_4['windows_diam'], decimal=3
+            windows[0][p], results_4['windows_diam'][p_ref], decimal=3
         )
 
         np.testing.assert_almost_equal(
-            windows[1], results_4['windows_coms'], decimal=3
+            windows[1][p], results_4['windows_coms'][p_ref], decimal=3
         )
 
     def test_case_4_new(self):
         """Case with 4 windows."""
-        molsys = pw.MolecularSystem.load_system(case_4, 'case_2')
+        molsys = pw.MolecularSystem.load_system(case_4, 'case_4')
         mol = molsys.system_to_molecule()
         windows = mol.get_windows()
 
-        for window, reference in zip(windows, results_4['windows_diam']):
-            np.testing.assert_almost_equal(
-                window.calculate_diameter(), reference, decimal=3
-            )
+        win = np.array([window.calculate_diameter() for window in windows])
+        com = np.array([window.get_centre_of_mass() for window in windows])
 
-        for window, reference in zip(windows, results_4['windows_coms']):
-            np.testing.assert_almost_equal(
-                window.get_centre_of_mass(), reference, decimal=3
-            )
+        p = win.argsort()
+        p_ref = results_4['windows_diam'].argsort()
+
+        np.testing.assert_almost_equal(
+            win[p], results_4['windows_diam'][p_ref], decimal=3)
+
+        np.testing.assert_almost_equal(
+            com[p], results_4['windows_coms'][p_ref], decimal=3)
 
     def test_case_5(self):
         """Case with 6 windows."""
@@ -1224,29 +1239,34 @@ class TestWindows(unittest.TestCase):
         mol = molsys.system_to_molecule()
         windows = mol.calculate_windows()
 
+        p = windows[0].argsort()
+        p_ref = results_5['windows_diam'].argsort()
+
         np.testing.assert_almost_equal(
-            windows[0], results_5['windows_diam'], decimal=3
+            windows[0][p], results_5['windows_diam'][p_ref], decimal=3
         )
 
         np.testing.assert_almost_equal(
-            windows[1], results_5['windows_coms'], decimal=3
+            windows[1][p], results_5['windows_coms'][p_ref], decimal=3
         )
 
     def test_case_5_new(self):
         """Case with 6 windows."""
-        molsys = pw.MolecularSystem.load_system(case_5, 'case_2')
+        molsys = pw.MolecularSystem.load_system(case_5, 'case_5')
         mol = molsys.system_to_molecule()
         windows = mol.get_windows()
 
-        for window, reference in zip(windows, results_5['windows_diam']):
-            np.testing.assert_almost_equal(
-                window.calculate_diameter(), reference, decimal=3
-            )
+        win = np.array([window.calculate_diameter() for window in windows])
+        com = np.array([window.get_centre_of_mass() for window in windows])
 
-        for window, reference in zip(windows, results_5['windows_coms']):
-            np.testing.assert_almost_equal(
-                window.get_centre_of_mass(), reference, decimal=3
-            )
+        p = win.argsort()
+        p_ref = results_5['windows_diam'].argsort()
+
+        np.testing.assert_almost_equal(
+            win[p], results_5['windows_diam'][p_ref], decimal=3)
+
+        np.testing.assert_almost_equal(
+            com[p], results_5['windows_coms'][p_ref], decimal=3)
 
 
 if __name__ == '__main__':
