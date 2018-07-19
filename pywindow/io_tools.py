@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Module defining classes and functions for input/output processing.
 
@@ -40,7 +39,7 @@ class _FileTypeError(Exception):
 
 
 class Input(object):
-    """ Class for loading and processing input files. """
+    """Class used to load and process input files."""
 
     def __init__(self):
         self._load_funcs = {
@@ -121,16 +120,17 @@ class Input(object):
             return self.system
         except IndexError:
             raise _CorruptedXYZFile(
-                "The XYZ input file is either corrupted in some way"
-                " empty line at the end etc.) or if it is an XYZ trajectory"
-                " file, please use Trajectory class.")
+                "The XYZ file is corrupted in some way. For example, an empty "
+                "line at the end etc. or it is a trajectory. If the latter is "
+                "the case, please use `trajectory` module, otherwise fix it.")
 
     def _read_pdb(self):
         """"""
         if sum([i.count('END ') for i in self.file_content]) > 1:
             raise _CorruptedPDBFile(
-                "Multiple 'END' keywords were found in the PDB file."
-                "If this is a trajectory, use Trajectory class, or fix it.")
+                "Multiple 'END' statements were found in this PDB file."
+                "If this is a trajectory, use a trajectory module, "
+                "Otherwise, fix it.")
         self.system = dict()
         self.system['remarks'] = [
             i for i in self.file_content if i[:6] == 'REMARK'
@@ -186,7 +186,7 @@ class Input(object):
 
 
 class Output(object):
-    """ Class for saving molecular structures and/or properties to files. """
+    """Class used to process and save output files."""
 
     def __init__(self):
         self.cwd = os.getcwd()
@@ -207,7 +207,7 @@ class Output(object):
             pass
         else:
             raise _NotADictionary(
-                "The function only accepts object of type: dictionary.")
+                "This function only accepts dictionaries as input")
         # We check if the filepath has a json extenstion, if not we add it.
         if str(filepath[-4:]) == 'json':
             pass
@@ -219,8 +219,8 @@ class Output(object):
         if override is False:
             if os.path.isfile(filepath):
                 raise _FileAlreadyExists(
-                    "The file you want to dump the json into alreasy exists."
-                    " Change the filepath, or set 'override' to True.")
+                    "The file {0} already exists. Use a different filepath, "
+                    "or set the 'override' kwarg to True.".format(filepath))
         # We dump the object to the json file. Additional kwargs can be passed.
         with open(filepath, 'w+') as json_file:
             json.dump(obj, json_file, **kwargs)
@@ -232,13 +232,13 @@ class Output(object):
         if override is False:
             if os.path.isfile(filepath):
                 raise _FileAlreadyExists(
-                    "The file {0} alreasy exists. Change the filepath, "
-                    "or set 'override' to True.".format(filepath))
+                    "The file {0} already exists. Use a different filepath, "
+                    "or set the 'override' kwarg to True.".format(filepath))
         if str(filepath[-3:]) not in self._save_funcs.keys():
             raise _FileTypeError(
-                "This file type is not supported for saving molecular systems"
-                " and molecules. Please use XYZ or PDB."
-                " Offending file type: {0}".format(str(filepath[-3:])))
+                "The {0} file extension is "
+                "not supported for dumping a MolecularSystem or a Molecule. "
+                "Please use XYZ or PDB.".format(str(filepath[-3:])))
         self._save_funcs[str(filepath[-3:])](obj, filepath, **kwargs)
 
     def _save_xyz(self, system, filepath, **kwargs):

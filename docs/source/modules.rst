@@ -1,7 +1,7 @@
-pyWINDOW
+pywindow
 ========
 
 .. toctree::
    :maxdepth: 4
 
-   pyWINDOW
+   pywindow

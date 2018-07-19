@@ -1,9 +1,9 @@
-.. pyWINDOW documentation master file, created by
-   sphinx-quickstart on Tue Aug  1 15:01:07 2017.
+.. pywindow documentation master file, created by
+   sphinx-quickstart on Thu Jul 19 13:12:27 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pyWINDOW's documentation!
+Welcome to pywindow's documentation!
 ====================================
 
 .. toctree::

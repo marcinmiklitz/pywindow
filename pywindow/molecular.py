@@ -20,16 +20,12 @@ The more detailed description of each of the classes is provided below:
 
 The :class:`MolecularSystem` is used as a first step to the analysis. It allows
 to load data, refine it (rebuild molecule in periodic systems with
-:method:`rebuild()``, extract individual molecules with
-:method:`make_modular()` and decipher force field dependent atom keys with
-:method:`decipher_atom_keys()`) and extract single molecules for analysis.
+:func:`rebuild()``, extract individual molecules with
+:func:`make_modular()` and decipher force field dependent atom keys with
+:func:`decipher_atom_keys()`) and extract single molecules for analysis.
 
 The :class:`Molecule` is designed to contain a single molecule. Here the
 analysis is performed.
-
-The :class:`Shape`,
-
-The :class:`Window`
 
 The :class:`Pore` allow to extract the information on the
 shape of the molecule, its windows (and their 2D shape) as separate objects
@@ -557,6 +553,26 @@ class Molecule(Shape):
 
 
 class MolecularSystem(object):
+    """Container for a molecular system.
+
+    A molecular system is defined as a set of elements and x, y and z Cartesian
+    coordinates of this elements. This can be a single molecule, an assembly
+    of discrete single molecules as a non-periodic or periodic system. In the
+    latter case the rebuilding of the molecules, that are not continous as the
+    result of periodicity, is necessary with the :method:rebuild_system of
+    :class:MolecularSystem.
+
+    To load a system, one of the of the :class:MolecularSystem classmethods
+    should be used that initilize :class:MolecularSystem and return
+    :class:MolecularSystem object. Therefore :class:MolecularSystem should
+    not be initialised by itself but be a result of input loading.
+
+    Attributes
+    ----------
+    system_id : :class:`str` or :class`int`
+        System id that equals the input filename or is user defined.
+
+    """
     def __init__(self):
         self._Input = Input()
         self._Output = Output()
@@ -564,6 +580,17 @@ class MolecularSystem(object):
 
     @classmethod
     def load_file(cls, filepath):
+        """
+        Creates a :class:`MolecularSystem` from an input file.
+
+        The recognized input formats are XYZ, PDB and MOL.
+
+        Parameters
+        ----------
+        filepath : :class:`str`
+           The path to an input file.
+
+        """
         obj = cls()
         obj.system = obj._Input.load_file(filepath)
         obj.filename = os.path.basename(filepath)
@@ -573,18 +600,54 @@ class MolecularSystem(object):
 
     @classmethod
     def load_rdkit_mol(cls, mol):
+        """
+        Creates a :class:`MolecularSystem` from :class:`rdkit.Chem.rdchem.Mol`.
+
+        The recognized input formats are XYZ, PDB and MOL (V3000).
+
+        Parameters
+        ----------
+        mol : :class:`rdkit.Chem.rdchem.Mol`
+           An RDKit molecule object.
+
+        """
         obj = cls()
         obj.system = obj._Input.load_rdkit_mol(mol)
         return obj
 
     @classmethod
     def load_system(cls, dict_, system_id='system'):
+        """
+        Creates a :class:`MolecularSystem` from a python :class:`dict`.
+
+        As the loaded :class:`MolecularSystem` is storred as a :class:`dict` in
+        the :class:`MolecularSystem.system` it can also be loaded directly from
+        a :class:`dict` input. This feature is used by :mod:`trajectory` that
+        extracts trajectory frames as specifically dictionaries and loads them
+        as :class:`MolecularSystem` objects through this classmethod.
+
+        Parameters
+        ----------
+        dict_ : :class:`dict`
+           A python dictionary.
+
+        """
         obj = cls()
         obj.system = dict_
         obj.system_id = system_id
         return obj
 
     def rebuild_system(self, override=False, **kwargs):
+        """
+        Rebuilds molecules in molecular system.
+
+        Parameters
+        ----------
+        override : :class:`bool`, optional (default=False)
+            If False the rebuild molecular system is returned as a new
+            :class:`MolecularSystem`, if True, the current
+            :class:`MolecularSystem` is modified.
+        """
         # First we create a 3x3x3 supercell with the initial unit cell in the
         # centre and the 26 unit cell translations around to provide all the
         # atom positions necessary for the molecules passing through periodic
@@ -651,32 +714,25 @@ class MolecularSystem(object):
 
     def decipher_atom_keys(self, forcefield='DLF', dict_key='atom_ids'):
         """
-        Decipheres forcefield's keys for their periodic elements equivalents.
+        Decipheres atom_ids for their periodic tabale of elements equivalents.
 
-        This function runs decipher_atom_key() function on every atom key in
-        the system['atom_keys'] array and substitutes the return of this
-        function at the corresponding position of system['elements'] array.
-
-        The supported forcfields is OPLS and also the DL_F notation
-        (see User's Guide) with keywords allowed:
-        'OPLS', 'OPLS2005', 'OPLSAA', 'OPLS3' and 'DLF', 'DL_F'.
+        This function for every atom_id key in the
+        :class:`MolecularSystem.system['atom_ids']`` array and substitutes
+        them.
 
         Parameters
         ----------
-        forcefield: str
+        forcefield : :class:`str` (default='DLF')
             The forcefield used to decipher the atom keys. This parameter is
-            not case sensitive.
+            not case sensitive. Allowed: 'OPLS', 'OPLS2005', 'OPLSAA', 'OPLS3',
+            'DLF', 'DL_F'.
 
-        Modifies
-        --------
-        system['elements']
-            It substitutes the string objects in this array for the return
-            string of the decipher_atom_key() for each atom key in
-            system['atom_keys'] array equvalent.
+        dict_key : :class:`str`
 
         Returns
         -------
-        None: NoneType
+        None : :class:`NoneType`
+
 
         """
         # In case there is no 'atom_ids' key we try 'elements'. This is for

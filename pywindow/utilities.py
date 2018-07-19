@@ -192,31 +192,27 @@ def compose_atom_list(*args):
     """
     Return an `atom list` from elements and/or atom ids and coordinates.
 
-    An `atom list` is a special object that some pyWINDOW functions uses.
+    An `atom list` is a special object that some pywindowfunctions uses.
     It is a nested list of lists with each individual list containing:
-        version 1 : [[element, coordinates (x, y, z)], ...]
-        version 2 : [[element, atom key, coordinates (x, y, z)], ...]
+
+        1. [[element, coordinates (x, y, z)], ...]
+
+        2. [[element, atom key, coordinates (x, y, z)], ...]
+
     They work better for molecular re-building than two separate arrays for
     elements and coordinates do.
 
-    Parameters (version 1)
-    -----------------------
-    elements : numpy.ndarray
+    Parameters
+    ----------
+    elements : :class:`numpy.ndarray`
         An array of all elements (type: str) in a molecule.
 
-    coordinates : numpy.ndarray
+    coordinates : :class:`numpy.ndarray`
         An array containing molecule's coordinates.
 
-    Parameters (version 2)
-    -----------------------
-    elements : numpy.ndarray
-        An array of all elements (type: str) in a molecule.
-
-    atom_ids : numpy.ndarray
+    atom_ids : :class:`numpy.ndarray`, optional
         An array of all forcfield dependent atom keys (type:str) in a molecule.
 
-    coordinates : numpy.ndarray
-        An array containing molecule's coordinates.
 
     Returns
     -------
@@ -225,7 +221,7 @@ def compose_atom_list(*args):
 
     Raises
     ------
-    _FunctionError : Exception
+    _FunctionError : :class:`Exception`
         Raised when wrong number of parameters is passed to the function.
 
     """
@@ -263,8 +259,10 @@ def decompose_atom_list(atom_list):
     Return elements and/or atom ids and coordinates from an `atom list`.
 
     Depending on input type of an atom list (version 1 or 2)
-        version 1 : [[element, coordinates (x, y, z)], ...]
-        version 2 : [[element, atom key, coordinates (x, y, z)], ...]
+
+        1. [[element, coordinates (x, y, z)], ...]
+        2. [[element, atom key, coordinates (x, y, z)], ...]
+
     the function reverses what pywindow.utilities.compose_atom_list() do.
 
     Parameters
@@ -272,15 +270,11 @@ def decompose_atom_list(atom_list):
     atom_list : list
         A nested list of lists (version 1 or 2)
 
-    Returns (version 1)
-    -------------------
-    (numpy.ndarray, numpy.ndarray)
-        A touple of elements and coordinates arrays.
-
-    Returns (version 2)
-    -------------------
-    (numpy.ndarray, numpy.ndarray, numpy.ndarray)
-        A touple of elements, atom keys and coordinates arrays.
+    Returns
+    -------
+    touple
+        A touple of elements and coordinates arrays, or if input contained
+        atom ideas, also atom ids array.
 
     """
     transpose = list(zip(*atom_list))
@@ -832,12 +826,18 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     """
     Decompose molecular system into individual discreet molecules.
 
+    Note
+    ----
     New formula for bonds: (26/07/17)
-        The two atoms, x and y, are considered bonded if the distance between
-        them, calculated with distance matrix, is within the ranges:
-              Rcov(x) + Rcov(y) - t < R(x,y) <  Rcov(x) + Rcov(y) + t
-        where Rcov is the covalent radius and the tolarenace (t) is set to
-        0.4 Angstrom.
+    The two atoms, x and y, are considered bonded if the distance between
+    them, calculated with distance matrix, is within the ranges:
+    .. :math:
+
+        Rcov(x) + Rcov(y) - t < R(x,y) <  Rcov(x) + Rcov(y) + t
+
+    where Rcov is the covalent radius and the tolarenace (t) is set to
+    0.4 Angstrom.
+
     """
     # First we check which operation mode we use.
     #    1) Non-periodic MolecularSystem.
