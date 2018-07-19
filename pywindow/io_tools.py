@@ -1,4 +1,4 @@
-"""Module defining classes and functions for input/output processing."""
+"""Module contains classes for input/output processing."""
 
 import os
 import json
@@ -50,12 +50,12 @@ class Input(object):
 
         Parameters
         ----------
-        filepath : str
+        filepath : :class:`str`
             The full path or a relative path to any type of file.
 
         Returns
         -------
-        dict()
+        :class:`dict`
             Returns a dictionary containing the molecular information
             extracted from the input files. This information will
             vary with file type and information stored in it.
@@ -74,18 +74,19 @@ class Input(object):
 
     def load_rdkit_mol(self, mol):
         """
-        Return molecular data from mol object.
+        Return molecular data from :class:`rdkit.Chem.rdchem.Mol` object.
 
         Parameters
         ----------
-        mol : Mol
+        mol : :class:`rdkit.Chem.rdchem.Mol`
             A molecule object from RDKit.
 
         Returns
         -------
-        dictionary
+        :class:`dict`
             A dictionary with ``elements`` and ``coordinates`` as keys
-            containing molecular data extracted from RDKit Mol object.
+            containing molecular data extracted from
+            :class:`rdkit.Chem.rdchem.Mol` object.
 
         """
         self.system = {
@@ -191,10 +192,20 @@ class Output(object):
 
     def dump2json(self, obj, filepath, override=False, **kwargs):
         """
-        This function dumps a dictionary into a json file.
+        Dump a dictionary into a JSON dictionary.
 
-        It uses the json.dump() function. All kwargs will also be passed to
-        this function.
+        Uses the json.dump() function.
+
+        Parameters
+        ----------
+        obj : :class:`dict`
+            A dictionary to be dumpped as JSON file.
+
+        filepath : :class:`str`
+           The filepath for the dumped file.
+
+        override : :class:`bool`
+           If True, any file in the filepath will be override. (default=False)
         """
         # We make sure that the object passed by the user is a dictionary.
         if isinstance(obj, dict):
@@ -220,6 +231,20 @@ class Output(object):
             json.dump(obj, json_file, **kwargs)
 
     def dump2file(self, obj, filepath, override=False, **kwargs):
+        """
+        Dump a dictionary into a file. (Extensions: XYZ or PDB)
+
+        Parameters
+        ----------
+        obj : :class:`dict`
+            A dictionary containing molecular information.
+
+        filepath : :class:`str`
+           The filepath for the dumped file.
+
+        override : :class:`bool`
+           If True, any file in the filepath will be override. (default=False)
+        """
         # First we check if the file already exists. If yes and the override
         # keyword is False (default), we will raise an exception. Otherwise
         # the file will be overwritten.

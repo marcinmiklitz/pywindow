@@ -1,6 +1,9 @@
 """
 Module containing all general purpose functions shared by other modules.
 
+This module is not intended for the direct use by a User. Therefore, I will
+only docstring functions if I see fit to do so.
+
 LOG
 ---
 11/07/18
