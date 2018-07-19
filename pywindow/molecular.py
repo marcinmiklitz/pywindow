@@ -8,15 +8,11 @@ store and analyse single molecules or assemblies of single molecules. The
 :class:`MolecularSystem` contains hooks to the :module:io_tools that allow
 to load molecules from various input types.
 
-
 It is designed to handle
 input in form of single molecules or assamblies of molecules (the molecular
 system) with the two main classes defined here: :class:`MolecularSystem` and
 :class:`Molecule`. These are used to load and refine input data in form of a
-molecular system, extract individual molecules and perform the analysis. The
-:class:`Shape`, :class:`Window` and :class:`Pore` classes facilitate furthure
-analysis of molecular pore's features: its shape, windows and intrinsic pore.
-The more detailed description of each of the classes is provided below:
+molecular system, extract individual molecules and perform the analysis.
 
 The :class:`MolecularSystem` is used as a first step to the analysis. It allows
 to load data, refine it (rebuild molecule in periodic systems with
@@ -27,9 +23,6 @@ to load data, refine it (rebuild molecule in periodic systems with
 The :class:`Molecule` is designed to contain a single molecule. Here the
 analysis is performed.
 
-The :class:`Pore` allow to extract the information on the
-shape of the molecule, its windows (and their 2D shape) as separate objects
-and the information on the pore (and its 3D shape) to facilitate analysis.
 """
 
 import os
@@ -76,7 +69,7 @@ class _NotAModularSystem(Exception):
         self.message = message
 
 
-class Shape:
+class _Shape:
     """
     Class containing shape descriptors.
 
@@ -179,7 +172,9 @@ class Shape:
         return get_gyration_tensor(self.elements, self.coordinates)
 
 
-class Pore(Shape):
+class _Pore(_Shape):
+    """Under development."""
+
     def __init__(self, elements, coordinates, shape=False, **kwargs):
         self._elements, self._coordinates = elements, coordinates
         self.diameter, self.closest_atom = pore_diameter(
@@ -208,10 +203,9 @@ class Pore(Shape):
         self.__init__(self._elements, self._coordinates)
 
 
-class Window:
-    """
-    Return a window.
-    """
+class _Window:
+    """Under development."""
+
     def __init__(self, window, key, elements, coordinates, com_adjust):
         """
         Return.
@@ -255,7 +249,7 @@ class Window:
         return self.convexhull
 
 
-class Molecule(Shape):
+class Molecule(_Shape):
     """
     Container for a single molecule.
 
@@ -350,13 +344,13 @@ class Molecule(Shape):
                 )
         self.aligned_to_principal_axes = True
 
-    def get_pore(self):
+    def _get_pore(self):
         return Pore(self.elements, self.coordinates)
 
-    def get_shape(self, **kwargs):
+    def _get_shape(self, **kwargs):
         super().__init__(self.coordinates, elements=self.elements)
 
-    def get_windows(self, **kwargs):
+    def _get_windows(self, **kwargs):
         windows = find_windows_new(self.elements, self.coordinates, **kwargs)
         if windows:
             self.windows = [
@@ -553,26 +547,48 @@ class Molecule(Shape):
 
 
 class MolecularSystem:
-    """Container for a molecular system.
+    """
+    Container for the molecular system.
 
-    A molecular system is defined as a set of elements and x, y and z Cartesian
-    coordinates of this elements. This can be a single molecule, an assembly
-    of discrete single molecules as a non-periodic or periodic system. In the
-    latter case the rebuilding of the molecules, that are not continous as the
-    result of periodicity, is necessary with the :method:rebuild_system of
-    :class:MolecularSystem.
+    To load input and initialise :class:`MolecularSystem`, one of the
+    :class:`MolecularSystem` classmethods (:func:`load_file()`,
+    :func:`load_rdkit_mol()` or :func:`load_system()`) should be used.
+    :class:`MolecularSystem` **should not be initialised by itself.**
 
-    To load a system, one of the of the :class:MolecularSystem classmethods
-    should be used that initilize :class:MolecularSystem and return
-    :class:MolecularSystem object. Therefore :class:MolecularSystem should
-    not be initialised by itself but be a result of input loading.
+    Examples
+    --------
+    1. Using file as an input:
+
+    .. code-block:: python
+
+        pywindow.MolecularSystem.load_file(`filepath`)
+
+    2. Using RDKit molecule object as an input:
+
+    .. code-block:: python
+
+        pywindow.MolecularSystem.load_rdkit_mol(rdkit.Chem.rdchem.Mol)
+
+    2. Using a dictionary (or another :attr:`MoleculeSystem.system`) as input:
+
+    .. code-block:: python
+
+        pywindow.MolecularSystem.load_system({...})
 
     Attributes
     ----------
-    system_id : :class:`str` or :class`int`
-        System id that equals the input filename or is user defined.
+    system_id : :class:`str` or :class:`int`
+        The input filename or user defined.
+
+    system : :class:`dict`
+        A dictionary containing all the information extracted from input.
+
+    molecules : :class:`list`
+        A list containing all the returned :class:`Molecule` s after using
+        :func:`make_modular()`.
 
     """
+
     def __init__(self):
         self._Input = Input()
         self._Output = Output()
@@ -583,12 +599,17 @@ class MolecularSystem:
         """
         Create a :class:`MolecularSystem` from an input file.
 
-        The recognized input formats are XYZ, PDB and MOL.
+        Recognized input file formats: XYZ, PDB and MOL (V3000).
 
         Parameters
         ----------
         filepath : :class:`str`
-           The path to an input file.
+           The input's filepath.
+
+        Returns
+        -------
+        :class:`pywindow.molecular.MolecularSystem`
+            :class:`MolecularSystem`
 
         """
         obj = cls()
@@ -603,12 +624,15 @@ class MolecularSystem:
         """
         Create a :class:`MolecularSystem` from :class:`rdkit.Chem.rdchem.Mol`.
 
-        The recognized input formats are XYZ, PDB and MOL (V3000).
-
         Parameters
         ----------
         mol : :class:`rdkit.Chem.rdchem.Mol`
            An RDKit molecule object.
+
+        Returns
+        -------
+        :class:`pywindow.molecular.MolecularSystem`
+            :class:`MolecularSystem`
 
         """
         obj = cls()
@@ -623,13 +647,21 @@ class MolecularSystem:
         As the loaded :class:`MolecularSystem` is storred as a :class:`dict` in
         the :class:`MolecularSystem.system` it can also be loaded directly from
         a :class:`dict` input. This feature is used by :mod:`trajectory` that
-        extracts trajectory frames as specifically dictionaries and loads them
+        extracts trajectory frames as dictionaries and returns them
         as :class:`MolecularSystem` objects through this classmethod.
 
         Parameters
         ----------
         dict_ : :class:`dict`
            A python dictionary.
+
+        system_id : :class:`str` or :class:'int', optional
+           Inherited or user defined system id. (default='system')
+
+        Returns
+        -------
+        :class:`pywindow.molecular.MolecularSystem`
+            :class:`MolecularSystem`
 
         """
         obj = cls()
@@ -681,28 +713,35 @@ class MolecularSystem:
 
     def swap_atom_keys(self, swap_dict, dict_key='atom_ids'):
         """
-        Swap atom_key for atom_key in system's 'elements' array.
+        Swap a force field atom id for another user-defined value.
+
+        This modified all values in :attr:`MolecularSystem.system['atom_ids']`
+        that match criteria.
+
+        This function can be used to decipher a whole forcefield if an
+        appropriate dictionary is passed to the function.
+
+        Example
+        -------
+        In this example all atom ids 'he' will be exchanged to 'H'.
+
+        .. code-block:: python
+
+            pywindow.MolecularSystem.swap_atom_keys({'he': 'H'})
 
         Parameters
         ----------
-        swap_dict: dict
-            A dictionary containg atom keys (dictionary's keys) to be swapped
-            with corresponding atom keys (dictionary's keys arguments).
+        swap_dict: :class:`dict`
+            A dictionary containg force field atom ids (keys) to be swapped
+            with corresponding values (keys' arguments).
 
-        dict_key: str (default='elements')
-            A key in MolecularSystem().system dictionary to perform the
-            atom keys swapping operation on.
-
-        Modifies
-        --------
-        system['elements']: array
-            Replaces every occurance of dictionary key with dictionary key's
-            argument in the 'elements' array of the MolecularSystem().system's
-            dictionary.
+        dict_key: :class:`str`
+            A key in :attr:`MolecularSystem.system` dictionary to perform the
+            atom keys swapping operation on. (default='atom_ids')
 
         Returns
         -------
-        None: NoneType
+        None : :class:`NoneType`
 
         """
         # Similar situation to the one from decipher_atom_keys function.
@@ -715,25 +754,36 @@ class MolecularSystem:
 
     def decipher_atom_keys(self, forcefield='DLF', dict_key='atom_ids'):
         """
-        Deciphere atom_ids for their periodic tabale of elements equivalents.
+        Decipher force field atom ids.
 
-        This function for every atom_id key in the
-        :class:`MolecularSystem.system['atom_ids']`` array and substitutes
-        them.
+        This takes all values in :attr:`MolecularSystem.system['atom_ids']`
+        that match force field type criteria and creates
+        :attr:`MolecularSystem.system['elements']` with the corresponding
+        periodic table of elements equivalents.
+
+        If a forcefield is not supported by this method, the
+        :func:`MolecularSystem.swap_atom_keys()` can be used instead.
+
+        DLF stands for DL_F notation.
+
+        See: C. W. Yong, Descriptions and Implementations of DL_F Notation: A
+        Natural Chemical Expression System of Atom Types for Molecular
+        Simulations, J. Chem. Inf. Model., 2016, 56, 1405–1409.
 
         Parameters
         ----------
-        forcefield : :class:`str` (default='DLF')
-            The forcefield used to decipher the atom keys. This parameter is
-            not case sensitive. Allowed: 'OPLS', 'OPLS2005', 'OPLSAA', 'OPLS3',
-            'DLF', 'DL_F'.
+        forcefield : :class:`str`
+            The forcefield used to decipher atom ids. Allowed (not case
+            sensitive): 'OPLS', 'OPLS2005', 'OPLSAA', 'OPLS3', 'DLF', 'DL_F'.
+            (default='DLF')
 
         dict_key : :class:`str`
+            The :attr:`MolecularSystem.system` dictionary key to the array
+            containing the force field atom ids. (default='atom_ids')
 
         Returns
         -------
         None : :class:`NoneType`
-
 
         """
         # In case there is no 'atom_ids' key we try 'elements'. This is for
@@ -751,6 +801,22 @@ class MolecularSystem:
         self.system['elements'] = temp
 
     def make_modular(self, rebuild=False):
+        """
+        Find and return all :class:`Molecule` s in :class:`MolecularSystem`.
+
+        This function populates :attr:`MolecularSystem.molecules` type
+        :class:`list` with :class:`Molecule` s.
+
+        Parameters
+        ----------
+        rebuild : :class:`Bool`
+            If True, run first the :func:`rebuild_system()`. (default=False)
+
+        Returns
+        -------
+        None : :class:`NoneType`
+
+        """
         if rebuild is True:
             supercell_333 = create_supercell(self.system)
         else:
@@ -762,9 +828,21 @@ class MolecularSystem:
             self.molecules[i] = Molecule(dis[i], self.system_id, i)
 
     def system_to_molecule(self):
+        """
+        Return :class:`MolecularSystem` as a :class:`Molecule` directly.
+
+        Only to be used conditionally, when the :class:`MolecularSystem` is a
+        discrete molecule and no input pre-processing is required.
+
+        Returns
+        -------
+        :class:`pywindow.molecular.Molecule`
+            :class:`Molecule`
+        """
         return Molecule(self.system, self.system_id, 0)
 
-    def get_pores(self, sampling_points):
+    def _get_pores(self, sampling_points):
+        """ Under development."""
         pores = []
         for point in sampling_points:
             pores.append(
@@ -775,6 +853,29 @@ class MolecularSystem:
         return pores
 
     def dump_system(self, filepath=None, modular=False, **kwargs):
+        """
+        Dump a :class:`MolecularSystem` to a file (PDB or XYZ).
+
+        Kwargs are passed to :func:`pywindow.io_tools.Output.dump2file()`.
+
+        Parameters
+        ----------
+        filepath : :class:`str`
+           The filepath for the dumped file. If :class:`None`, the file is
+           dumped localy with :attr:`system_id` as filename.
+           (defualt=None)
+
+        modular : :class:`Bool`
+            If False, dump the :class:`MolecularSystem` as in
+            :attr:`MolecularSystem.system`, if True, dump the
+            :class:`MolecularSystem` as catenated :class:Molecule objects
+            from :attr:`MolecularSystem.molecules`
+
+        Returns
+        -------
+        None : :class:`NoneType`
+
+        """
         # If no filepath is provided we create one.
         if filepath is None:
             filepath = '/'.join((os.getcwd(), str(self.system_id)))
@@ -805,6 +906,33 @@ class MolecularSystem:
             system_dict, filepath, atom_ids=atom_ids, **kwargs)
 
     def dump_system_json(self, filepath=None, modular=False, **kwargs):
+        """
+        Dump a :class:`MolecularSystem` to a JSON dictionary.
+
+        The dumped JSON dictionary, with :class:`MolecularSystem`, can then be
+        loaded through a JSON loader and then through :func:`load_system()`
+        to retrieve a :class:`MolecularSystem`.
+
+        Kwargs are passed to :func:`pywindow.io_tools.Output.dump2json()`.
+
+        Parameters
+        ----------
+        filepath : :class:`str`
+           The filepath for the dumped file. If :class:`None`, the file is
+           dumped localy with :attr:`system_id` as filename.
+           (defualt=None)
+
+        modular : :class:`Bool`
+            If False, dump the :class:`MolecularSystem` as in
+            :attr:`MolecularSystem.system`, if True, dump the
+            :class:`MolecularSystem` as catenated :class:Molecule objects
+            from :attr:`MolecularSystem.molecules`
+
+        Returns
+        -------
+        None : :class:`NoneType`
+
+        """
         # We pass a copy of the properties dictionary.
         dict_obj = deepcopy(self.system)
         # In case we want a modular system.
