@@ -1,0 +1,1756 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pywindow package &mdash; pywindow  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pywindow  documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pywindow
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <!-- Local TOC -->
+                <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pywindow package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pywindow.io_tools">pywindow.io_tools module</a></li>
+<li><a class="reference internal" href="#module-pywindow.molecular">pywindow.molecular module</a></li>
+<li><a class="reference internal" href="#module-pywindow.tables">pywindow.tables module</a></li>
+<li><a class="reference internal" href="#module-pywindow.trajectory">pywindow.trajectory module</a></li>
+<li><a class="reference internal" href="#module-pywindow.utilities">pywindow.utilities module</a><ul>
+<li><a class="reference internal" href="#log">LOG</a></li>
+<li><a class="reference internal" href="#to-do-list">TO DO LIST</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pywindow">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">pywindow</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>pywindow package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/pywindow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pywindow-package">
+<h1>pywindow package<a class="headerlink" href="#pywindow-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pywindow.io_tools">
+<span id="pywindow-io-tools-module"></span><h2>pywindow.io_tools module<a class="headerlink" href="#module-pywindow.io_tools" title="Permalink to this headline">¶</a></h2>
+<p>Module contains classes for input/output processing.</p>
+<dl class="class">
+<dt id="pywindow.io_tools.Input">
+<em class="property">class </em><code class="descclassname">pywindow.io_tools.</code><code class="descname">Input</code><a class="reference internal" href="_modules/pywindow/io_tools.html#Input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class used to load and process input files.</p>
+<dl class="method">
+<dt id="pywindow.io_tools.Input.load_file">
+<code class="descname">load_file</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/io_tools.html#Input.load_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Input.load_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function opens any type of a readable file and decompose
+the file object into a list, for each line, of lists containing
+splitted line strings using space as a spacer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The full path or a relative path to any type of file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns a dictionary containing the molecular information
+extracted from the input files. This information will
+vary with file type and information stored in it.
+The data is sorted into lists that contain one feature
+for example key atom_id: [atom_id_1, atom_id_2]
+Over the process of analysis this dictionary will be updated
+with new data.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.io_tools.Input.load_rdkit_mol">
+<code class="descname">load_rdkit_mol</code><span class="sig-paren">(</span><em>mol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/io_tools.html#Input.load_rdkit_mol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Input.load_rdkit_mol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return molecular data from <code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code> object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mol</strong> (<code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code>) – A molecule object from RDKit.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dictionary with <code class="docutils literal"><span class="pre">elements</span></code> and <code class="docutils literal"><span class="pre">coordinates</span></code> as keys
+containing molecular data extracted from
+<code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code> object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pywindow.io_tools.Output">
+<em class="property">class </em><code class="descclassname">pywindow.io_tools.</code><code class="descname">Output</code><a class="reference internal" href="_modules/pywindow/io_tools.html#Output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class used to process and save output files.</p>
+<dl class="method">
+<dt id="pywindow.io_tools.Output.dump2file">
+<code class="descname">dump2file</code><span class="sig-paren">(</span><em>obj</em>, <em>filepath</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/io_tools.html#Output.dump2file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Output.dump2file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump a dictionary into a file. (Extensions: XYZ or PDB)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<code class="xref py py-class docutils literal"><span class="pre">dict</span></code>) – A dictionary containing molecular information.</li>
+<li><strong>filepath</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The filepath for the dumped file.</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal"><span class="pre">bool</span></code>) – If True, any file in the filepath will be override. (default=False)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.io_tools.Output.dump2json">
+<code class="descname">dump2json</code><span class="sig-paren">(</span><em>obj</em>, <em>filepath</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/io_tools.html#Output.dump2json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Output.dump2json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump a dictionary into a JSON dictionary.</p>
+<p>Uses the json.dump() function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<code class="xref py py-class docutils literal"><span class="pre">dict</span></code>) – A dictionary to be dumpped as JSON file.</li>
+<li><strong>filepath</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The filepath for the dumped file.</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal"><span class="pre">bool</span></code>) – If True, any file in the filepath will be override. (default=False)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pywindow.molecular">
+<span id="pywindow-molecular-module"></span><h2>pywindow.molecular module<a class="headerlink" href="#module-pywindow.molecular" title="Permalink to this headline">¶</a></h2>
+<p>Defines <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> and <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> classes.</p>
+<p>This module is the most important part of the <code class="docutils literal"><span class="pre">pywindow</span></code> package, as it is
+at the frontfront of the interaction with the user. The two main classes
+defined here: <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> and <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> are used to
+store and analyse single molecules or assemblies of single molecules.</p>
+<p>The <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> is used as a first step to the analysis. It allows
+to load data, to refine it (rebuild molecules in a periodic system, decipher
+force field atom ids) and to extract single molecules for analysis as
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> instances.</p>
+<p>To get started see <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>.</p>
+<p>To get started with the analysis of Molecular Dynamic trajectories go to
+<a class="reference internal" href="#module-pywindow.trajectory" title="pywindow.trajectory"><code class="xref py py-mod docutils literal"><span class="pre">pywindow.trajectory</span></code></a>.</p>
+<dl class="class">
+<dt id="pywindow.molecular.MolecularSystem">
+<em class="property">class </em><code class="descclassname">pywindow.molecular.</code><code class="descname">MolecularSystem</code><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Container for the molecular system.</p>
+<p>To load input and initialise <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>, one of the
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> classmethods (<a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_file" title="pywindow.molecular.MolecularSystem.load_file"><code class="xref py py-func docutils literal"><span class="pre">load_file()</span></code></a>,
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_rdkit_mol" title="pywindow.molecular.MolecularSystem.load_rdkit_mol"><code class="xref py py-func docutils literal"><span class="pre">load_rdkit_mol()</span></code></a> or <a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_system" title="pywindow.molecular.MolecularSystem.load_system"><code class="xref py py-func docutils literal"><span class="pre">load_system()</span></code></a>) should be used.
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> <strong>should not be initialised by itself.</strong></p>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li>Using file as an input:</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="sb">`filepath`</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Using RDKit molecule object as an input:</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">rdkit</span><span class="o">.</span><span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li>Using a dictionary (or another <code class="xref py py-attr docutils literal"><span class="pre">MoleculeSystem.system</span></code>) as input:</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_system</span><span class="p">({</span><span class="o">...</span><span class="p">})</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="pywindow.molecular.MolecularSystem.system_id">
+<code class="descname">system_id</code><a class="headerlink" href="#pywindow.molecular.MolecularSystem.system_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">str</span></code> or <code class="xref py py-class docutils literal"><span class="pre">int</span></code> – The input filename or user defined.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.MolecularSystem.system">
+<code class="descname">system</code><a class="headerlink" href="#pywindow.molecular.MolecularSystem.system" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">dict</span></code> – A dictionary containing all the information extracted from input.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.MolecularSystem.molecules">
+<code class="descname">molecules</code><a class="headerlink" href="#pywindow.molecular.MolecularSystem.molecules" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">list</span></code> – A list containing all the returned <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> s after using
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal"><span class="pre">make_modular()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.MolecularSystem.decipher_atom_keys">
+<code class="descname">decipher_atom_keys</code><span class="sig-paren">(</span><em>forcefield='DLF'</em>, <em>dict_key='atom_ids'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.decipher_atom_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.decipher_atom_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decipher force field atom ids.</p>
+<p>This takes all values in <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system['atom_ids']</span></code>
+that match force field type criteria and creates
+<code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system['elements']</span></code> with the corresponding
+periodic table of elements equivalents.</p>
+<p>If a forcefield is not supported by this method, the
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal"><span class="pre">MolecularSystem.swap_atom_keys()</span></code></a> can be used instead.</p>
+<p>DLF stands for DL_F notation.</p>
+<p>See: C. W. Yong, Descriptions and Implementations of DL_F Notation: A
+Natural Chemical Expression System of Atom Types for Molecular
+Simulations, J. Chem. Inf. Model., 2016, 56, 1405–1409.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>forcefield</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The forcefield used to decipher atom ids. Allowed (not case
+sensitive): ‘OPLS’, ‘OPLS2005’, ‘OPLSAA’, ‘OPLS3’, ‘DLF’, ‘DL_F’.
+(default=’DLF’)</li>
+<li><strong>dict_key</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The <a class="reference internal" href="#pywindow.molecular.MolecularSystem.system" title="pywindow.molecular.MolecularSystem.system"><code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system</span></code></a> dictionary key to the array
+containing the force field atom ids. (default=’atom_ids’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.MolecularSystem.dump_system">
+<code class="descname">dump_system</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>modular=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.dump_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.dump_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> to a file (PDB or XYZ).</p>
+<p>Kwargs are passed to <a class="reference internal" href="#pywindow.io_tools.Output.dump2file" title="pywindow.io_tools.Output.dump2file"><code class="xref py py-func docutils literal"><span class="pre">pywindow.io_tools.Output.dump2file()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The filepath for the dumped file. If <code class="xref py py-class docutils literal"><span class="pre">None</span></code>, the file is
+dumped localy with <a class="reference internal" href="#pywindow.molecular.MolecularSystem.system_id" title="pywindow.molecular.MolecularSystem.system_id"><code class="xref py py-attr docutils literal"><span class="pre">system_id</span></code></a> as filename.
+(defualt=None)</li>
+<li><strong>modular</strong> (<code class="xref py py-class docutils literal"><span class="pre">bool</span></code>) – If False, dump the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as in
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.system" title="pywindow.molecular.MolecularSystem.system"><code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system</span></code></a>, if True, dump the
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as catenated :class:Molecule objects
+from <a class="reference internal" href="#pywindow.molecular.MolecularSystem.molecules" title="pywindow.molecular.MolecularSystem.molecules"><code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.molecules</span></code></a></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.MolecularSystem.dump_system_json">
+<code class="descname">dump_system_json</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>modular=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.dump_system_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.dump_system_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> to a JSON dictionary.</p>
+<p>The dumped JSON dictionary, with <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>, can then be
+loaded through a JSON loader and then through <a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_system" title="pywindow.molecular.MolecularSystem.load_system"><code class="xref py py-func docutils literal"><span class="pre">load_system()</span></code></a>
+to retrieve a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>.</p>
+<p>Kwargs are passed to <a class="reference internal" href="#pywindow.io_tools.Output.dump2json" title="pywindow.io_tools.Output.dump2json"><code class="xref py py-func docutils literal"><span class="pre">pywindow.io_tools.Output.dump2json()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The filepath for the dumped file. If <code class="xref py py-class docutils literal"><span class="pre">None</span></code>, the file is
+dumped localy with <a class="reference internal" href="#pywindow.molecular.MolecularSystem.system_id" title="pywindow.molecular.MolecularSystem.system_id"><code class="xref py py-attr docutils literal"><span class="pre">system_id</span></code></a> as filename.
+(defualt=None)</li>
+<li><strong>modular</strong> (<code class="xref py py-class docutils literal"><span class="pre">bool</span></code>) – If False, dump the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as in
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.system" title="pywindow.molecular.MolecularSystem.system"><code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system</span></code></a>, if True, dump the
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as catenated :class:Molecule objects
+from <a class="reference internal" href="#pywindow.molecular.MolecularSystem.molecules" title="pywindow.molecular.MolecularSystem.molecules"><code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.molecules</span></code></a></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pywindow.molecular.MolecularSystem.load_file">
+<em class="property">classmethod </em><code class="descname">load_file</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.load_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.load_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> from an input file.</p>
+<p>Recognized input file formats: XYZ, PDB and MOL (V3000).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The input’s filepath.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pywindow.molecular.MolecularSystem.load_rdkit_mol">
+<em class="property">classmethod </em><code class="descname">load_rdkit_mol</code><span class="sig-paren">(</span><em>mol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.load_rdkit_mol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.load_rdkit_mol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> from <code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mol</strong> (<code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code>) – An RDKit molecule object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pywindow.molecular.MolecularSystem.load_system">
+<em class="property">classmethod </em><code class="descname">load_system</code><span class="sig-paren">(</span><em>dict_</em>, <em>system_id='system'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.load_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.load_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> from a python <code class="xref py py-class docutils literal"><span class="pre">dict</span></code>.</p>
+<p>As the loaded <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> is storred as a <code class="xref py py-class docutils literal"><span class="pre">dict</span></code> in
+the <a class="reference internal" href="#pywindow.molecular.MolecularSystem.system" title="pywindow.molecular.MolecularSystem.system"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem.system</span></code></a> it can also be loaded directly from
+a <code class="xref py py-class docutils literal"><span class="pre">dict</span></code> input. This feature is used by <code class="xref py py-mod docutils literal"><span class="pre">trajectory</span></code> that
+extracts trajectory frames as dictionaries and returns them
+as <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> objects through this classmethod.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dict</strong> (<code class="xref py py-class docutils literal"><span class="pre">dict</span></code>) – A python dictionary.</li>
+<li><strong>system_id</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code> or :class:’int’, optional) – Inherited or user defined system id. (default=’system’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.MolecularSystem.make_modular">
+<code class="descname">make_modular</code><span class="sig-paren">(</span><em>rebuild=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.make_modular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.make_modular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return all <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> s in <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>.</p>
+<p>This function populates <a class="reference internal" href="#pywindow.molecular.MolecularSystem.molecules" title="pywindow.molecular.MolecularSystem.molecules"><code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.molecules</span></code></a> with
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rebuild</strong> (<code class="xref py py-class docutils literal"><span class="pre">bool</span></code>) – If True, run first the <a class="reference internal" href="#pywindow.molecular.MolecularSystem.rebuild_system" title="pywindow.molecular.MolecularSystem.rebuild_system"><code class="xref py py-func docutils literal"><span class="pre">rebuild_system()</span></code></a>. (default=False)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>None</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.MolecularSystem.rebuild_system">
+<code class="descname">rebuild_system</code><span class="sig-paren">(</span><em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.rebuild_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.rebuild_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuild molecules in molecular system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>override</strong> (<code class="xref py py-class docutils literal"><span class="pre">bool</span></code>, optional (default=False)) – If False the rebuild molecular system is returned as a new
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>, if True, the current
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> is modified.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.MolecularSystem.swap_atom_keys">
+<code class="descname">swap_atom_keys</code><span class="sig-paren">(</span><em>swap_dict</em>, <em>dict_key='atom_ids'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.swap_atom_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Swap a force field atom id for another user-defined value.</p>
+<p>This modified all values in <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system['atom_ids']</span></code>
+that match criteria.</p>
+<p>This function can be used to decipher a whole forcefield if an
+appropriate dictionary is passed to the function.</p>
+<p class="rubric">Example</p>
+<p>In this example all atom ids ‘he’ will be exchanged to ‘H’.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">swap_atom_keys</span><span class="p">({</span><span class="s1">&#39;he&#39;</span><span class="p">:</span> <span class="s1">&#39;H&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>swap_dict</strong> (<code class="xref py py-class docutils literal"><span class="pre">dict</span></code>) – A dictionary containg force field atom ids (keys) to be swapped
+with corresponding values (keys’ arguments).</li>
+<li><strong>dict_key</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – A key in <a class="reference internal" href="#pywindow.molecular.MolecularSystem.system" title="pywindow.molecular.MolecularSystem.system"><code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system</span></code></a> dictionary to perform the
+atom keys swapping operation on. (default=’atom_ids’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.MolecularSystem.system_to_molecule">
+<code class="descname">system_to_molecule</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.system_to_molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.system_to_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as a <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> directly.</p>
+<p>Only to be used conditionally, when the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> is a
+discrete molecule and no input pre-processing is required.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular.Molecule</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pywindow.molecular.Molecule">
+<em class="property">class </em><code class="descclassname">pywindow.molecular.</code><code class="descname">Molecule</code><span class="sig-paren">(</span><em>mol</em>, <em>system_name</em>, <em>mol_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular._Shape</span></code></p>
+<p>Container for a single molecule.</p>
+<p>This class is meant for the analysis of single molecules, molecular pores
+especially. The object passed to this class should therefore be a finite
+and interconnected individuum.</p>
+<p>This class should not be initialised directly, but result from
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.system_to_molecule" title="pywindow.molecular.MolecularSystem.system_to_molecule"><code class="xref py py-func docutils literal"><span class="pre">MolecularSystem.system_to_molecule()</span></code></a> or
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal"><span class="pre">MolecularSystem.make_modular()</span></code></a>.</p>
+<p>Methods in <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> allow to calculate:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>The maximum diameter of a molecule.</li>
+<li>The average diameter of a molecule.</li>
+<li>The intrinsic void diameter of a molecule.</li>
+<li>The intrinsic void volume of a molecule.</li>
+<li>The optimised intrinsic void diameter of a molecule.</li>
+<li>The optimised intrinsic void volume of a molecule.</li>
+<li>The circular diameter of a window of a molecule.</li>
+</ol>
+</div></blockquote>
+<dl class="attribute">
+<dt id="pywindow.molecular.Molecule.mol">
+<code class="descname">mol</code><a class="headerlink" href="#pywindow.molecular.Molecule.mol" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">dict</span></code> – The <code class="xref py py-attr docutils literal"><span class="pre">Molecular.System.system</span></code> dictionary passed to the
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> which is esentially a container of the information
+that compose a molecular entity, such as the coordinates and
+atom ids and/or elements.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.Molecule.no_of_atoms">
+<code class="descname">no_of_atoms</code><a class="headerlink" href="#pywindow.molecular.Molecule.no_of_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">int</span></code> – The number of atoms in the molecule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.Molecule.elements">
+<code class="descname">elements</code><a class="headerlink" href="#pywindow.molecular.Molecule.elements" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code> – An array containing the elements, as strings, composing the molecule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.Molecule.atom_ids">
+<code class="descname">atom_ids</code><a class="headerlink" href="#pywindow.molecular.Molecule.atom_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code> (conditional) – If the <a class="reference internal" href="#pywindow.molecular.Molecule.mol" title="pywindow.molecular.Molecule.mol"><code class="xref py py-attr docutils literal"><span class="pre">Molecule.mol</span></code></a> contains ‘atom_ids’ keyword, the force
+field ids of the elements.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.Molecule.coordinates">
+<code class="descname">coordinates</code><a class="headerlink" href="#pywindow.molecular.Molecule.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code> – The x, y and z atomic Cartesian coordinates of all elements.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.Molecule.parent_system">
+<code class="descname">parent_system</code><a class="headerlink" href="#pywindow.molecular.Molecule.parent_system" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">str</span></code> – The <code class="xref py py-attr docutils literal"><span class="pre">name</span></code> of <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> passed to
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.Molecule.molecule_id">
+<code class="descname">molecule_id</code><a class="headerlink" href="#pywindow.molecular.Molecule.molecule_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">any</span></code> – The molecule id passed when initialising <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.molecular.Molecule.properties">
+<code class="descname">properties</code><a class="headerlink" href="#pywindow.molecular.Molecule.properties" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal"><span class="pre">dict</span></code> – A dictionary that is populated by the output of
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> methods.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.calculate_average_diameter">
+<code class="descname">calculate_average_diameter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_average_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_average_diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the average diamension of a molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The average dimension of the molecule.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.calculate_centre_of_mass">
+<code class="descname">calculate_centre_of_mass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_centre_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_centre_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the xyz coordinates of the centre of mass of a molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The centre of mass of the molecule.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.calculate_maximum_diameter">
+<code class="descname">calculate_maximum_diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_maximum_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_maximum_diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum diamension of a molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The maximum dimension of the molecule.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.calculate_pore_diameter">
+<code class="descname">calculate_pore_diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_pore_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_pore_diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intrinsic pore diameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The intrinsic pore diameter.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.calculate_pore_diameter_opt">
+<code class="descname">calculate_pore_diameter_opt</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_pore_diameter_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intrinsic pore diameter (for the optimised pore centre).</p>
+<p>Similarly to <a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter" title="pywindow.molecular.Molecule.calculate_pore_diameter"><code class="xref py py-func docutils literal"><span class="pre">calculate_pore_diameter()</span></code></a> this method returns the
+the intrinsic pore diameter, however, first a better approximation
+of the pore centre is found with optimisation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The intrinsic pore diameter.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.calculate_pore_volume">
+<code class="descname">calculate_pore_volume</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_pore_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_pore_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intrinsic pore volume.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The intrinsic pore volume.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.calculate_pore_volume_opt">
+<code class="descname">calculate_pore_volume_opt</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_pore_volume_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_pore_volume_opt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intrinsic pore volume (for the optimised pore centre).</p>
+<p>Similarly to <a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume" title="pywindow.molecular.Molecule.calculate_pore_volume"><code class="xref py py-func docutils literal"><span class="pre">calculate_pore_volume()</span></code></a> this method returns the
+the volume intrinsic pore diameter, however, for the
+<a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-func docutils literal"><span class="pre">calculate_pore_diameter_opt()</span></code></a> returned value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The intrinsic pore volume.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.calculate_windows">
+<code class="descname">calculate_windows</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_windows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the diameters of all windows in a molecule.</p>
+<p>This function first finds and then measures the diameters of all the
+window in the molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code> – An array of windows’ diameters.</li>
+<li><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code> – If no windows were found.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.dump_molecule">
+<code class="descname">dump_molecule</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>include_coms=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.dump_molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.dump_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> to a file (PDB or XYZ).</p>
+<p>Kwargs are passed to <a class="reference internal" href="#pywindow.io_tools.Output.dump2file" title="pywindow.io_tools.Output.dump2file"><code class="xref py py-func docutils literal"><span class="pre">pywindow.io_tools.Output.dump2file()</span></code></a>.</p>
+<p>For validation purposes an overlay of window centres and COMs can also
+be dumped as:</p>
+<p>He - for the centre of mass</p>
+<p>Ne - for the centre of the optimised cavity</p>
+<p>Ar - for the centres of each found window</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The filepath for the dumped file. If <code class="xref py py-class docutils literal"><span class="pre">None</span></code>, the file is
+dumped localy with <a class="reference internal" href="#pywindow.molecular.Molecule.molecule_id" title="pywindow.molecular.Molecule.molecule_id"><code class="xref py py-attr docutils literal"><span class="pre">molecule_id</span></code></a> as filename.
+(defualt=None)</li>
+<li><strong>include_coms</strong> (<code class="xref py py-class docutils literal"><span class="pre">bool</span></code>) – If True, dump also with an overlay of window centres and COMs.
+(default=False)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.dump_properties_json">
+<code class="descname">dump_properties_json</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>molecular=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.dump_properties_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.dump_properties_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump content of <a class="reference internal" href="#pywindow.molecular.Molecule.properties" title="pywindow.molecular.Molecule.properties"><code class="xref py py-attr docutils literal"><span class="pre">Molecule.properties</span></code></a> to a JSON dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>) – The filepath for the dumped file. If <code class="xref py py-class docutils literal"><span class="pre">None</span></code>, the file is
+dumped localy with <a class="reference internal" href="#pywindow.molecular.Molecule.molecule_id" title="pywindow.molecular.Molecule.molecule_id"><code class="xref py py-attr docutils literal"><span class="pre">molecule_id</span></code></a> as filename.
+(defualt=None)</li>
+<li><strong>molecular</strong> (<code class="xref py py-class docutils literal"><span class="pre">bool</span></code>) – If False, dump only the content of <a class="reference internal" href="#pywindow.molecular.Molecule.properties" title="pywindow.molecular.Molecule.properties"><code class="xref py py-attr docutils literal"><span class="pre">Molecule.properties</span></code></a>,
+if True, dump all the information about <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.full_analysis">
+<code class="descname">full_analysis</code><span class="sig-paren">(</span><em>ncpus=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.full_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.full_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a full structural analysis of a molecule.</p>
+<p>This invokes other methods:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.molecular_weight" title="pywindow.molecular.Molecule.molecular_weight"><code class="xref py py-attr docutils literal"><span class="pre">molecular_weight()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_centre_of_mass" title="pywindow.molecular.Molecule.calculate_centre_of_mass"><code class="xref py py-attr docutils literal"><span class="pre">calculate_centre_of_mass()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_maximum_diameter" title="pywindow.molecular.Molecule.calculate_maximum_diameter"><code class="xref py py-attr docutils literal"><span class="pre">calculate_maximum_diameter()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_average_diameter" title="pywindow.molecular.Molecule.calculate_average_diameter"><code class="xref py py-attr docutils literal"><span class="pre">calculate_average_diameter()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter" title="pywindow.molecular.Molecule.calculate_pore_diameter"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_diameter()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume" title="pywindow.molecular.Molecule.calculate_pore_volume"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_volume()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_diameter_opt()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume_opt" title="pywindow.molecular.Molecule.calculate_pore_volume_opt"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_volume_opt()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_diameter_opt()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_windows" title="pywindow.molecular.Molecule.calculate_windows"><code class="xref py py-attr docutils literal"><span class="pre">calculate_windows()</span></code></a></li>
+</ol>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ncpus</strong> (<code class="xref py py-class docutils literal"><span class="pre">int</span></code>) – Number of CPUs used for the parallelised parts of
+<a class="reference internal" href="#pywindow.utilities.find_windows" title="pywindow.utilities.find_windows"><code class="xref py py-func docutils literal"><span class="pre">pywindow.utilities.find_windows()</span></code></a>. (default=1=serial)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The updated <a class="reference internal" href="#pywindow.molecular.Molecule.properties" title="pywindow.molecular.Molecule.properties"><code class="xref py py-attr docutils literal"><span class="pre">Molecule.properties</span></code></a> with returns of all
+used methods.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pywindow.molecular.Molecule.properties" title="pywindow.molecular.Molecule.properties"><code class="xref py py-attr docutils literal"><span class="pre">Molecule.properties</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.molecular_weight">
+<code class="descname">molecular_weight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.molecular_weight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.molecular_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the molecular weight of a molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The molecular weight of the molecule.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.molecular.Molecule.shift_to_origin">
+<code class="descname">shift_to_origin</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.shift_to_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.shift_to_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift a molecule to Origin.</p>
+<p>This function takes the molecule’s coordinates and adjust them so that
+the centre of mass of the molecule coincides with the origin of the
+coordinate system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>None</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pywindow.tables">
+<span id="pywindow-tables-module"></span><h2>pywindow.tables module<a class="headerlink" href="#module-pywindow.tables" title="Permalink to this headline">¶</a></h2>
+<p>This module containes general-purpose chemical data (aka tables).</p>
+<p>Sources:</p>
+<blockquote>
+<div><p>1. www.ccdc.cam.ac.uk/Lists/ResourceFileList/Elemental_Radii.xlsx, (access
+date: 13 Oct 2015)</p>
+<p>2. C. W. Yong, ‘DL_FIELD - A force field and model development tool for
+DL_POLY’, R. Blake, Ed., CSE Frontier, STFC Computational Science and
+Engineering, Daresbury Laboratory, UK, p38-40 (2010)</p>
+<p>3. <a class="reference external" href="https://www.ccdc.cam.ac.uk/support-and-resources/ccdcresources/">https://www.ccdc.cam.ac.uk/support-and-resources/ccdcresources/</a>
+Elemental_Radii.xlsx (access date: 26 Jul 2017)</p>
+</div></blockquote>
+<p>Note:</p>
+<p>Added atomic mass, atomic van der Waals radius and covalent radius, that equals
+1, for a dummy atom <cite>X</cite>. This is for the shape descriptors calculations to use
+with functions for molecular shape descriptors that require mass.</p>
+</div>
+<div class="section" id="module-pywindow.trajectory">
+<span id="pywindow-trajectory-module"></span><h2>pywindow.trajectory module<a class="headerlink" href="#module-pywindow.trajectory" title="Permalink to this headline">¶</a></h2>
+<p>Module intended for the analysis of molecular dynamics trajectories.</p>
+<dl class="class">
+<dt id="pywindow.trajectory.DLPOLY">
+<em class="property">class </em><code class="descclassname">pywindow.trajectory.</code><code class="descname">DLPOLY</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pywindow.trajectory.DLPOLY.analysis">
+<code class="descname">analysis</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>ncpus=1</em>, <em>_ncpus=1</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY.analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY.analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.DLPOLY.get_frames">
+<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY.get_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.DLPOLY.save_analysis">
+<code class="descname">save_analysis</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY.save_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY.save_analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.DLPOLY.save_frames">
+<code class="descname">save_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>filepath=None</em>, <em>filetype='pdb'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY.save_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY.save_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pywindow.trajectory.PDB">
+<em class="property">class </em><code class="descclassname">pywindow.trajectory.</code><code class="descname">PDB</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pywindow.trajectory.PDB.analysis">
+<code class="descname">analysis</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>ncpus=1</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB.analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB.analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.PDB.get_frames">
+<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB.get_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.PDB.save_analysis">
+<code class="descname">save_analysis</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB.save_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB.save_analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pywindow.trajectory.XYZ">
+<em class="property">class </em><code class="descclassname">pywindow.trajectory.</code><code class="descname">XYZ</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pywindow.trajectory.XYZ.analysis">
+<code class="descname">analysis</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>ncpus=1</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ.analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ.analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.XYZ.get_frames">
+<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ.get_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.XYZ.save_analysis">
+<code class="descname">save_analysis</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ.save_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ.save_analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.trajectory.make_supercell">
+<code class="descclassname">pywindow.trajectory.</code><code class="descname">make_supercell</code><span class="sig-paren">(</span><em>system, matrix, supercell=[1, 1, 1]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#make_supercell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.make_supercell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pywindow.utilities">
+<span id="pywindow-utilities-module"></span><h2>pywindow.utilities module<a class="headerlink" href="#module-pywindow.utilities" title="Permalink to this headline">¶</a></h2>
+<p>Module containing all general purpose functions shared by other modules.</p>
+<p>This module is not intended for the direct use by a User. Therefore, I will
+only docstring functions if I see fit to do so.</p>
+<div class="section" id="log">
+<h3>LOG<a class="headerlink" href="#log" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>11/07/18</dt>
+<dd>Changed the way vector path is analysed. Now, the initial analysis is
+done with the geometrical formula for line-sphere intersection. Only
+the remaining vestors that do not intersect any van der Waals spheres are
+then analysed in the old way.</dd>
+<dt>27/07/17</dt>
+<dd>Fixed the cartesian coordinates -&gt; fractional coordinates -&gt; cartesian
+coordinates conversion related functions, creation of lattice array
+from unit cell parameters (triclinic system: so applicable to any)
+and conversion back to unit cell parameters. WORKS! inspiration from:
+<a class="reference external" href="http://www.ruppweb.org/Xray/tutorial/Coordinate%20system%20transformation.htm">http://www.ruppweb.org/Xray/tutorial/Coordinate%20system%20transformation.htm</a></dd>
+<dt>26/07/17</dt>
+<dd>Changed the way bonds are determined. Now, rather then fixed value
+a formula and covalent radii are used as explained in the Elemental_Radii
+spreadsheet (see tables module).</dd>
+</dl>
+</div>
+<div class="section" id="to-do-list">
+<h3>TO DO LIST<a class="headerlink" href="#to-do-list" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Fix and validate calculating shape descriptors: asphericity, acylindricity
+and the realtive shape anisotropy. (Not working at the moment)</li>
+<li>In the find_windows() function, maybe change the way the EPS value for
+the DBSCAN() is estimates. Need to look how the distances change with the
+increase in size of the sampling sphere. (validate this with the MongoDB)</li>
+</ul>
+<dl class="function">
+<dt id="pywindow.utilities.acylidricity">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">acylidricity</code><span class="sig-paren">(</span><em>S</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#acylidricity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.acylidricity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.align_principal_ax">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">align_principal_ax</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#align_principal_ax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.align_principal_ax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.angle_between_vectors">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">angle_between_vectors</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#angle_between_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.angle_between_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the angle between two vectors x and y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.asphericity">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">asphericity</code><span class="sig-paren">(</span><em>S</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.asphericity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.calc_acylidricity">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">calc_acylidricity</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#calc_acylidricity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.calc_acylidricity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.calc_asphericity">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">calc_asphericity</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#calc_asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.calc_asphericity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.calc_relative_shape_anisotropy">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">calc_relative_shape_anisotropy</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#calc_relative_shape_anisotropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.calc_relative_shape_anisotropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.calculate_pore_shape">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">calculate_pore_shape</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>adjust=1</em>, <em>increment=0.1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#calculate_pore_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.calculate_pore_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return average diameter for a molecule.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.calculate_window_diameter">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">calculate_window_diameter</code><span class="sig-paren">(</span><em>window</em>, <em>elements</em>, <em>coordinates</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#calculate_window_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.calculate_window_diameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.cart2frac_all">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">cart2frac_all</code><span class="sig-paren">(</span><em>coordinates</em>, <em>lattice_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#cart2frac_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.cart2frac_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert all cartesian coordinates to fractional.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.cartisian_from_fractional">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">cartisian_from_fractional</code><span class="sig-paren">(</span><em>coordinate</em>, <em>lattice_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#cartisian_from_fractional"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.cartisian_from_fractional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return cartesian coordinate from a fractional one.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.center_of_coor">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">center_of_coor</code><span class="sig-paren">(</span><em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#center_of_coor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.center_of_coor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the centre of coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coordinates</strong> (<em>numpy.ndarray</em>) – An array containing molecule’s coordinates.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An 1d array with coordinates of the centre of coordinates excluding
+elements’ masses.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.center_of_mass">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#center_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the centre of mass (COM).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>elements</strong> (<em>numpy.ndarray</em>) – An array of all elements (type: str) in a molecule.</li>
+<li><strong>coordinates</strong> (<em>numpy.ndarray</em>) – An array containing molecule’s coordinates.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An 1d array with coordinates of the centre of mass including elements’
+masses.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.circumcircle">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">circumcircle</code><span class="sig-paren">(</span><em>coordinates</em>, <em>atom_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#circumcircle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.circumcircle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.circumcircle_window">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">circumcircle_window</code><span class="sig-paren">(</span><em>coordinates</em>, <em>atom_set</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#circumcircle_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.circumcircle_window" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.compose_atom_list">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">compose_atom_list</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#compose_atom_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.compose_atom_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an <cite>atom list</cite> from elements and/or atom ids and coordinates.</p>
+<p>An <cite>atom list</cite> is a special object that some pywindowfunctions uses.
+It is a nested list of lists with each individual list containing:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>[[element, coordinates (x, y, z)], …]</li>
+<li>[[element, atom key, coordinates (x, y, z)], …]</li>
+</ol>
+</div></blockquote>
+<p>They work better for molecular re-building than two separate arrays for
+elements and coordinates do.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>elements</strong> (<code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code>) – An array of all elements (type: str) in a molecule.</li>
+<li><strong>coordinates</strong> (<code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code>) – An array containing molecule’s coordinates.</li>
+<li><strong>atom_ids</strong> (<code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code>, optional) – An array of all forcfield dependent atom keys (type:str) in a molecule.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Version 1 or version 2 atom list depending on input parameters.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">list</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><em>_FunctionError : :class:`Exception`</em> – Raised when wrong number of parameters is passed to the function.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.correct_pore_diameter">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">correct_pore_diameter</code><span class="sig-paren">(</span><em>com</em>, <em>*params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#correct_pore_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.correct_pore_diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return negative of a pore diameter. (optimisation function).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.create_supercell">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">create_supercell</code><span class="sig-paren">(</span><em>system, supercell=[[-1, 1], [-1, 1], [-1, 1]]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#create_supercell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.create_supercell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a supercell.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.decipher_atom_key">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">decipher_atom_key</code><span class="sig-paren">(</span><em>atom_key</em>, <em>forcefield</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#decipher_atom_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.decipher_atom_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return element for deciphered atom key.</p>
+<p>This functions checks if the forcfield specified by user is supported
+and passes the atom key to the appropriate function for deciphering.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>atom_key</strong> (<em>str</em>) – The atom key which is to be deciphered.</li>
+<li><strong>forcefield</strong> (<em>str</em>) – The forcefield to which the atom key belongs to.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A string that is the periodic table element equvalent of forcefield
+atom key.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.decompose_atom_list">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">decompose_atom_list</code><span class="sig-paren">(</span><em>atom_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#decompose_atom_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.decompose_atom_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return elements and/or atom ids and coordinates from an <cite>atom list</cite>.</p>
+<p>Depending on input type of an atom list (version 1 or 2)</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>[[element, coordinates (x, y, z)], …]</li>
+<li>[[element, atom key, coordinates (x, y, z)], …]</li>
+</ol>
+</div></blockquote>
+<p>the function reverses what pywindow.utilities.compose_atom_list() do.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>atom_list</strong> (<em>list</em>) – A nested list of lists (version 1 or 2)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A touple of elements and coordinates arrays, or if input contained
+atom ideas, also atom ids array.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">touple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.discrete_molecules">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">discrete_molecules</code><span class="sig-paren">(</span><em>system</em>, <em>rebuild=None</em>, <em>tol=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#discrete_molecules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.discrete_molecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decompose molecular system into individual discreet molecules.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>New formula for bonds: (26/07/17)
+The two atoms, x and y, are considered bonded if the distance between
+them, calculated with distance matrix, is within the ranges:
+.. :math:</p>
+<blockquote>
+<div>Rcov(x) + Rcov(y) - t &lt; R(x,y) &lt;  Rcov(x) + Rcov(y) + t</div></blockquote>
+<p class="last">where Rcov is the covalent radius and the tolarenace (t) is set to
+0.4 Angstrom.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.distance">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">distance</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the distance between two vectors (points) a and b.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> (<em>numpy.ndarray</em>) – First vector.</li>
+<li><strong>b</strong> (<em>numpy.ndarray</em>) – Second vector.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A distance between two vectors (points).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.float64</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.dlf_notation">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">dlf_notation</code><span class="sig-paren">(</span><em>atom_key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#dlf_notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.dlf_notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return element for atom key using DL_F notation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.find_average_diameter">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">find_average_diameter</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>adjust=1</em>, <em>increment=0.1</em>, <em>processes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#find_average_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.find_average_diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return average diameter for a molecule.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.find_windows">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">find_windows</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>processes=None</em>, <em>mol_size=None</em>, <em>adjust=1</em>, <em>pore_opt=True</em>, <em>increment=1.0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#find_windows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.find_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return windows diameters and center of masses for a molecule.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.find_windows_new">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">find_windows_new</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>processes=None</em>, <em>mol_size=None</em>, <em>adjust=1</em>, <em>pore_opt=True</em>, <em>increment=1.0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#find_windows_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.find_windows_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return windows diameters and center of masses for a molecule.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.frac2cart_all">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">frac2cart_all</code><span class="sig-paren">(</span><em>frac_coordinates</em>, <em>lattice_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#frac2cart_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.frac2cart_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert all fractional coordinates to cartesian.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.fractional_from_cartesian">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">fractional_from_cartesian</code><span class="sig-paren">(</span><em>coordinate</em>, <em>lattice_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#fractional_from_cartesian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.fractional_from_cartesian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a fractional coordinate from a cartesian one.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.get_gyration_tensor">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">get_gyration_tensor</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#get_gyration_tensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.get_gyration_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the gyration tensor of a molecule.</p>
+<p>The gyration tensor should be invariant to the molecule’s position.
+The known formulas for the gyration tensor have the correction for the
+centre of mass of the molecule, therefore, the coordinates are first
+corrected for the centre of mass and essentially shifted to the origin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>elements</strong> (<em>numpy.ndarray</em>) – The array containing the molecule’s elemental data.</li>
+<li><strong>coordinates</strong> (<em>numpy.ndarray</em>) – The array containing the Cartesian coordinates of the molecule.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The gyration tensor of a molecule invariant to the molecule’s position.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.get_inertia_tensor">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">get_inertia_tensor</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#get_inertia_tensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.get_inertia_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the tensor of inertia a molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>elements</strong> (<em>numpy.ndarray</em>) – The array containing the molecule’s elemental data.</li>
+<li><strong>coordinates</strong> (<em>numpy.ndarray</em>) – The array containing the Cartesian coordinates of the molecule.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The tensor of inertia of a molecule.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.get_tensor_eigenvalues">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">get_tensor_eigenvalues</code><span class="sig-paren">(</span><em>T</em>, <em>sort=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#get_tensor_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.get_tensor_eigenvalues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.get_window_com">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">get_window_com</code><span class="sig-paren">(</span><em>window</em>, <em>elements</em>, <em>coordinates</em>, <em>initial_com</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#get_window_com"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.get_window_com" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.is_inside_polyhedron">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">is_inside_polyhedron</code><span class="sig-paren">(</span><em>point</em>, <em>polyhedron</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#is_inside_polyhedron"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.is_inside_polyhedron" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.is_number">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">is_number</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#is_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.is_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if an object is a number - can be converted into a float.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>number</strong> (<em>any</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if input is a float convertable (a number), False otherwise.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.lattice_array_to_unit_cell">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">lattice_array_to_unit_cell</code><span class="sig-paren">(</span><em>lattice_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#lattice_array_to_unit_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.lattice_array_to_unit_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return crystallographic param. from unit cell lattice matrix.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.max_dim">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">max_dim</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#max_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.max_dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum diameter of a molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>elements</strong> (<em>numpy.ndarray</em>) – An array of all elements (type: str) in a molecule.</li>
+<li><strong>coordinates</strong> (<em>numpy.ndarray</em>) – An array containing molecule’s coordinates.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.molecular_weight">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">molecular_weight</code><span class="sig-paren">(</span><em>elements</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#molecular_weight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.molecular_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return molecular weight of a molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>elements</strong> (<em>numpy.ndarray</em>) – An array of all elements (type: str) in a molecule.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A molecular weight of a molecule.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.float64</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.normal_vector">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">normal_vector</code><span class="sig-paren">(</span><em>origin</em>, <em>vectors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#normal_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.normal_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return normal vector for two vectors with same origin.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.normalize_vector">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">normalize_vector</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#normalize_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.normalize_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize a vector.</p>
+<p>A new vector is returned, the original vector is not modified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> (<em>np.array</em>) – The vector to be normalized.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The normalized vector.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.opls_notation">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">opls_notation</code><span class="sig-paren">(</span><em>atom_key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#opls_notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.opls_notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return element for OPLS forcefield atom key.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.opt_pore_diameter">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">opt_pore_diameter</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>bounds=None</em>, <em>com=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#opt_pore_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.opt_pore_diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return optimised pore diameter and it’s COM.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.optimise_xy">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">optimise_xy</code><span class="sig-paren">(</span><em>xy</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#optimise_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.optimise_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return negative pore diameter for x and y coordinates optimisation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.optimise_z">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">optimise_z</code><span class="sig-paren">(</span><em>z</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#optimise_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.optimise_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return pore diameter for coordinates optimisation in z direction.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.pore_diameter">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">pore_diameter</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>com=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#pore_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.pore_diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return pore diameter of a molecule.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.principal_axes">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">principal_axes</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#principal_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.principal_axes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.relative_shape_anisotropy">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">relative_shape_anisotropy</code><span class="sig-paren">(</span><em>S</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#relative_shape_anisotropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.relative_shape_anisotropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.rotation_matrix_arbitrary_axis">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">rotation_matrix_arbitrary_axis</code><span class="sig-paren">(</span><em>angle</em>, <em>axis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#rotation_matrix_arbitrary_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.rotation_matrix_arbitrary_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a rotation matrix of <cite>angle</cite> radians about <cite>axis</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<em>int</em><em> or </em><em>float</em>) – The size of the rotation in radians.</li>
+<li><strong>axis</strong> (<em>numpy.array</em>) – A 3 element aray which represents a vector. The vector is the
+axis about which the rotation is carried out.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A 3x3 array representing a rotation matrix.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.shift_com">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">shift_com</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>com_adjust=array([ 0.</em>, <em>0.</em>, <em>0.])</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#shift_com"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.shift_com" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return coordinates translated by some vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>elements</strong> (<em>numpy.ndarray</em>) – An array of all elements (type: str) in a molecule.</li>
+<li><strong>coordinates</strong> (<em>numpy.ndarray</em>) – An array containing molecule’s coordinates.</li>
+<li><strong>com_adjust</strong> (<em>numpy.ndarray</em><em> (</em><em>default =</em><em> [</em><em>0</em><em>, </em><em>0</em><em>, </em><em>0</em><em>]</em><em>)</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Translated array of molecule’s coordinates.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.sphere_volume">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">sphere_volume</code><span class="sig-paren">(</span><em>sphere_radius</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#sphere_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.sphere_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return volume of a sphere.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.to_list">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">to_list</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.to_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.unique">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">unique</code><span class="sig-paren">(</span><em>input_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#unique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of unique items (similar to set functionality).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>input_list</strong> (<em>list</em>) – A list containg some items that can occur more than once.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list with only unique occurances of an item.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.unit_cell_to_lattice_array">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">unit_cell_to_lattice_array</code><span class="sig-paren">(</span><em>cryst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#unit_cell_to_lattice_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.unit_cell_to_lattice_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return parallelpiped unit cell lattice matrix.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.vector_analysis">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">vector_analysis</code><span class="sig-paren">(</span><em>vector</em>, <em>coordinates</em>, <em>elements_vdw</em>, <em>increment=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#vector_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.vector_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyse a sampling vector’s path for window analysis purpose.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.vector_analysis_pore_shape">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">vector_analysis_pore_shape</code><span class="sig-paren">(</span><em>vector</em>, <em>coordinates</em>, <em>elements_vdw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#vector_analysis_pore_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.vector_analysis_pore_shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.vector_analysis_reversed">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">vector_analysis_reversed</code><span class="sig-paren">(</span><em>vector</em>, <em>coordinates</em>, <em>elements_vdw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#vector_analysis_reversed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.vector_analysis_reversed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.vector_preanalysis">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">vector_preanalysis</code><span class="sig-paren">(</span><em>vector</em>, <em>coordinates</em>, <em>elements_vdw</em>, <em>increment=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#vector_preanalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.vector_preanalysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.volume_from_cell_parameters">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">volume_from_cell_parameters</code><span class="sig-paren">(</span><em>cryst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#volume_from_cell_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.volume_from_cell_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return unit cell’s volume from crystallographic parameters.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.volume_from_lattice_array">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">volume_from_lattice_array</code><span class="sig-paren">(</span><em>lattice_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#volume_from_lattice_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.volume_from_lattice_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return unit cell’s volume from lattice matrix.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.window_analysis">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">window_analysis</code><span class="sig-paren">(</span><em>window, elements, coordinates, elements_vdw, increment2=0.1, z_bounds=[None, None], lb_z=True, z_second_mini=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#window_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.window_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return window diameter and window’s centre.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>widnow</strong> (<em>list</em>) – </li>
+<li><strong>elements</strong> (<em>numpy.array</em>) – </li>
+<li><strong>coordinates</strong> (<em>numpy.array</em>) – </li>
+<li><strong>elements_vdw</strong> (<em>numpy.array</em>) – </li>
+<li><strong>step</strong> (<em>float</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywindow.utilities.window_shape">
+<code class="descclassname">pywindow.utilities.</code><code class="descname">window_shape</code><span class="sig-paren">(</span><em>window, elements, coordinates, increment2=0.1, z_bounds=[None, None], lb_z=True, z_second_mini=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#window_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.window_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return window diameter and window’s centre.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>widnow</strong> (<em>list</em>) – </li>
+<li><strong>elements</strong> (<em>numpy.array</em>) – </li>
+<li><strong>coordinates</strong> (<em>numpy.array</em>) – </li>
+<li><strong>elements_vdw</strong> (<em>numpy.array</em>) – </li>
+<li><strong>step</strong> (<em>float</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-pywindow">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pywindow" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Marcin Miklitz.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
