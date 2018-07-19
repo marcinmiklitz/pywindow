@@ -246,7 +246,11 @@ class TestValidateCC3(unittest.TestCase):
     def test_calculate_windows(self):
         molsys = pw.MolecularSystem.load_system(system, 'test')
         mol = molsys.system_to_molecule()
-        windows = mol.calculate_windows()
+        mol.calculate_windows()
+        windows = mol.properties['windows']['diameters']
+        coms = mol.properties['windows']['centre_of_mass']
+
+        p = windows.argsort()
 
         win_ref = np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512])
         com_ref = np.array([[10.77105705, 10.77097707, 14.02893956],
@@ -254,15 +258,14 @@ class TestValidateCC3(unittest.TestCase):
                             [10.77542236, 14.02453217, 10.77546634],
                             [13.92965524, 10.87029766, 10.87034163]])
 
-        p = windows[0].argsort()
         p_ref = win_ref.argsort()
 
         np.testing.assert_almost_equal(
-            windows[0][p], win_ref[p_ref], decimal=3
+            windows[p], win_ref[p_ref], decimal=3
         )
 
         np.testing.assert_almost_equal(
-            windows[1][p], com_ref[p_ref], decimal=3
+            coms[p], com_ref[p_ref], decimal=3
         )
 
 

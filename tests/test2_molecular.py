@@ -3710,11 +3710,13 @@ class TestMolecularSystemClass(unittest.TestCase):
         molsys_rebuild = molsys.rebuild_system()
 
         np.testing.assert_equal(
-            molsys_rebuild["atom_ids"], system_periodic_rebuild["atom_ids"])
+            molsys_rebuild.system["atom_ids"],
+            system_periodic_rebuild["atom_ids"])
         np.testing.assert_equal(
-            molsys_rebuild["elements"], system_periodic_rebuild["elements"])
+            molsys_rebuild.system["elements"],
+            system_periodic_rebuild["elements"])
         np.testing.assert_almost_equal(
-            molsys_rebuild["coordinates"],
+            molsys_rebuild.system["coordinates"],
             system_periodic_rebuild["coordinates"]
             )
 
@@ -3850,9 +3852,11 @@ class TestMoleculeClass(unittest.TestCase):
     def test_calculate_windows(self):
         molsys = pw.MolecularSystem.load_system(system, 'test')
         mol = molsys.system_to_molecule()
-        windows = mol.calculate_windows()
+        mol.calculate_windows()
+        windows = mol.properties['windows']['diameters']
+        coms = mol.properties['windows']['centre_of_mass']
 
-        p = windows[0].argsort()
+        p = windows.argsort()
 
         ref_win = np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512])
         ref_com = np.array([
@@ -3863,8 +3867,8 @@ class TestMoleculeClass(unittest.TestCase):
 
         p_ref = ref_win.argsort()
 
-        np.testing.assert_almost_equal(windows[0][p], ref_win[p_ref])
-        np.testing.assert_almost_equal(windows[1][p], ref_com[p_ref])
+        np.testing.assert_almost_equal(windows[p], ref_win[p_ref])
+        np.testing.assert_almost_equal(coms[p], ref_com[p_ref])
 
     def test_molecular_weight(self):
         molsys = pw.MolecularSystem.load_system(system, 'test')
