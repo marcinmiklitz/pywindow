@@ -210,11 +210,11 @@ class Pore(Shape):
 
 class Window:
     """
-    Return a window
+    Return a window.
     """
     def __init__(self, window, key, elements, coordinates, com_adjust):
         """
-        Return
+        Return.
         """
         self.raw_data = window
         self.index = key
@@ -552,7 +552,7 @@ class Molecule(Shape):
         return windows
 
 
-class MolecularSystem(object):
+class MolecularSystem:
     """Container for a molecular system.
 
     A molecular system is defined as a set of elements and x, y and z Cartesian
@@ -581,7 +581,7 @@ class MolecularSystem(object):
     @classmethod
     def load_file(cls, filepath):
         """
-        Creates a :class:`MolecularSystem` from an input file.
+        Create a :class:`MolecularSystem` from an input file.
 
         The recognized input formats are XYZ, PDB and MOL.
 
@@ -601,7 +601,7 @@ class MolecularSystem(object):
     @classmethod
     def load_rdkit_mol(cls, mol):
         """
-        Creates a :class:`MolecularSystem` from :class:`rdkit.Chem.rdchem.Mol`.
+        Create a :class:`MolecularSystem` from :class:`rdkit.Chem.rdchem.Mol`.
 
         The recognized input formats are XYZ, PDB and MOL (V3000).
 
@@ -618,7 +618,7 @@ class MolecularSystem(object):
     @classmethod
     def load_system(cls, dict_, system_id='system'):
         """
-        Creates a :class:`MolecularSystem` from a python :class:`dict`.
+        Create a :class:`MolecularSystem` from a python :class:`dict`.
 
         As the loaded :class:`MolecularSystem` is storred as a :class:`dict` in
         the :class:`MolecularSystem.system` it can also be loaded directly from
@@ -639,7 +639,7 @@ class MolecularSystem(object):
 
     def rebuild_system(self, override=False, **kwargs):
         """
-        Rebuilds molecules in molecular system.
+        Rebuild molecules in molecular system.
 
         Parameters
         ----------
@@ -647,6 +647,7 @@ class MolecularSystem(object):
             If False the rebuild molecular system is returned as a new
             :class:`MolecularSystem`, if True, the current
             :class:`MolecularSystem` is modified.
+
         """
         # First we create a 3x3x3 supercell with the initial unit cell in the
         # centre and the 26 unit cell translations around to provide all the
@@ -714,7 +715,7 @@ class MolecularSystem(object):
 
     def decipher_atom_keys(self, forcefield='DLF', dict_key='atom_ids'):
         """
-        Decipheres atom_ids for their periodic tabale of elements equivalents.
+        Deciphere atom_ids for their periodic tabale of elements equivalents.
 
         This function for every atom_id key in the
         :class:`MolecularSystem.system['atom_ids']`` array and substitutes

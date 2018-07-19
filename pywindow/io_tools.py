@@ -1,10 +1,4 @@
-"""
-Module defining classes and functions for input/output processing.
-
-TO-DO-LIST:
------------
--Add appropriate comments and descriptions to all functions
-"""
+"""Module defining classes and functions for input/output processing."""
 
 import os
 import json

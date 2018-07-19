@@ -3,6 +3,12 @@ Module containing all general purpose functions shared by other modules.
 
 LOG
 ---
+11/07/18
+    Changed the way vector path is analysed. Now, the initial analysis is
+    done with the geometrical formula for line-sphere intersection. Only
+    the remaining vestors that do not intersect any van der Waals spheres are
+    then analysed in the old way.
+
 27/07/17
     Fixed the cartesian coordinates -> fractional coordinates -> cartesian
     coordinates conversion related functions, creation of lattice array
@@ -18,9 +24,12 @@ LOG
 TO DO LIST
 ----------
 
+- Fix and validate calculating shape descriptors: asphericity, acylindricity
+  and the realtive shape anisotropy. (Not working at the moment)
+
 - In the find_windows() function, maybe change the way the EPS value for
   the DBSCAN() is estimates. Need to look how the distances change with the
-  increase in size of the sampling sphere.
+  increase in size of the sampling sphere. (validate this with the MongoDB)
 """
 
 import numpy as np

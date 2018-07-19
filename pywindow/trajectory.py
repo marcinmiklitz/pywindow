@@ -1,3 +1,4 @@
+"""Module intended for the analysis of molecular dynamics trajectories."""
 import os
 import numpy as np
 from copy import deepcopy
