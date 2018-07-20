@@ -23,6 +23,17 @@ For quick start head to :ref:`modindex` and see :class:`pywindow.molecular.Molec
    :maxdepth: 2
    :caption: Contents:
 
+Installation
+------------
+
+Git clone the pywindow repository or download a zipped version.
+
+  .. code-block:: bash
+
+    cd pywindow/
+
+    python setup.py install
+
 Examples
 --------
 Loading input
