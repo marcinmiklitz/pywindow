@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,26 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pywindow  documentation" href="index.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -78,8 +73,11 @@
           
             
             
-                <!-- Local TOC -->
-                <div class="local-toc"><ul>
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">pywindow.io_tools module</a></li>
 </ul>
 </div>
@@ -92,34 +90,54 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">pywindow</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pywindow</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
-    <li>pywindow.io_tools module</li>
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>pywindow.io_tools module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/pywindow.io_tools.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -131,7 +149,7 @@
 <dl class="class">
 <dt id="pywindow.io_tools.Input">
 <em class="property">class </em><code class="descclassname">pywindow.io_tools.</code><code class="descname">Input</code><a class="reference internal" href="_modules/pywindow/io_tools.html#Input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Input" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class used to load and process input files.</p>
 <dl class="method">
 <dt id="pywindow.io_tools.Input.load_file">
@@ -140,11 +158,11 @@
 the file object into a list, for each line, of lists containing
 splitted line strings using space as a spacer.</p>
 <dl class="docutils">
-<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
+<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
 <dd>The full path or a relative path to any type of file.</dd>
 </dl>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></dt>
 <dd>Returns a dictionary containing the molecular information
 extracted from the input files. This information will
 vary with file type and information stored in it.
@@ -158,16 +176,16 @@ with new data.</dd>
 <dl class="method">
 <dt id="pywindow.io_tools.Input.load_rdkit_mol">
 <code class="descname">load_rdkit_mol</code><span class="sig-paren">(</span><em>mol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/io_tools.html#Input.load_rdkit_mol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Input.load_rdkit_mol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return molecular data from <code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code> object.</p>
+<dd><p>Return molecular data from <code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code> object.</p>
 <dl class="docutils">
-<dt>mol <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></span></dt>
+<dt>mol <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></span></dt>
 <dd>A molecule object from RDKit.</dd>
 </dl>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></dt>
-<dd>A dictionary with <code class="docutils literal"><span class="pre">elements</span></code> and <code class="docutils literal"><span class="pre">coordinates</span></code> as keys
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></dt>
+<dd>A dictionary with <code class="docutils literal notranslate"><span class="pre">elements</span></code> and <code class="docutils literal notranslate"><span class="pre">coordinates</span></code> as keys
 containing molecular data extracted from
-<code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code> object.</dd>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code> object.</dd>
 </dl>
 </dd></dl>
 
@@ -176,18 +194,18 @@ containing molecular data extracted from
 <dl class="class">
 <dt id="pywindow.io_tools.Output">
 <em class="property">class </em><code class="descclassname">pywindow.io_tools.</code><code class="descname">Output</code><a class="reference internal" href="_modules/pywindow/io_tools.html#Output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class used to process and save output files.</p>
 <dl class="method">
 <dt id="pywindow.io_tools.Output.dump2file">
 <code class="descname">dump2file</code><span class="sig-paren">(</span><em>obj</em>, <em>filepath</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/io_tools.html#Output.dump2file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.io_tools.Output.dump2file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump a dictionary into a file. (Extensions: XYZ or PDB)</p>
 <dl class="docutils">
-<dt>obj <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></span></dt>
+<dt>obj <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></dt>
 <dd>A dictionary containing molecular information.</dd>
-<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
+<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
 <dd>The filepath for the dumped file.</dd>
-<dt>override <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></span></dt>
+<dt>override <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></dt>
 <dd>If True, any file in the filepath will be override. (default=False)</dd>
 </dl>
 </dd></dl>
@@ -198,11 +216,11 @@ containing molecular data extracted from
 <dd><p>Dump a dictionary into a JSON dictionary.</p>
 <p>Uses the json.dump() function.</p>
 <dl class="docutils">
-<dt>obj <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></span></dt>
+<dt>obj <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></dt>
 <dd>A dictionary to be dumpped as JSON file.</dd>
-<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
+<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
 <dd>The filepath for the dumped file.</dd>
-<dt>override <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></span></dt>
+<dt>override <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></dt>
 <dd>If True, any file in the filepath will be override. (default=False)</dd>
 </dl>
 </dd></dl>
@@ -213,6 +231,7 @@ containing molecular data extracted from
 
 
            </div>
+           
           </div>
           <footer>
   
@@ -225,7 +244,7 @@ containing molecular data extracted from
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -244,9 +263,11 @@ containing molecular data extracted from
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
@@ -256,19 +277,13 @@ containing molecular data extracted from
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

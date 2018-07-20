@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,26 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pywindow  documentation" href="index.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -78,8 +73,11 @@
           
             
             
-                <!-- Local TOC -->
-                <div class="local-toc"><ul>
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">pywindow.molecular module</a></li>
 </ul>
 </div>
@@ -92,34 +90,54 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">pywindow</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pywindow</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
-    <li>pywindow.molecular module</li>
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>pywindow.molecular module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/pywindow.molecular.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -127,182 +145,182 @@
             
   <div class="section" id="module-pywindow.molecular">
 <span id="pywindow-molecular-module"></span><h1>pywindow.molecular module<a class="headerlink" href="#module-pywindow.molecular" title="Permalink to this headline">¶</a></h1>
-<p>Defines <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> and <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> classes.</p>
-<p>This module is the most important part of the <code class="docutils literal"><span class="pre">pywindow</span></code> package, as it is
+<p>Defines <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> and <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> classes.</p>
+<p>This module is the most important part of the <code class="docutils literal notranslate"><span class="pre">pywindow</span></code> package, as it is
 at the frontfront of the interaction with the user. The two main classes
-defined here: <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> and <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> are used to
+defined here: <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> and <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> are used to
 store and analyse single molecules or assemblies of single molecules.</p>
-<p>The <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> is used as a first step to the analysis. It allows
+<p>The <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> is used as a first step to the analysis. It allows
 to load data, to refine it (rebuild molecules in a periodic system, decipher
 force field atom ids) and to extract single molecules for analysis as
-<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> instances.</p>
-<p>To get started see <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>.</p>
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> instances.</p>
+<p>To get started see <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a>.</p>
 <p>To get started with the analysis of Molecular Dynamic trajectories go to
-<a class="reference internal" href="pywindow.trajectory.html#module-pywindow.trajectory" title="pywindow.trajectory"><code class="xref py py-mod docutils literal"><span class="pre">pywindow.trajectory</span></code></a>.</p>
+<a class="reference internal" href="pywindow.trajectory.html#module-pywindow.trajectory" title="pywindow.trajectory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pywindow.trajectory</span></code></a>.</p>
 <dl class="class">
 <dt id="pywindow.molecular.MolecularSystem">
 <em class="property">class </em><code class="descclassname">pywindow.molecular.</code><code class="descname">MolecularSystem</code><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Container for the molecular system.</p>
-<p>To load input and initialise <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>, one of the
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> classmethods (<a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_file" title="pywindow.molecular.MolecularSystem.load_file"><code class="xref py py-func docutils literal"><span class="pre">load_file()</span></code></a>,
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_rdkit_mol" title="pywindow.molecular.MolecularSystem.load_rdkit_mol"><code class="xref py py-func docutils literal"><span class="pre">load_rdkit_mol()</span></code></a> or <a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_system" title="pywindow.molecular.MolecularSystem.load_system"><code class="xref py py-func docutils literal"><span class="pre">load_system()</span></code></a>) should be used.
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> <strong>should not be initialised by itself.</strong></p>
+<p>To load input and initialise <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a>, one of the
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> classmethods (<a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_file" title="pywindow.molecular.MolecularSystem.load_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_file()</span></code></a>,
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_rdkit_mol" title="pywindow.molecular.MolecularSystem.load_rdkit_mol"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_rdkit_mol()</span></code></a> or <a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_system" title="pywindow.molecular.MolecularSystem.load_system"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_system()</span></code></a>) should be used.
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> <strong>should not be initialised by itself.</strong></p>
 <ol class="arabic simple">
 <li>Using file as an input:</li>
 </ol>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="sb">`filepath`</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="sb">`filepath`</span><span class="p">)</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li>Using RDKit molecule object as an input:</li>
 </ol>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">rdkit</span><span class="o">.</span><span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">rdkit</span><span class="o">.</span><span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>Using a dictionary (or another <code class="xref py py-attr docutils literal"><span class="pre">MoleculeSystem.system</span></code>) as input:</li>
+<li>Using a dictionary (or another <code class="xref py py-attr docutils literal notranslate"><span class="pre">MoleculeSystem.system</span></code>) as input:</li>
 </ol>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_system</span><span class="p">({</span><span class="o">...</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_system</span><span class="p">({</span><span class="o">...</span><span class="p">})</span>
 </pre></div>
 </div>
 <dl class="docutils">
-<dt>system_id <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code> or <code class="xref py py-class docutils literal"><span class="pre">int</span></code></span></dt>
+<dt>system_id <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></dt>
 <dd>The input filename or user defined.</dd>
-<dt>system <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></span></dt>
+<dt>system <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></dt>
 <dd>A dictionary containing all the information extracted from input.</dd>
-<dt>molecules <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></span></dt>
-<dd>A list containing all the returned <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> s after using
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal"><span class="pre">make_modular()</span></code></a>.</dd>
+<dt>molecules <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></dt>
+<dd>A list containing all the returned <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> s after using
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_modular()</span></code></a>.</dd>
 </dl>
 <dl class="method">
 <dt id="pywindow.molecular.MolecularSystem.decipher_atom_keys">
 <code class="descname">decipher_atom_keys</code><span class="sig-paren">(</span><em>forcefield='DLF'</em>, <em>dict_key='atom_ids'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.decipher_atom_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.decipher_atom_keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decipher force field atom ids.</p>
-<p>This takes all values in <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system['atom_ids']</span></code>
+<p>This takes all values in <code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.system['atom_ids']</span></code>
 that match force field type criteria and creates
-<code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system['elements']</span></code> with the corresponding
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.system['elements']</span></code> with the corresponding
 periodic table of elements equivalents.</p>
 <p>If a forcefield is not supported by this method, the
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal"><span class="pre">MolecularSystem.swap_atom_keys()</span></code></a> can be used instead.</p>
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">MolecularSystem.swap_atom_keys()</span></code></a> can be used instead.</p>
 <p>DLF stands for DL_F notation.</p>
 <p>See: C. W. Yong, Descriptions and Implementations of DL_F Notation: A
 Natural Chemical Expression System of Atom Types for Molecular
 Simulations, J. Chem. Inf. Model., 2016, 56, 1405–1409.</p>
 <dl class="docutils">
-<dt>forcefield <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
+<dt>forcefield <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
 <dd>The forcefield used to decipher atom ids. Allowed (not case
 sensitive): ‘OPLS’, ‘OPLS2005’, ‘OPLSAA’, ‘OPLS3’, ‘DLF’, ‘DL_F’.
 (default=’DLF’)</dd>
-<dt>dict_key <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
-<dd>The <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system</span></code> dictionary key to the array
+<dt>dict_key <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
+<dd>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.system</span></code> dictionary key to the array
 containing the force field atom ids. (default=’atom_ids’)</dd>
 </dl>
-<p>None : <code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+<p>None : <code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pywindow.molecular.MolecularSystem.dump_system">
 <code class="descname">dump_system</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>modular=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.dump_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.dump_system" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> to a file (PDB or XYZ).</p>
-<p>Kwargs are passed to <a class="reference internal" href="pywindow.io_tools.html#pywindow.io_tools.Output.dump2file" title="pywindow.io_tools.Output.dump2file"><code class="xref py py-func docutils literal"><span class="pre">pywindow.io_tools.Output.dump2file()</span></code></a>.</p>
+<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> to a file (PDB or XYZ).</p>
+<p>Kwargs are passed to <a class="reference internal" href="pywindow.io_tools.html#pywindow.io_tools.Output.dump2file" title="pywindow.io_tools.Output.dump2file"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.io_tools.Output.dump2file()</span></code></a>.</p>
 <dl class="docutils">
-<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
-<dd>The filepath for the dumped file. If <code class="xref py py-class docutils literal"><span class="pre">None</span></code>, the file is
-dumped localy with <code class="xref py py-attr docutils literal"><span class="pre">system_id</span></code> as filename.
+<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
+<dd>The filepath for the dumped file. If <code class="xref py py-class docutils literal notranslate"><span class="pre">None</span></code>, the file is
+dumped localy with <code class="xref py py-attr docutils literal notranslate"><span class="pre">system_id</span></code> as filename.
 (defualt=None)</dd>
-<dt>modular <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></span></dt>
-<dd>If False, dump the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as in
-<code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system</span></code>, if True, dump the
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as catenated :class:Molecule objects
-from <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.molecules</span></code></dd>
+<dt>modular <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></dt>
+<dd>If False, dump the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> as in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.system</span></code>, if True, dump the
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> as catenated :class:Molecule objects
+from <code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.molecules</span></code></dd>
 </dl>
-<p>None : <code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+<p>None : <code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pywindow.molecular.MolecularSystem.dump_system_json">
 <code class="descname">dump_system_json</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>modular=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.dump_system_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.dump_system_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> to a JSON dictionary.</p>
-<p>The dumped JSON dictionary, with <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>, can then be
-loaded through a JSON loader and then through <a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_system" title="pywindow.molecular.MolecularSystem.load_system"><code class="xref py py-func docutils literal"><span class="pre">load_system()</span></code></a>
-to retrieve a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>.</p>
-<p>Kwargs are passed to <a class="reference internal" href="pywindow.io_tools.html#pywindow.io_tools.Output.dump2json" title="pywindow.io_tools.Output.dump2json"><code class="xref py py-func docutils literal"><span class="pre">pywindow.io_tools.Output.dump2json()</span></code></a>.</p>
+<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> to a JSON dictionary.</p>
+<p>The dumped JSON dictionary, with <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a>, can then be
+loaded through a JSON loader and then through <a class="reference internal" href="#pywindow.molecular.MolecularSystem.load_system" title="pywindow.molecular.MolecularSystem.load_system"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_system()</span></code></a>
+to retrieve a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a>.</p>
+<p>Kwargs are passed to <a class="reference internal" href="pywindow.io_tools.html#pywindow.io_tools.Output.dump2json" title="pywindow.io_tools.Output.dump2json"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.io_tools.Output.dump2json()</span></code></a>.</p>
 <dl class="docutils">
-<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
-<dd>The filepath for the dumped file. If <code class="xref py py-class docutils literal"><span class="pre">None</span></code>, the file is
-dumped localy with <code class="xref py py-attr docutils literal"><span class="pre">system_id</span></code> as filename.
+<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
+<dd>The filepath for the dumped file. If <code class="xref py py-class docutils literal notranslate"><span class="pre">None</span></code>, the file is
+dumped localy with <code class="xref py py-attr docutils literal notranslate"><span class="pre">system_id</span></code> as filename.
 (defualt=None)</dd>
-<dt>modular <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></span></dt>
-<dd>If False, dump the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as in
-<code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system</span></code>, if True, dump the
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as catenated :class:Molecule objects
-from <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.molecules</span></code></dd>
+<dt>modular <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></dt>
+<dd>If False, dump the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> as in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.system</span></code>, if True, dump the
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> as catenated :class:Molecule objects
+from <code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.molecules</span></code></dd>
 </dl>
-<p>None : <code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+<p>None : <code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="pywindow.molecular.MolecularSystem.load_file">
 <em class="property">classmethod </em><code class="descname">load_file</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.load_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.load_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> from an input file.</p>
+<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> from an input file.</p>
 <p>Recognized input file formats: XYZ, PDB and MOL (V3000).</p>
 <dl class="docutils">
-<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
+<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
 <dd>The input’s filepath.</dd>
 </dl>
 <dl class="docutils">
-<dt><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></dt>
-<dd><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a></dd>
+<dt><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></dt>
+<dd><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a></dd>
 </dl>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="pywindow.molecular.MolecularSystem.load_rdkit_mol">
 <em class="property">classmethod </em><code class="descname">load_rdkit_mol</code><span class="sig-paren">(</span><em>mol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.load_rdkit_mol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.load_rdkit_mol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> from <code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code>.</p>
+<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> from <code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code>.</p>
 <dl class="docutils">
-<dt>mol <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></span></dt>
+<dt>mol <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></span></dt>
 <dd>An RDKit molecule object.</dd>
 </dl>
 <dl class="docutils">
-<dt><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></dt>
-<dd><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a></dd>
+<dt><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></dt>
+<dd><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a></dd>
 </dl>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="pywindow.molecular.MolecularSystem.load_system">
 <em class="property">classmethod </em><code class="descname">load_system</code><span class="sig-paren">(</span><em>dict_</em>, <em>system_id='system'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.load_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.load_system" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> from a python <code class="xref py py-class docutils literal"><span class="pre">dict</span></code>.</p>
-<p>As the loaded <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> is storred as a <code class="xref py py-class docutils literal"><span class="pre">dict</span></code> in
-the <code class="xref py py-class docutils literal"><span class="pre">MolecularSystem.system</span></code> it can also be loaded directly from
-a <code class="xref py py-class docutils literal"><span class="pre">dict</span></code> input. This feature is used by <code class="xref py py-mod docutils literal"><span class="pre">trajectory</span></code> that
+<dd><p>Create a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> from a python <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+<p>As the loaded <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> is storred as a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> in
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem.system</span></code> it can also be loaded directly from
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> input. This feature is used by <code class="xref py py-mod docutils literal notranslate"><span class="pre">trajectory</span></code> that
 extracts trajectory frames as dictionaries and returns them
-as <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> objects through this classmethod.</p>
+as <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> objects through this classmethod.</p>
 <dl class="docutils">
-<dt><a href="#id1"><span class="problematic" id="id2">dict_</span></a> <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></span></dt>
+<dt><a href="#id1"><span class="problematic" id="id2">dict_</span></a> <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></dt>
 <dd>A python dictionary.</dd>
-<dt>system_id <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code> or :class:’int’, optional</span></dt>
+<dt>system_id <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> or :class:’int’, optional</span></dt>
 <dd>Inherited or user defined system id. (default=’system’)</dd>
 </dl>
 <dl class="docutils">
-<dt><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></dt>
-<dd><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a></dd>
+<dt><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></dt>
+<dd><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a></dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pywindow.molecular.MolecularSystem.make_modular">
 <code class="descname">make_modular</code><span class="sig-paren">(</span><em>rebuild=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.make_modular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.make_modular" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find and return all <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> s in <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>.</p>
-<p>This function populates <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.molecules</span></code> with
-<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> s.</p>
+<dd><p>Find and return all <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> s in <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a>.</p>
+<p>This function populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.molecules</span></code> with
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> s.</p>
 <dl class="docutils">
-<dt>rebuild <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></span></dt>
-<dd>If True, run first the <a class="reference internal" href="#pywindow.molecular.MolecularSystem.rebuild_system" title="pywindow.molecular.MolecularSystem.rebuild_system"><code class="xref py py-func docutils literal"><span class="pre">rebuild_system()</span></code></a>. (default=False)</dd>
+<dt>rebuild <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></dt>
+<dd>If True, run first the <a class="reference internal" href="#pywindow.molecular.MolecularSystem.rebuild_system" title="pywindow.molecular.MolecularSystem.rebuild_system"><code class="xref py py-func docutils literal notranslate"><span class="pre">rebuild_system()</span></code></a>. (default=False)</dd>
 </dl>
-<p>None : <code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+<p>None : <code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
 </dd></dl>
 
 <dl class="method">
@@ -310,10 +328,10 @@ as <a class="reference internal" href="#pywindow.molecular.MolecularSystem" titl
 <code class="descname">rebuild_system</code><span class="sig-paren">(</span><em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.rebuild_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.rebuild_system" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rebuild molecules in molecular system.</p>
 <dl class="docutils">
-<dt>override <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code>, optional (default=False)</span></dt>
+<dt>override <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional (default=False)</span></dt>
 <dd>If False the rebuild molecular system is returned as a new
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a>, if True, the current
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> is modified.</dd>
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a>, if True, the current
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> is modified.</dd>
 </dl>
 </dd></dl>
 
@@ -321,34 +339,34 @@ as <a class="reference internal" href="#pywindow.molecular.MolecularSystem" titl
 <dt id="pywindow.molecular.MolecularSystem.swap_atom_keys">
 <code class="descname">swap_atom_keys</code><span class="sig-paren">(</span><em>swap_dict</em>, <em>dict_key='atom_ids'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.swap_atom_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Swap a force field atom id for another user-defined value.</p>
-<p>This modified all values in <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system['atom_ids']</span></code>
+<p>This modified all values in <code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.system['atom_ids']</span></code>
 that match criteria.</p>
 <p>This function can be used to decipher a whole forcefield if an
 appropriate dictionary is passed to the function.</p>
 <p>In this example all atom ids ‘he’ will be exchanged to ‘H’.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">swap_atom_keys</span><span class="p">({</span><span class="s1">&#39;he&#39;</span><span class="p">:</span> <span class="s1">&#39;H&#39;</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">swap_atom_keys</span><span class="p">({</span><span class="s1">&#39;he&#39;</span><span class="p">:</span> <span class="s1">&#39;H&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
 <dl class="docutils">
-<dt>swap_dict: <code class="xref py py-class docutils literal"><span class="pre">dict</span></code></dt>
+<dt>swap_dict: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></dt>
 <dd>A dictionary containg force field atom ids (keys) to be swapped
 with corresponding values (keys’ arguments).</dd>
-<dt>dict_key: <code class="xref py py-class docutils literal"><span class="pre">str</span></code></dt>
-<dd>A key in <code class="xref py py-attr docutils literal"><span class="pre">MolecularSystem.system</span></code> dictionary to perform the
+<dt>dict_key: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></dt>
+<dd>A key in <code class="xref py py-attr docutils literal notranslate"><span class="pre">MolecularSystem.system</span></code> dictionary to perform the
 atom keys swapping operation on. (default=’atom_ids’)</dd>
 </dl>
-<p>None : <code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+<p>None : <code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pywindow.molecular.MolecularSystem.system_to_molecule">
 <code class="descname">system_to_molecule</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#MolecularSystem.system_to_molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.MolecularSystem.system_to_molecule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> as a <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> directly.</p>
-<p>Only to be used conditionally, when the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> is a
+<dd><p>Return <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> as a <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> directly.</p>
+<p>Only to be used conditionally, when the <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> is a
 discrete molecule and no input pre-processing is required.</p>
 <dl class="docutils">
-<dt><a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular.Molecule</span></code></a></dt>
-<dd><a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a></dd>
+<dt><a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.Molecule</span></code></a></dt>
+<dd><a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a></dd>
 </dl>
 </dd></dl>
 
@@ -357,15 +375,15 @@ discrete molecule and no input pre-processing is required.</p>
 <dl class="class">
 <dt id="pywindow.molecular.Molecule">
 <em class="property">class </em><code class="descclassname">pywindow.molecular.</code><code class="descname">Molecule</code><span class="sig-paren">(</span><em>mol</em>, <em>system_name</em>, <em>mol_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pywindow.molecular._Shape</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular._Shape</span></code></p>
 <p>Container for a single molecule.</p>
 <p>This class is meant for the analysis of single molecules, molecular pores
 especially. The object passed to this class should therefore be a finite
 and interconnected individuum.</p>
 <p>This class should not be initialised directly, but result from
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem.system_to_molecule" title="pywindow.molecular.MolecularSystem.system_to_molecule"><code class="xref py py-func docutils literal"><span class="pre">MolecularSystem.system_to_molecule()</span></code></a> or
-<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal"><span class="pre">MolecularSystem.make_modular()</span></code></a>.</p>
-<p>Methods in <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> allow to calculate:</p>
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.system_to_molecule" title="pywindow.molecular.MolecularSystem.system_to_molecule"><code class="xref py py-func docutils literal notranslate"><span class="pre">MolecularSystem.system_to_molecule()</span></code></a> or
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal notranslate"><span class="pre">MolecularSystem.make_modular()</span></code></a>.</p>
+<p>Methods in <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> allow to calculate:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li>The maximum diameter of a molecule.</li>
@@ -378,35 +396,35 @@ and interconnected individuum.</p>
 </ol>
 </div></blockquote>
 <dl class="docutils">
-<dt>mol <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></span></dt>
-<dd>The <code class="xref py py-attr docutils literal"><span class="pre">Molecular.System.system</span></code> dictionary passed to the
-<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> which is esentially a container of the information
+<dt>mol <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></dt>
+<dd>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">Molecular.System.system</span></code> dictionary passed to the
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> which is esentially a container of the information
 that compose a molecular entity, such as the coordinates and
 atom ids and/or elements.</dd>
-<dt>no_of_atoms <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></span></dt>
+<dt>no_of_atoms <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></dt>
 <dd>The number of atoms in the molecule.</dd>
-<dt>elements <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code></span></dt>
+<dt>elements <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code></span></dt>
 <dd>An array containing the elements, as strings, composing the molecule.</dd>
-<dt>atom_ids <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code> (conditional)</span></dt>
-<dd>If the <code class="xref py py-attr docutils literal"><span class="pre">Molecule.mol</span></code> contains ‘atom_ids’ keyword, the force
+<dt>atom_ids <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> (conditional)</span></dt>
+<dd>If the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Molecule.mol</span></code> contains ‘atom_ids’ keyword, the force
 field ids of the elements.</dd>
-<dt>coordinates <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code></span></dt>
+<dt>coordinates <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code></span></dt>
 <dd>The x, y and z atomic Cartesian coordinates of all elements.</dd>
-<dt>parent_system <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
-<dd>The <code class="xref py py-attr docutils literal"><span class="pre">name</span></code> of <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal"><span class="pre">MolecularSystem</span></code></a> passed to
-<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a>.</dd>
-<dt>molecule_id <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">any</span></code></span></dt>
-<dd>The molecule id passed when initialising <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a>.</dd>
-<dt>properties <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></span></dt>
+<dt>parent_system <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
+<dd>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">name</span></code> of <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code></a> passed to
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>.</dd>
+<dt>molecule_id <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">any</span></code></span></dt>
+<dd>The molecule id passed when initialising <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>.</dd>
+<dt>properties <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></dt>
 <dd>A dictionary that is populated by the output of
-<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> methods.</dd>
+<a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> methods.</dd>
 </dl>
 <dl class="method">
 <dt id="pywindow.molecular.Molecule.calculate_average_diameter">
 <code class="descname">calculate_average_diameter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_average_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_average_diameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the average diamension of a molecule.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">float</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></dt>
 <dd>The average dimension of the molecule.</dd>
 </dl>
 </dd></dl>
@@ -416,7 +434,7 @@ field ids of the elements.</dd>
 <code class="descname">calculate_centre_of_mass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_centre_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_centre_of_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the xyz coordinates of the centre of mass of a molecule.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code></dt>
 <dd>The centre of mass of the molecule.</dd>
 </dl>
 </dd></dl>
@@ -426,7 +444,7 @@ field ids of the elements.</dd>
 <code class="descname">calculate_maximum_diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_maximum_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_maximum_diameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the maximum diamension of a molecule.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">float</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></dt>
 <dd>The maximum dimension of the molecule.</dd>
 </dl>
 </dd></dl>
@@ -436,7 +454,7 @@ field ids of the elements.</dd>
 <code class="descname">calculate_pore_diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_pore_diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_pore_diameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the intrinsic pore diameter.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">float</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></dt>
 <dd>The intrinsic pore diameter.</dd>
 </dl>
 </dd></dl>
@@ -445,11 +463,11 @@ field ids of the elements.</dd>
 <dt id="pywindow.molecular.Molecule.calculate_pore_diameter_opt">
 <code class="descname">calculate_pore_diameter_opt</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_pore_diameter_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the intrinsic pore diameter (for the optimised pore centre).</p>
-<p>Similarly to <a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter" title="pywindow.molecular.Molecule.calculate_pore_diameter"><code class="xref py py-func docutils literal"><span class="pre">calculate_pore_diameter()</span></code></a> this method returns the
+<p>Similarly to <a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter" title="pywindow.molecular.Molecule.calculate_pore_diameter"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate_pore_diameter()</span></code></a> this method returns the
 the intrinsic pore diameter, however, first a better approximation
 of the pore centre is found with optimisation.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">float</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></dt>
 <dd>The intrinsic pore diameter.</dd>
 </dl>
 </dd></dl>
@@ -459,7 +477,7 @@ of the pore centre is found with optimisation.</p>
 <code class="descname">calculate_pore_volume</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_pore_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_pore_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the intrinsic pore volume.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">float</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></dt>
 <dd>The intrinsic pore volume.</dd>
 </dl>
 </dd></dl>
@@ -468,11 +486,11 @@ of the pore centre is found with optimisation.</p>
 <dt id="pywindow.molecular.Molecule.calculate_pore_volume_opt">
 <code class="descname">calculate_pore_volume_opt</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.calculate_pore_volume_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.calculate_pore_volume_opt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the intrinsic pore volume (for the optimised pore centre).</p>
-<p>Similarly to <a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume" title="pywindow.molecular.Molecule.calculate_pore_volume"><code class="xref py py-func docutils literal"><span class="pre">calculate_pore_volume()</span></code></a> this method returns the
+<p>Similarly to <a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume" title="pywindow.molecular.Molecule.calculate_pore_volume"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate_pore_volume()</span></code></a> this method returns the
 the volume intrinsic pore diameter, however, for the
-<a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-func docutils literal"><span class="pre">calculate_pore_diameter_opt()</span></code></a> returned value.</p>
+<a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate_pore_diameter_opt()</span></code></a> returned value.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">float</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></dt>
 <dd>The intrinsic pore volume.</dd>
 </dl>
 </dd></dl>
@@ -484,9 +502,9 @@ the volume intrinsic pore diameter, however, for the
 <p>This function first finds and then measures the diameters of all the
 window in the molecule.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">numpy.array</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code></dt>
 <dd>An array of windows’ diameters.</dd>
-<dt><code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></dt>
 <dd>If no windows were found.</dd>
 </dl>
 </dd></dl>
@@ -494,39 +512,39 @@ window in the molecule.</p>
 <dl class="method">
 <dt id="pywindow.molecular.Molecule.dump_molecule">
 <code class="descname">dump_molecule</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>include_coms=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.dump_molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.dump_molecule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a> to a file (PDB or XYZ).</p>
-<p>Kwargs are passed to <a class="reference internal" href="pywindow.io_tools.html#pywindow.io_tools.Output.dump2file" title="pywindow.io_tools.Output.dump2file"><code class="xref py py-func docutils literal"><span class="pre">pywindow.io_tools.Output.dump2file()</span></code></a>.</p>
+<dd><p>Dump a <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a> to a file (PDB or XYZ).</p>
+<p>Kwargs are passed to <a class="reference internal" href="pywindow.io_tools.html#pywindow.io_tools.Output.dump2file" title="pywindow.io_tools.Output.dump2file"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.io_tools.Output.dump2file()</span></code></a>.</p>
 <p>For validation purposes an overlay of window centres and COMs can also
 be dumped as:</p>
 <p>He - for the centre of mass</p>
 <p>Ne - for the centre of the optimised cavity</p>
 <p>Ar - for the centres of each found window</p>
 <dl class="docutils">
-<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
-<dd>The filepath for the dumped file. If <code class="xref py py-class docutils literal"><span class="pre">None</span></code>, the file is
-dumped localy with <code class="xref py py-attr docutils literal"><span class="pre">molecule_id</span></code> as filename.
+<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
+<dd>The filepath for the dumped file. If <code class="xref py py-class docutils literal notranslate"><span class="pre">None</span></code>, the file is
+dumped localy with <code class="xref py py-attr docutils literal notranslate"><span class="pre">molecule_id</span></code> as filename.
 (defualt=None)</dd>
-<dt>include_coms <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></span></dt>
+<dt>include_coms <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></dt>
 <dd>If True, dump also with an overlay of window centres and COMs.
 (default=False)</dd>
 </dl>
-<p>None : <code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+<p>None : <code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pywindow.molecular.Molecule.dump_properties_json">
 <code class="descname">dump_properties_json</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>molecular=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.dump_properties_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.dump_properties_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dump content of <code class="xref py py-attr docutils literal"><span class="pre">Molecule.properties</span></code> to a JSON dictionary.</p>
+<dd><p>Dump content of <code class="xref py py-attr docutils literal notranslate"><span class="pre">Molecule.properties</span></code> to a JSON dictionary.</p>
 <dl class="docutils">
-<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></span></dt>
-<dd>The filepath for the dumped file. If <code class="xref py py-class docutils literal"><span class="pre">None</span></code>, the file is
-dumped localy with <code class="xref py py-attr docutils literal"><span class="pre">molecule_id</span></code> as filename.
+<dt>filepath <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></dt>
+<dd>The filepath for the dumped file. If <code class="xref py py-class docutils literal notranslate"><span class="pre">None</span></code>, the file is
+dumped localy with <code class="xref py py-attr docutils literal notranslate"><span class="pre">molecule_id</span></code> as filename.
 (defualt=None)</dd>
-<dt>molecular <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></span></dt>
-<dd>If False, dump only the content of <code class="xref py py-attr docutils literal"><span class="pre">Molecule.properties</span></code>,
-if True, dump all the information about <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code></a>.</dd>
+<dt>molecular <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></dt>
+<dd>If False, dump only the content of <code class="xref py py-attr docutils literal notranslate"><span class="pre">Molecule.properties</span></code>,
+if True, dump all the information about <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>.</dd>
 </dl>
-<p>None : <code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+<p>None : <code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
 </dd></dl>
 
 <dl class="method">
@@ -536,26 +554,26 @@ if True, dump all the information about <a class="reference internal" href="#pyw
 <p>This invokes other methods:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.molecular_weight" title="pywindow.molecular.Molecule.molecular_weight"><code class="xref py py-attr docutils literal"><span class="pre">molecular_weight()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_centre_of_mass" title="pywindow.molecular.Molecule.calculate_centre_of_mass"><code class="xref py py-attr docutils literal"><span class="pre">calculate_centre_of_mass()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_maximum_diameter" title="pywindow.molecular.Molecule.calculate_maximum_diameter"><code class="xref py py-attr docutils literal"><span class="pre">calculate_maximum_diameter()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_average_diameter" title="pywindow.molecular.Molecule.calculate_average_diameter"><code class="xref py py-attr docutils literal"><span class="pre">calculate_average_diameter()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter" title="pywindow.molecular.Molecule.calculate_pore_diameter"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_diameter()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume" title="pywindow.molecular.Molecule.calculate_pore_volume"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_volume()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_diameter_opt()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume_opt" title="pywindow.molecular.Molecule.calculate_pore_volume_opt"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_volume_opt()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-attr docutils literal"><span class="pre">calculate_pore_diameter_opt()</span></code></a></li>
-<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_windows" title="pywindow.molecular.Molecule.calculate_windows"><code class="xref py py-attr docutils literal"><span class="pre">calculate_windows()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.molecular_weight" title="pywindow.molecular.Molecule.molecular_weight"><code class="xref py py-attr docutils literal notranslate"><span class="pre">molecular_weight()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_centre_of_mass" title="pywindow.molecular.Molecule.calculate_centre_of_mass"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_centre_of_mass()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_maximum_diameter" title="pywindow.molecular.Molecule.calculate_maximum_diameter"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_maximum_diameter()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_average_diameter" title="pywindow.molecular.Molecule.calculate_average_diameter"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_average_diameter()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter" title="pywindow.molecular.Molecule.calculate_pore_diameter"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_pore_diameter()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume" title="pywindow.molecular.Molecule.calculate_pore_volume"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_pore_volume()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_pore_diameter_opt()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_volume_opt" title="pywindow.molecular.Molecule.calculate_pore_volume_opt"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_pore_volume_opt()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_pore_diameter_opt" title="pywindow.molecular.Molecule.calculate_pore_diameter_opt"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_pore_diameter_opt()</span></code></a></li>
+<li><a class="reference internal" href="#pywindow.molecular.Molecule.calculate_windows" title="pywindow.molecular.Molecule.calculate_windows"><code class="xref py py-attr docutils literal notranslate"><span class="pre">calculate_windows()</span></code></a></li>
 </ol>
 </div></blockquote>
 <dl class="docutils">
-<dt>ncpus <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></span></dt>
+<dt>ncpus <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></dt>
 <dd>Number of CPUs used for the parallelised parts of
-<a class="reference internal" href="pywindow.utilities.html#pywindow.utilities.find_windows" title="pywindow.utilities.find_windows"><code class="xref py py-func docutils literal"><span class="pre">pywindow.utilities.find_windows()</span></code></a>. (default=1=serial)</dd>
+<a class="reference internal" href="pywindow.utilities.html#pywindow.utilities.find_windows" title="pywindow.utilities.find_windows"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.utilities.find_windows()</span></code></a>. (default=1=serial)</dd>
 </dl>
 <dl class="docutils">
-<dt><code class="xref py py-attr docutils literal"><span class="pre">Molecule.properties</span></code></dt>
-<dd>The updated <code class="xref py py-attr docutils literal"><span class="pre">Molecule.properties</span></code> with returns of all
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">Molecule.properties</span></code></dt>
+<dd>The updated <code class="xref py py-attr docutils literal notranslate"><span class="pre">Molecule.properties</span></code> with returns of all
 used methods.</dd>
 </dl>
 </dd></dl>
@@ -565,7 +583,7 @@ used methods.</dd>
 <code class="descname">molecular_weight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/molecular.html#Molecule.molecular_weight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.molecular.Molecule.molecular_weight" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the molecular weight of a molecule.</p>
 <dl class="docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">float</span></code></dt>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></dt>
 <dd>The molecular weight of the molecule.</dd>
 </dl>
 </dd></dl>
@@ -577,7 +595,7 @@ used methods.</dd>
 <p>This function takes the molecule’s coordinates and adjust them so that
 the centre of mass of the molecule coincides with the origin of the
 coordinate system.</p>
-<p>None : <code class="xref py py-class docutils literal"><span class="pre">NoneType</span></code></p>
+<p>None : <code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
 </dd></dl>
 
 </dd></dl>
@@ -586,6 +604,7 @@ coordinate system.</p>
 
 
            </div>
+           
           </div>
           <footer>
   
@@ -598,7 +617,7 @@ coordinate system.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -617,9 +636,11 @@ coordinate system.</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
@@ -629,19 +650,13 @@ coordinate system.</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

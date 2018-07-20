@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,26 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pywindow  documentation" href="index.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -78,8 +73,11 @@
           
             
             
-                <!-- Local TOC -->
-                <div class="local-toc"><ul>
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">pywindow.utilities module</a><ul>
 <li><a class="reference internal" href="#log">LOG</a></li>
 <li><a class="reference internal" href="#to-do-list">TO DO LIST</a></li>
@@ -96,34 +94,54 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">pywindow</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pywindow</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
-    <li>pywindow.utilities module</li>
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>pywindow.utilities module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/pywindow.utilities.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -279,11 +297,11 @@ It is a nested list of lists with each individual list containing:</p>
 <p>They work better for molecular re-building than two separate arrays for
 elements and coordinates do.</p>
 <dl class="docutils">
-<dt>elements <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></span></dt>
+<dt>elements <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></span></dt>
 <dd>An array of all elements (type: str) in a molecule.</dd>
-<dt>coordinates <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></span></dt>
+<dt>coordinates <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></span></dt>
 <dd>An array containing molecule’s coordinates.</dd>
-<dt>atom_ids <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code>, optional</span></dt>
+<dt>atom_ids <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, optional</span></dt>
 <dd>An array of all forcfield dependent atom keys (type:str) in a molecule.</dd>
 </dl>
 <dl class="docutils">
@@ -291,7 +309,7 @@ elements and coordinates do.</p>
 <dd>Version 1 or version 2 atom list depending on input parameters.</dd>
 </dl>
 <dl class="docutils">
-<dt>_FunctionError <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></span></dt>
+<dt>_FunctionError <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></span></dt>
 <dd>Raised when wrong number of parameters is passed to the function.</dd>
 </dl>
 </dd></dl>
@@ -590,7 +608,7 @@ axis about which the rotation is carried out.</dd>
 
 <dl class="function">
 <dt id="pywindow.utilities.shift_com">
-<code class="descclassname">pywindow.utilities.</code><code class="descname">shift_com</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>com_adjust=array([ 0.</em>, <em>0.</em>, <em>0.])</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#shift_com"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.shift_com" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pywindow.utilities.</code><code class="descname">shift_com</code><span class="sig-paren">(</span><em>elements</em>, <em>coordinates</em>, <em>com_adjust=array([0.</em>, <em>0.</em>, <em>0.])</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/utilities.html#shift_com"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.utilities.shift_com" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return coordinates translated by some vector.</p>
 <dl class="docutils">
 <dt>elements <span class="classifier-delimiter">:</span> <span class="classifier">numpy.ndarray</span></dt>
@@ -696,6 +714,7 @@ axis about which the rotation is carried out.</dd>
 
 
            </div>
+           
           </div>
           <footer>
   
@@ -708,7 +727,7 @@ axis about which the rotation is carried out.</dd>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -727,9 +746,11 @@ axis about which the rotation is carried out.</dd>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
@@ -739,19 +760,13 @@ axis about which the rotation is carried out.</dd>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
