@@ -173,7 +173,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
 
 
-<div class="viewcode-block" id="Input"><a class="viewcode-back" href="../../pywindow.io_tools.html#pywindow.io_tools.Input">[docs]</a><span class="k">class</span> <span class="nc">Input</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Input"><a class="viewcode-back" href="../../pywindow.html#pywindow.io_tools.Input">[docs]</a><span class="k">class</span> <span class="nc">Input</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class used to load and process input files.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -183,7 +183,7 @@
             <span class="s1">&#39;.mol&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_mol</span><span class="p">,</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="Input.load_file"><a class="viewcode-back" href="../../pywindow.io_tools.html#pywindow.io_tools.Input.load_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="Input.load_file"><a class="viewcode-back" href="../../pywindow.html#pywindow.io_tools.Input.load_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function opens any type of a readable file and decompose</span>
 <span class="sd">        the file object into a list, for each line, of lists containing</span>
@@ -213,7 +213,7 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_funcs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">]())</span></div>
 
-<div class="viewcode-block" id="Input.load_rdkit_mol"><a class="viewcode-back" href="../../pywindow.io_tools.html#pywindow.io_tools.Input.load_rdkit_mol">[docs]</a>    <span class="k">def</span> <span class="nf">load_rdkit_mol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">):</span>
+<div class="viewcode-block" id="Input.load_rdkit_mol"><a class="viewcode-back" href="../../pywindow.html#pywindow.io_tools.Input.load_rdkit_mol">[docs]</a>    <span class="k">def</span> <span class="nf">load_rdkit_mol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return molecular data from :class:`rdkit.Chem.rdchem.Mol` object.</span>
 
@@ -321,7 +321,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span></div>
 
 
-<div class="viewcode-block" id="Output"><a class="viewcode-back" href="../../pywindow.io_tools.html#pywindow.io_tools.Output">[docs]</a><span class="k">class</span> <span class="nc">Output</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Output"><a class="viewcode-back" href="../../pywindow.html#pywindow.io_tools.Output">[docs]</a><span class="k">class</span> <span class="nc">Output</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class used to process and save output files.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -331,7 +331,7 @@
             <span class="s1">&#39;pdb&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_pdb</span><span class="p">,</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="Output.dump2json"><a class="viewcode-back" href="../../pywindow.io_tools.html#pywindow.io_tools.Output.dump2json">[docs]</a>    <span class="k">def</span> <span class="nf">dump2json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Output.dump2json"><a class="viewcode-back" href="../../pywindow.html#pywindow.io_tools.Output.dump2json">[docs]</a>    <span class="k">def</span> <span class="nf">dump2json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump a dictionary into a JSON dictionary.</span>
 
@@ -371,7 +371,7 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Output.dump2file"><a class="viewcode-back" href="../../pywindow.io_tools.html#pywindow.io_tools.Output.dump2file">[docs]</a>    <span class="k">def</span> <span class="nf">dump2file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Output.dump2file"><a class="viewcode-back" href="../../pywindow.html#pywindow.io_tools.Output.dump2file">[docs]</a>    <span class="k">def</span> <span class="nf">dump2file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump a dictionary into a file. (Extensions: XYZ or PDB)</span>
 
@@ -545,7 +545,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Marcin Miklitz.
+        &copy; Copyright 2017, Marcin Miklitz, Jelfs Materials Group.
 
     </p>
   </div>
@@ -578,7 +578,6 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

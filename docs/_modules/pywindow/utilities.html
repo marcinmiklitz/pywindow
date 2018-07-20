@@ -209,7 +209,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
 
 
-<div class="viewcode-block" id="is_number"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.is_number">[docs]</a><span class="k">def</span> <span class="nf">is_number</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+<div class="viewcode-block" id="is_number"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.is_number">[docs]</a><span class="k">def</span> <span class="nf">is_number</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if an object is a number - can be converted into a float.</span>
 
@@ -230,7 +230,7 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="unique"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.unique">[docs]</a><span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="n">input_list</span><span class="p">):</span>
+<div class="viewcode-block" id="unique"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.unique">[docs]</a><span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="n">input_list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a list of unique items (similar to set functionality).</span>
 
@@ -252,14 +252,14 @@
     <span class="k">return</span> <span class="n">output</span></div>
 
 
-<div class="viewcode-block" id="to_list"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.to_list">[docs]</a><span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="to_list"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.to_list">[docs]</a><span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Not serializable&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="distance"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.distance">[docs]</a><span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="distance"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.distance">[docs]</a><span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the distance between two vectors (points) a and b.</span>
 
@@ -279,7 +279,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mf">0.5</span></div>
 
 
-<div class="viewcode-block" id="molecular_weight"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.molecular_weight">[docs]</a><span class="k">def</span> <span class="nf">molecular_weight</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
+<div class="viewcode-block" id="molecular_weight"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.molecular_weight">[docs]</a><span class="k">def</span> <span class="nf">molecular_weight</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return molecular weight of a molecule.</span>
 
@@ -297,7 +297,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atomic_mass</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="center_of_coor"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.center_of_coor">[docs]</a><span class="k">def</span> <span class="nf">center_of_coor</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="center_of_coor"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.center_of_coor">[docs]</a><span class="k">def</span> <span class="nf">center_of_coor</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the centre of coordinates.</span>
 
@@ -316,7 +316,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="center_of_mass"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.center_of_mass">[docs]</a><span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="center_of_mass"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.center_of_mass">[docs]</a><span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the centre of mass (COM).</span>
 
@@ -341,7 +341,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mass_coordinates</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mass</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">mass</span><span class="p">]))</span></div>
 
 
-<div class="viewcode-block" id="compose_atom_list"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.compose_atom_list">[docs]</a><span class="k">def</span> <span class="nf">compose_atom_list</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="compose_atom_list"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.compose_atom_list">[docs]</a><span class="k">def</span> <span class="nf">compose_atom_list</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return an `atom list` from elements and/or atom ids and coordinates.</span>
 
@@ -407,7 +407,7 @@
     <span class="k">return</span> <span class="n">atom_list</span></div>
 
 
-<div class="viewcode-block" id="decompose_atom_list"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.decompose_atom_list">[docs]</a><span class="k">def</span> <span class="nf">decompose_atom_list</span><span class="p">(</span><span class="n">atom_list</span><span class="p">):</span>
+<div class="viewcode-block" id="decompose_atom_list"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.decompose_atom_list">[docs]</a><span class="k">def</span> <span class="nf">decompose_atom_list</span><span class="p">(</span><span class="n">atom_list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return elements and/or atom ids and coordinates from an `atom list`.</span>
 
@@ -454,7 +454,7 @@
             <span class="s2">&quot; with only 4 or 5 items per sublist.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dlf_notation"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.dlf_notation">[docs]</a><span class="k">def</span> <span class="nf">dlf_notation</span><span class="p">(</span><span class="n">atom_key</span><span class="p">):</span>
+<div class="viewcode-block" id="dlf_notation"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.dlf_notation">[docs]</a><span class="k">def</span> <span class="nf">dlf_notation</span><span class="p">(</span><span class="n">atom_key</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return element for atom key using DL_F notation.&quot;&quot;&quot;</span>
     <span class="n">split</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">atom_key</span><span class="p">)</span>
     <span class="n">element</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -476,7 +476,7 @@
     <span class="k">return</span> <span class="n">element</span></div>
 
 
-<div class="viewcode-block" id="opls_notation"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.opls_notation">[docs]</a><span class="k">def</span> <span class="nf">opls_notation</span><span class="p">(</span><span class="n">atom_key</span><span class="p">):</span>
+<div class="viewcode-block" id="opls_notation"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.opls_notation">[docs]</a><span class="k">def</span> <span class="nf">opls_notation</span><span class="p">(</span><span class="n">atom_key</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return element for OPLS forcefield atom key.&quot;&quot;&quot;</span>
     <span class="c1"># warning for Ne, He, Na types overlap</span>
     <span class="n">conflicts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ne&#39;</span><span class="p">,</span> <span class="s1">&#39;he&#39;</span><span class="p">,</span> <span class="s1">&#39;na&#39;</span><span class="p">]</span>
@@ -495,7 +495,7 @@
             <span class="n">atom_key</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="decipher_atom_key"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.decipher_atom_key">[docs]</a><span class="k">def</span> <span class="nf">decipher_atom_key</span><span class="p">(</span><span class="n">atom_key</span><span class="p">,</span> <span class="n">forcefield</span><span class="p">):</span>
+<div class="viewcode-block" id="decipher_atom_key"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.decipher_atom_key">[docs]</a><span class="k">def</span> <span class="nf">decipher_atom_key</span><span class="p">(</span><span class="n">atom_key</span><span class="p">,</span> <span class="n">forcefield</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return element for deciphered atom key.</span>
 
@@ -535,7 +535,7 @@
              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">forcefield</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="shift_com"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.shift_com">[docs]</a><span class="k">def</span> <span class="nf">shift_com</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">com_adjust</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)):</span>
+<div class="viewcode-block" id="shift_com"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.shift_com">[docs]</a><span class="k">def</span> <span class="nf">shift_com</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">com_adjust</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return coordinates translated by some vector.</span>
 
@@ -560,7 +560,7 @@
     <span class="k">return</span> <span class="n">coordinates</span> <span class="o">-</span> <span class="n">com</span></div>
 
 
-<div class="viewcode-block" id="max_dim"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.max_dim">[docs]</a><span class="k">def</span> <span class="nf">max_dim</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="max_dim"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.max_dim">[docs]</a><span class="k">def</span> <span class="nf">max_dim</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the maximum diameter of a molecule.</span>
 
@@ -589,7 +589,7 @@
     <span class="k">return</span> <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">,</span> <span class="n">maxdim</span></div>
 
 
-<div class="viewcode-block" id="pore_diameter"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.pore_diameter">[docs]</a><span class="k">def</span> <span class="nf">pore_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">com</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="pore_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.pore_diameter">[docs]</a><span class="k">def</span> <span class="nf">pore_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">com</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return pore diameter of a molecule.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">com</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">com</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span>
@@ -601,13 +601,13 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">pored</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="correct_pore_diameter"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.correct_pore_diameter">[docs]</a><span class="k">def</span> <span class="nf">correct_pore_diameter</span><span class="p">(</span><span class="n">com</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_pore_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.correct_pore_diameter">[docs]</a><span class="k">def</span> <span class="nf">correct_pore_diameter</span><span class="p">(</span><span class="n">com</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return negative of a pore diameter. (optimisation function).&quot;&quot;&quot;</span>
     <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span> <span class="o">=</span> <span class="n">params</span>
     <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">pore_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">com</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="opt_pore_diameter"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.opt_pore_diameter">[docs]</a><span class="k">def</span> <span class="nf">opt_pore_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">com</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="opt_pore_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.opt_pore_diameter">[docs]</a><span class="k">def</span> <span class="nf">opt_pore_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">com</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return optimised pore diameter and it&#39;s COM.&quot;&quot;&quot;</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span>
     <span class="k">if</span> <span class="n">com</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -627,32 +627,32 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">pored</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pored</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">minimisation</span><span class="o">.</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sphere_volume"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.sphere_volume">[docs]</a><span class="k">def</span> <span class="nf">sphere_volume</span><span class="p">(</span><span class="n">sphere_radius</span><span class="p">):</span>
+<div class="viewcode-block" id="sphere_volume"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.sphere_volume">[docs]</a><span class="k">def</span> <span class="nf">sphere_volume</span><span class="p">(</span><span class="n">sphere_radius</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return volume of a sphere.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">4</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sphere_radius</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="asphericity"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.asphericity">[docs]</a><span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<div class="viewcode-block" id="asphericity"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.asphericity">[docs]</a><span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="acylidricity"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.acylidricity">[docs]</a><span class="k">def</span> <span class="nf">acylidricity</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<div class="viewcode-block" id="acylidricity"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.acylidricity">[docs]</a><span class="k">def</span> <span class="nf">acylidricity</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="relative_shape_anisotropy"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.relative_shape_anisotropy">[docs]</a><span class="k">def</span> <span class="nf">relative_shape_anisotropy</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<div class="viewcode-block" id="relative_shape_anisotropy"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.relative_shape_anisotropy">[docs]</a><span class="k">def</span> <span class="nf">relative_shape_anisotropy</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span>
         <span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">S</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_tensor_eigenvalues"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.get_tensor_eigenvalues">[docs]</a><span class="k">def</span> <span class="nf">get_tensor_eigenvalues</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_tensor_eigenvalues"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.get_tensor_eigenvalues">[docs]</a><span class="k">def</span> <span class="nf">get_tensor_eigenvalues</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvals</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvals</span><span class="p">(</span><span class="n">T</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_gyration_tensor"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.get_gyration_tensor">[docs]</a><span class="k">def</span> <span class="nf">get_gyration_tensor</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="get_gyration_tensor"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.get_gyration_tensor">[docs]</a><span class="k">def</span> <span class="nf">get_gyration_tensor</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the gyration tensor of a molecule.</span>
 
@@ -689,7 +689,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">S</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_inertia_tensor"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.get_inertia_tensor">[docs]</a><span class="k">def</span> <span class="nf">get_inertia_tensor</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="get_inertia_tensor"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.get_inertia_tensor">[docs]</a><span class="k">def</span> <span class="nf">get_inertia_tensor</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the tensor of inertia a molecule.</span>
 
@@ -724,11 +724,11 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">inertia_tensor</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="principal_axes"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.principal_axes">[docs]</a><span class="k">def</span> <span class="nf">principal_axes</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="principal_axes"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.principal_axes">[docs]</a><span class="k">def</span> <span class="nf">principal_axes</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">get_inertia_tensor</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="normalize_vector"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.normalize_vector">[docs]</a><span class="k">def</span> <span class="nf">normalize_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
+<div class="viewcode-block" id="normalize_vector"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.normalize_vector">[docs]</a><span class="k">def</span> <span class="nf">normalize_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Normalize a vector.</span>
 
@@ -749,7 +749,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="rotation_matrix_arbitrary_axis"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.rotation_matrix_arbitrary_axis">[docs]</a><span class="k">def</span> <span class="nf">rotation_matrix_arbitrary_axis</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="rotation_matrix_arbitrary_axis"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.rotation_matrix_arbitrary_axis">[docs]</a><span class="k">def</span> <span class="nf">rotation_matrix_arbitrary_axis</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a rotation matrix of `angle` radians about `axis`.</span>
 
@@ -788,7 +788,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">e11</span><span class="p">,</span> <span class="n">e12</span><span class="p">,</span> <span class="n">e13</span><span class="p">],</span> <span class="p">[</span><span class="n">e21</span><span class="p">,</span> <span class="n">e22</span><span class="p">,</span> <span class="n">e23</span><span class="p">],</span> <span class="p">[</span><span class="n">e31</span><span class="p">,</span> <span class="n">e32</span><span class="p">,</span> <span class="n">e33</span><span class="p">]])</span></div>
 
 
-<div class="viewcode-block" id="align_principal_ax"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.align_principal_ax">[docs]</a><span class="k">def</span> <span class="nf">align_principal_ax</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="align_principal_ax"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.align_principal_ax">[docs]</a><span class="k">def</span> <span class="nf">align_principal_ax</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
     <span class="n">coor</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
     <span class="n">new_coor</span> <span class="o">=</span> <span class="p">[]</span>
@@ -813,25 +813,25 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">coor</span><span class="p">,</span> <span class="n">rot</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="calc_asphericity"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.calc_asphericity">[docs]</a><span class="k">def</span> <span class="nf">calc_asphericity</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_asphericity"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.calc_asphericity">[docs]</a><span class="k">def</span> <span class="nf">calc_asphericity</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="n">inertia_tensor</span> <span class="o">=</span> <span class="n">get_inertia_tensor</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span>
     <span class="n">tensor_eigenvalues</span> <span class="o">=</span> <span class="n">get_tensor_eigenvalues</span><span class="p">(</span><span class="n">inertia_tensor</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">asphericity</span><span class="p">(</span><span class="n">tensor_eigenvalues</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="calc_acylidricity"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.calc_acylidricity">[docs]</a><span class="k">def</span> <span class="nf">calc_acylidricity</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_acylidricity"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.calc_acylidricity">[docs]</a><span class="k">def</span> <span class="nf">calc_acylidricity</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="n">inertia_tensor</span> <span class="o">=</span> <span class="n">get_inertia_tensor</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span>
     <span class="n">tensor_eigenvalues</span> <span class="o">=</span> <span class="n">get_tensor_eigenvalues</span><span class="p">(</span><span class="n">inertia_tensor</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">acylidricity</span><span class="p">(</span><span class="n">tensor_eigenvalues</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="calc_relative_shape_anisotropy"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.calc_relative_shape_anisotropy">[docs]</a><span class="k">def</span> <span class="nf">calc_relative_shape_anisotropy</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_relative_shape_anisotropy"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.calc_relative_shape_anisotropy">[docs]</a><span class="k">def</span> <span class="nf">calc_relative_shape_anisotropy</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
     <span class="n">inertia_tensor</span> <span class="o">=</span> <span class="n">get_inertia_tensor</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span>
     <span class="n">tensor_eigenvalues</span> <span class="o">=</span> <span class="n">get_tensor_eigenvalues</span><span class="p">(</span><span class="n">inertia_tensor</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">relative_shape_anisotropy</span><span class="p">(</span><span class="n">tensor_eigenvalues</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unit_cell_to_lattice_array"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.unit_cell_to_lattice_array">[docs]</a><span class="k">def</span> <span class="nf">unit_cell_to_lattice_array</span><span class="p">(</span><span class="n">cryst</span><span class="p">):</span>
+<div class="viewcode-block" id="unit_cell_to_lattice_array"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.unit_cell_to_lattice_array">[docs]</a><span class="k">def</span> <span class="nf">unit_cell_to_lattice_array</span><span class="p">(</span><span class="n">cryst</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return parallelpiped unit cell lattice matrix.&quot;&quot;&quot;</span>
     <span class="n">a_</span><span class="p">,</span> <span class="n">b_</span><span class="p">,</span> <span class="n">c_</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">cryst</span>
     <span class="c1"># Convert angles from degrees to radians.</span>
@@ -858,7 +858,7 @@
     <span class="k">return</span> <span class="n">lattice_array</span></div>
 
 
-<div class="viewcode-block" id="lattice_array_to_unit_cell"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.lattice_array_to_unit_cell">[docs]</a><span class="k">def</span> <span class="nf">lattice_array_to_unit_cell</span><span class="p">(</span><span class="n">lattice_array</span><span class="p">):</span>
+<div class="viewcode-block" id="lattice_array_to_unit_cell"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.lattice_array_to_unit_cell">[docs]</a><span class="k">def</span> <span class="nf">lattice_array_to_unit_cell</span><span class="p">(</span><span class="n">lattice_array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return crystallographic param. from unit cell lattice matrix.&quot;&quot;&quot;</span>
     <span class="n">cell_lengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lattice_array</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     <span class="n">gamma_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">lattice_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">cell_lengths</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -873,31 +873,31 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell_lengths</span><span class="p">,</span> <span class="n">cell_angles</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="volume_from_lattice_array"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.volume_from_lattice_array">[docs]</a><span class="k">def</span> <span class="nf">volume_from_lattice_array</span><span class="p">(</span><span class="n">lattice_array</span><span class="p">):</span>
+<div class="viewcode-block" id="volume_from_lattice_array"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.volume_from_lattice_array">[docs]</a><span class="k">def</span> <span class="nf">volume_from_lattice_array</span><span class="p">(</span><span class="n">lattice_array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return unit cell&#39;s volume from lattice matrix.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">lattice_array</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="volume_from_cell_parameters"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.volume_from_cell_parameters">[docs]</a><span class="k">def</span> <span class="nf">volume_from_cell_parameters</span><span class="p">(</span><span class="n">cryst</span><span class="p">):</span>
+<div class="viewcode-block" id="volume_from_cell_parameters"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.volume_from_cell_parameters">[docs]</a><span class="k">def</span> <span class="nf">volume_from_cell_parameters</span><span class="p">(</span><span class="n">cryst</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return unit cell&#39;s volume from crystallographic parameters.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">volume_from_lattice_array</span><span class="p">(</span><span class="n">unit_cell_to_lattice_array</span><span class="p">(</span><span class="n">cryst</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="fractional_from_cartesian"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.fractional_from_cartesian">[docs]</a><span class="k">def</span> <span class="nf">fractional_from_cartesian</span><span class="p">(</span><span class="n">coordinate</span><span class="p">,</span> <span class="n">lattice_array</span><span class="p">):</span>
+<div class="viewcode-block" id="fractional_from_cartesian"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.fractional_from_cartesian">[docs]</a><span class="k">def</span> <span class="nf">fractional_from_cartesian</span><span class="p">(</span><span class="n">coordinate</span><span class="p">,</span> <span class="n">lattice_array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a fractional coordinate from a cartesian one.&quot;&quot;&quot;</span>
     <span class="n">deorthogonalisation_M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">lattice_array</span><span class="p">))</span>
     <span class="n">fractional</span> <span class="o">=</span> <span class="n">deorthogonalisation_M</span> <span class="o">*</span> <span class="n">coordinate</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fractional</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="cartisian_from_fractional"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.cartisian_from_fractional">[docs]</a><span class="k">def</span> <span class="nf">cartisian_from_fractional</span><span class="p">(</span><span class="n">coordinate</span><span class="p">,</span> <span class="n">lattice_array</span><span class="p">):</span>
+<div class="viewcode-block" id="cartisian_from_fractional"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.cartisian_from_fractional">[docs]</a><span class="k">def</span> <span class="nf">cartisian_from_fractional</span><span class="p">(</span><span class="n">coordinate</span><span class="p">,</span> <span class="n">lattice_array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return cartesian coordinate from a fractional one.&quot;&quot;&quot;</span>
     <span class="n">orthogonalisation_M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">lattice_array</span><span class="p">)</span>
     <span class="n">orthogonal</span> <span class="o">=</span> <span class="n">orthogonalisation_M</span> <span class="o">*</span> <span class="n">coordinate</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">orthogonal</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="cart2frac_all"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.cart2frac_all">[docs]</a><span class="k">def</span> <span class="nf">cart2frac_all</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">lattice_array</span><span class="p">):</span>
+<div class="viewcode-block" id="cart2frac_all"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.cart2frac_all">[docs]</a><span class="k">def</span> <span class="nf">cart2frac_all</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">lattice_array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert all cartesian coordinates to fractional.&quot;&quot;&quot;</span>
     <span class="n">frac_coordinates</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frac_coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -906,7 +906,7 @@
     <span class="k">return</span> <span class="n">frac_coordinates</span></div>
 
 
-<div class="viewcode-block" id="frac2cart_all"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.frac2cart_all">[docs]</a><span class="k">def</span> <span class="nf">frac2cart_all</span><span class="p">(</span><span class="n">frac_coordinates</span><span class="p">,</span> <span class="n">lattice_array</span><span class="p">):</span>
+<div class="viewcode-block" id="frac2cart_all"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.frac2cart_all">[docs]</a><span class="k">def</span> <span class="nf">frac2cart_all</span><span class="p">(</span><span class="n">frac_coordinates</span><span class="p">,</span> <span class="n">lattice_array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert all fractional coordinates to cartesian.&quot;&quot;&quot;</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">frac_coordinates</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -915,7 +915,7 @@
     <span class="k">return</span> <span class="n">coordinates</span></div>
 
 
-<div class="viewcode-block" id="create_supercell"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.create_supercell">[docs]</a><span class="k">def</span> <span class="nf">create_supercell</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">supercell</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]):</span>
+<div class="viewcode-block" id="create_supercell"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.create_supercell">[docs]</a><span class="k">def</span> <span class="nf">create_supercell</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">supercell</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]):</span>
     <span class="sd">&quot;&quot;&quot;Create a supercell.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s1">&#39;lattice&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">system</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="n">unit_cell_to_lattice_array</span><span class="p">(</span><span class="n">system</span><span class="p">[</span><span class="s1">&#39;unit_cell&#39;</span><span class="p">])</span>
@@ -955,7 +955,7 @@
     <span class="k">return</span> <span class="n">supercell_system</span></div>
 
 
-<div class="viewcode-block" id="is_inside_polyhedron"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.is_inside_polyhedron">[docs]</a><span class="k">def</span> <span class="nf">is_inside_polyhedron</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">polyhedron</span><span class="p">):</span>
+<div class="viewcode-block" id="is_inside_polyhedron"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.is_inside_polyhedron">[docs]</a><span class="k">def</span> <span class="nf">is_inside_polyhedron</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">polyhedron</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">polyhedron</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="n">unit_cell_to_lattice_array</span><span class="p">(</span><span class="n">polyhedron</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">polyhedron</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
@@ -970,12 +970,12 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="normal_vector"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.normal_vector">[docs]</a><span class="k">def</span> <span class="nf">normal_vector</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">vectors</span><span class="p">):</span>
+<div class="viewcode-block" id="normal_vector"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.normal_vector">[docs]</a><span class="k">def</span> <span class="nf">normal_vector</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">vectors</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return normal vector for two vectors with same origin.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">origin</span><span class="p">,</span> <span class="n">vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">origin</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="discrete_molecules"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.discrete_molecules">[docs]</a><span class="k">def</span> <span class="nf">discrete_molecules</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+<div class="viewcode-block" id="discrete_molecules"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.discrete_molecules">[docs]</a><span class="k">def</span> <span class="nf">discrete_molecules</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decompose molecular system into individual discreet molecules.</span>
 
@@ -1224,7 +1224,7 @@
     <span class="k">return</span> <span class="n">molecules</span></div>
 
 
-<div class="viewcode-block" id="angle_between_vectors"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.angle_between_vectors">[docs]</a><span class="k">def</span> <span class="nf">angle_between_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="angle_between_vectors"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.angle_between_vectors">[docs]</a><span class="k">def</span> <span class="nf">angle_between_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate the angle between two vectors x and y.&quot;&quot;&quot;</span>
     <span class="n">first_step</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span>
@@ -1233,7 +1233,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">second_step</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="vector_analysis"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.vector_analysis">[docs]</a><span class="k">def</span> <span class="nf">vector_analysis</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="vector_analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.vector_analysis">[docs]</a><span class="k">def</span> <span class="nf">vector_analysis</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Analyse a sampling vector&#39;s path for window analysis purpose.&quot;&quot;&quot;</span>
     <span class="c1"># Calculate number of chunks if vector length is divided by increment.</span>
     <span class="n">chunks</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="o">//</span> <span class="n">increment</span><span class="p">)</span>
@@ -1254,7 +1254,7 @@
             <span class="p">[</span><span class="n">dist</span><span class="p">,</span> <span class="n">analysed_vector</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">chunk</span> <span class="o">*</span> <span class="n">pos</span><span class="p">,</span> <span class="o">*</span><span class="n">vector</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="vector_preanalysis"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.vector_preanalysis">[docs]</a><span class="k">def</span> <span class="nf">vector_preanalysis</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="vector_preanalysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.vector_preanalysis">[docs]</a><span class="k">def</span> <span class="nf">vector_preanalysis</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="n">norm_vec</span> <span class="o">=</span> <span class="n">vector</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
     <span class="n">intersections</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">origin</span> <span class="o">=</span> <span class="n">center_of_coor</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
@@ -1280,21 +1280,21 @@
         <span class="k">return</span> <span class="n">vector_analysis</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">,</span> <span class="n">increment</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="optimise_xy"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.optimise_xy">[docs]</a><span class="k">def</span> <span class="nf">optimise_xy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="optimise_xy"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.optimise_xy">[docs]</a><span class="k">def</span> <span class="nf">optimise_xy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return negative pore diameter for x and y coordinates optimisation.&quot;&quot;&quot;</span>
     <span class="n">z</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span> <span class="o">=</span> <span class="n">args</span>
     <span class="n">window_com</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">])</span>
     <span class="k">return</span> <span class="o">-</span><span class="n">pore_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">com</span><span class="o">=</span><span class="n">window_com</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="optimise_z"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.optimise_z">[docs]</a><span class="k">def</span> <span class="nf">optimise_z</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="optimise_z"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.optimise_z">[docs]</a><span class="k">def</span> <span class="nf">optimise_z</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return pore diameter for coordinates optimisation in z direction.&quot;&quot;&quot;</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span> <span class="o">=</span> <span class="n">args</span>
     <span class="n">window_com</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">pore_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">com</span><span class="o">=</span><span class="n">window_com</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="window_analysis"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.window_analysis">[docs]</a><span class="k">def</span> <span class="nf">window_analysis</span><span class="p">(</span><span class="n">window</span><span class="p">,</span>
+<div class="viewcode-block" id="window_analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.window_analysis">[docs]</a><span class="k">def</span> <span class="nf">window_analysis</span><span class="p">(</span><span class="n">window</span><span class="p">,</span>
                     <span class="n">elements</span><span class="p">,</span>
                     <span class="n">coordinates</span><span class="p">,</span>
                     <span class="n">elements_vdw</span><span class="p">,</span>
@@ -1444,7 +1444,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">window_diameter</span><span class="p">,</span> <span class="n">window_com</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="find_windows"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.find_windows">[docs]</a><span class="k">def</span> <span class="nf">find_windows</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span>
+<div class="viewcode-block" id="find_windows"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.find_windows">[docs]</a><span class="k">def</span> <span class="nf">find_windows</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span>
                  <span class="n">coordinates</span><span class="p">,</span>
                  <span class="n">processes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">mol_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1613,7 +1613,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">windows</span><span class="p">,</span> <span class="n">windows_coms</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="window_shape"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.window_shape">[docs]</a><span class="k">def</span> <span class="nf">window_shape</span><span class="p">(</span><span class="n">window</span><span class="p">,</span>
+<div class="viewcode-block" id="window_shape"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.window_shape">[docs]</a><span class="k">def</span> <span class="nf">window_shape</span><span class="p">(</span><span class="n">window</span><span class="p">,</span>
                  <span class="n">elements</span><span class="p">,</span>
                  <span class="n">coordinates</span><span class="p">,</span>
                  <span class="n">increment2</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
@@ -1771,7 +1771,7 @@
     <span class="k">return</span> <span class="n">XY_plane</span></div>
 
 
-<div class="viewcode-block" id="find_windows_new"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.find_windows_new">[docs]</a><span class="k">def</span> <span class="nf">find_windows_new</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span>
+<div class="viewcode-block" id="find_windows_new"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.find_windows_new">[docs]</a><span class="k">def</span> <span class="nf">find_windows_new</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span>
                      <span class="n">coordinates</span><span class="p">,</span>
                      <span class="n">processes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">mol_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1892,7 +1892,7 @@
         <span class="k">return</span> <span class="n">clustered_results</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">initial_com</span></div>
 
 
-<div class="viewcode-block" id="calculate_window_diameter"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.calculate_window_diameter">[docs]</a><span class="k">def</span> <span class="nf">calculate_window_diameter</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_window_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.calculate_window_diameter">[docs]</a><span class="k">def</span> <span class="nf">calculate_window_diameter</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">elements_vdw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[[</span><span class="n">atomic_vdw_radius</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">]</span>
     <span class="p">)</span>
@@ -1907,7 +1907,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="get_window_com"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.get_window_com">[docs]</a><span class="k">def</span> <span class="nf">get_window_com</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">initial_com</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="get_window_com"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.get_window_com">[docs]</a><span class="k">def</span> <span class="nf">get_window_com</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">initial_com</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">elements_vdw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[[</span><span class="n">atomic_vdw_radius</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">]</span>
     <span class="p">)</span>
@@ -1923,7 +1923,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="vector_analysis_reversed"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.vector_analysis_reversed">[docs]</a><span class="k">def</span> <span class="nf">vector_analysis_reversed</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">):</span>
+<div class="viewcode-block" id="vector_analysis_reversed"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.vector_analysis_reversed">[docs]</a><span class="k">def</span> <span class="nf">vector_analysis_reversed</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">):</span>
     <span class="n">norm_vec</span> <span class="o">=</span> <span class="n">vector</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
     <span class="n">intersections</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">origin</span> <span class="o">=</span> <span class="n">center_of_coor</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
@@ -1948,7 +1948,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">dist_origin</span><span class="p">,</span> <span class="n">intersection</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="find_average_diameter"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.find_average_diameter">[docs]</a><span class="k">def</span> <span class="nf">find_average_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">adjust</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<div class="viewcode-block" id="find_average_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.find_average_diameter">[docs]</a><span class="k">def</span> <span class="nf">find_average_diameter</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">adjust</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
                           <span class="n">processes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return average diameter for a molecule.&quot;&quot;&quot;</span>
     <span class="c1"># Copy the coordinates as will perform many opertaions on them</span>
@@ -2009,7 +2009,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">results_cleaned</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span></div>
 
 
-<div class="viewcode-block" id="vector_analysis_pore_shape"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.vector_analysis_pore_shape">[docs]</a><span class="k">def</span> <span class="nf">vector_analysis_pore_shape</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">):</span>
+<div class="viewcode-block" id="vector_analysis_pore_shape"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.vector_analysis_pore_shape">[docs]</a><span class="k">def</span> <span class="nf">vector_analysis_pore_shape</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">elements_vdw</span><span class="p">):</span>
     <span class="n">norm_vec</span> <span class="o">=</span> <span class="n">vector</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
     <span class="n">intersections</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">origin</span> <span class="o">=</span> <span class="n">center_of_coor</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
@@ -2033,7 +2033,7 @@
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">intersections</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="calculate_pore_shape"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.calculate_pore_shape">[docs]</a><span class="k">def</span> <span class="nf">calculate_pore_shape</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">adjust</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<div class="viewcode-block" id="calculate_pore_shape"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.calculate_pore_shape">[docs]</a><span class="k">def</span> <span class="nf">calculate_pore_shape</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">adjust</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
                          <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return average diameter for a molecule.&quot;&quot;&quot;</span>
     <span class="c1"># Copy the coordinates as will perform many opertaions on them</span>
@@ -2097,7 +2097,7 @@
     <span class="k">return</span> <span class="n">coor</span></div>
 
 
-<div class="viewcode-block" id="circumcircle_window"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.circumcircle_window">[docs]</a><span class="k">def</span> <span class="nf">circumcircle_window</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">atom_set</span><span class="p">):</span>
+<div class="viewcode-block" id="circumcircle_window"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.circumcircle_window">[docs]</a><span class="k">def</span> <span class="nf">circumcircle_window</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">atom_set</span><span class="p">):</span>
     <span class="c1"># Calculating circumcircle</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">atom_set</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
     <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">atom_set</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
@@ -2120,7 +2120,7 @@
     <span class="k">return</span> <span class="n">R</span><span class="p">,</span> <span class="n">COM</span></div>
 
 
-<div class="viewcode-block" id="circumcircle"><a class="viewcode-back" href="../../pywindow.utilities.html#pywindow.utilities.circumcircle">[docs]</a><span class="k">def</span> <span class="nf">circumcircle</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">atom_sets</span><span class="p">):</span>
+<div class="viewcode-block" id="circumcircle"><a class="viewcode-back" href="../../pywindow.html#pywindow.utilities.circumcircle">[docs]</a><span class="k">def</span> <span class="nf">circumcircle</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">atom_sets</span><span class="p">):</span>
     <span class="n">pld_diameter_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">pld_com_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">iter_</span> <span class="o">=</span> <span class="mi">0</span>
@@ -2142,7 +2142,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Marcin Miklitz.
+        &copy; Copyright 2017, Marcin Miklitz, Jelfs Materials Group.
 
     </p>
   </div>
@@ -2175,7 +2175,6 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

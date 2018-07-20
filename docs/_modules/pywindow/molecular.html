@@ -380,7 +380,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convexhull</span>
 
 
-<div class="viewcode-block" id="Molecule"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule">[docs]</a><span class="k">class</span> <span class="nc">Molecule</span><span class="p">(</span><span class="n">_Shape</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule">[docs]</a><span class="k">class</span> <span class="nc">Molecule</span><span class="p">(</span><span class="n">_Shape</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Container for a single molecule.</span>
 
@@ -475,7 +475,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Input</span><span class="p">()</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">mol_id</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Molecule.full_analysis"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.full_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">full_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.full_analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.full_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">full_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform a full structural analysis of a molecule.</span>
 
@@ -555,7 +555,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Molecule.calculate_centre_of_mass"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.calculate_centre_of_mass">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_centre_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.calculate_centre_of_mass"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_centre_of_mass">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_centre_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the xyz coordinates of the centre of mass of a molecule.</span>
 
@@ -569,7 +569,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;centre_of_mass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_of_mass</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_of_mass</span></div>
 
-<div class="viewcode-block" id="Molecule.calculate_maximum_diameter"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.calculate_maximum_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_maximum_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.calculate_maximum_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_maximum_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_maximum_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the maximum diamension of a molecule.</span>
 
@@ -588,7 +588,7 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum_diameter</span></div>
 
-<div class="viewcode-block" id="Molecule.calculate_average_diameter"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.calculate_average_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_average_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.calculate_average_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_average_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_average_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the average diamension of a molecule.</span>
 
@@ -602,7 +602,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_diameter</span></div>
 
-<div class="viewcode-block" id="Molecule.calculate_pore_diameter"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.calculate_pore_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.calculate_pore_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_pore_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the intrinsic pore diameter.</span>
 
@@ -620,7 +620,7 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diameter</span></div>
 
-<div class="viewcode-block" id="Molecule.calculate_pore_volume"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.calculate_pore_volume">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.calculate_pore_volume"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_pore_volume">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the intrinsic pore volume.</span>
 
@@ -634,7 +634,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;pore_volume&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_volume</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_volume</span></div>
 
-<div class="viewcode-block" id="Molecule.calculate_pore_diameter_opt"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.calculate_pore_diameter_opt">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_diameter_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.calculate_pore_diameter_opt"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_pore_diameter_opt">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_diameter_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the intrinsic pore diameter (for the optimised pore centre).</span>
 
@@ -658,7 +658,7 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diameter_opt</span></div>
 
-<div class="viewcode-block" id="Molecule.calculate_pore_volume_opt"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.calculate_pore_volume_opt">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_volume_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.calculate_pore_volume_opt"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_pore_volume_opt">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_volume_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the intrinsic pore volume (for the optimised pore centre).</span>
 
@@ -683,7 +683,7 @@
         <span class="n">Output</span><span class="p">()</span><span class="o">.</span><span class="n">_save_xyz</span><span class="p">(</span><span class="n">shape_obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="Molecule.calculate_windows"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.calculate_windows">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.calculate_windows"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_windows">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the diameters of all windows in a molecule.</span>
 
@@ -715,7 +715,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Molecule.shift_to_origin"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.shift_to_origin">[docs]</a>    <span class="k">def</span> <span class="nf">shift_to_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.shift_to_origin"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.shift_to_origin">[docs]</a>    <span class="k">def</span> <span class="nf">shift_to_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shift a molecule to Origin.</span>
 
@@ -731,7 +731,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">shift_com</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Molecule.molecular_weight"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.molecular_weight">[docs]</a>    <span class="k">def</span> <span class="nf">molecular_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.molecular_weight"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.molecular_weight">[docs]</a>    <span class="k">def</span> <span class="nf">molecular_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the molecular weight of a molecule.</span>
 
@@ -744,7 +744,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">MW</span> <span class="o">=</span> <span class="n">molecular_weight</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">MW</span></div>
 
-<div class="viewcode-block" id="Molecule.dump_properties_json"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.dump_properties_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_properties_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">molecular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.dump_properties_json"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.dump_properties_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_properties_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">molecular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump content of :attr:`Molecule.properties` to a JSON dictionary.</span>
 
@@ -778,7 +778,7 @@
         <span class="c1"># Dump the dictionary to json file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span><span class="o">.</span><span class="n">dump2json</span><span class="p">(</span><span class="n">dict_obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">to_list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Molecule.dump_molecule"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.Molecule.dump_molecule">[docs]</a>    <span class="k">def</span> <span class="nf">dump_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_coms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Molecule.dump_molecule"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.dump_molecule">[docs]</a>    <span class="k">def</span> <span class="nf">dump_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_coms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump a :class:`Molecule` to a file (PDB or XYZ).</span>
 
@@ -895,7 +895,7 @@
         <span class="k">return</span> <span class="n">windows</span></div>
 
 
-<div class="viewcode-block" id="MolecularSystem"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem">[docs]</a><span class="k">class</span> <span class="nc">MolecularSystem</span><span class="p">:</span>
+<div class="viewcode-block" id="MolecularSystem"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem">[docs]</a><span class="k">class</span> <span class="nc">MolecularSystem</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Container for the molecular system.</span>
 
@@ -943,7 +943,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span> <span class="o">=</span> <span class="n">Output</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">system_id</span> <span class="o">=</span> <span class="mi">0</span>
 
-<div class="viewcode-block" id="MolecularSystem.load_file"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.load_file">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="MolecularSystem.load_file"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.load_file">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a :class:`MolecularSystem` from an input file.</span>
@@ -968,7 +968,7 @@
         <span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">obj</span></div>
 
-<div class="viewcode-block" id="MolecularSystem.load_rdkit_mol"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.load_rdkit_mol">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="MolecularSystem.load_rdkit_mol"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.load_rdkit_mol">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load_rdkit_mol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mol</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a :class:`MolecularSystem` from :class:`rdkit.Chem.rdchem.Mol`.</span>
@@ -988,7 +988,7 @@
         <span class="n">obj</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_Input</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">obj</span></div>
 
-<div class="viewcode-block" id="MolecularSystem.load_system"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.load_system">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="MolecularSystem.load_system"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.load_system">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load_system</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">,</span> <span class="n">system_id</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a :class:`MolecularSystem` from a python :class:`dict`.</span>
@@ -1018,7 +1018,7 @@
         <span class="n">obj</span><span class="o">.</span><span class="n">system_id</span> <span class="o">=</span> <span class="n">system_id</span>
         <span class="k">return</span> <span class="n">obj</span></div>
 
-<div class="viewcode-block" id="MolecularSystem.rebuild_system"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.rebuild_system">[docs]</a>    <span class="k">def</span> <span class="nf">rebuild_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MolecularSystem.rebuild_system"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.rebuild_system">[docs]</a>    <span class="k">def</span> <span class="nf">rebuild_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rebuild molecules in molecular system.</span>
 
@@ -1060,7 +1060,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_system</span><span class="p">(</span><span class="n">rebuild_system</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MolecularSystem.swap_atom_keys"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.swap_atom_keys">[docs]</a>    <span class="k">def</span> <span class="nf">swap_atom_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">swap_dict</span><span class="p">,</span> <span class="n">dict_key</span><span class="o">=</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="MolecularSystem.swap_atom_keys"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.swap_atom_keys">[docs]</a>    <span class="k">def</span> <span class="nf">swap_atom_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">swap_dict</span><span class="p">,</span> <span class="n">dict_key</span><span class="o">=</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Swap a force field atom id for another user-defined value.</span>
 
@@ -1101,7 +1101,7 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="n">dict_key</span><span class="p">][</span><span class="n">atom_key</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="n">dict_key</span><span class="p">][</span><span class="n">atom_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">swap_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="MolecularSystem.decipher_atom_keys"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.decipher_atom_keys">[docs]</a>    <span class="k">def</span> <span class="nf">decipher_atom_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forcefield</span><span class="o">=</span><span class="s1">&#39;DLF&#39;</span><span class="p">,</span> <span class="n">dict_key</span><span class="o">=</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="MolecularSystem.decipher_atom_keys"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.decipher_atom_keys">[docs]</a>    <span class="k">def</span> <span class="nf">decipher_atom_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forcefield</span><span class="o">=</span><span class="s1">&#39;DLF&#39;</span><span class="p">,</span> <span class="n">dict_key</span><span class="o">=</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decipher force field atom ids.</span>
 
@@ -1149,7 +1149,7 @@
                     <span class="n">temp</span><span class="p">[</span><span class="n">element</span><span class="p">],</span> <span class="n">forcefield</span><span class="o">=</span><span class="n">forcefield</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span></div>
 
-<div class="viewcode-block" id="MolecularSystem.make_modular"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.make_modular">[docs]</a>    <span class="k">def</span> <span class="nf">make_modular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MolecularSystem.make_modular"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.make_modular">[docs]</a>    <span class="k">def</span> <span class="nf">make_modular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find and return all :class:`Molecule` s in :class:`MolecularSystem`.</span>
 
@@ -1176,7 +1176,7 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dis</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">dis</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_id</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MolecularSystem.system_to_molecule"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.system_to_molecule">[docs]</a>    <span class="k">def</span> <span class="nf">system_to_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MolecularSystem.system_to_molecule"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.system_to_molecule">[docs]</a>    <span class="k">def</span> <span class="nf">system_to_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return :class:`MolecularSystem` as a :class:`Molecule` directly.</span>
 
@@ -1201,7 +1201,7 @@
                     <span class="n">com</span><span class="o">=</span><span class="n">point</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">pores</span>
 
-<div class="viewcode-block" id="MolecularSystem.dump_system"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.dump_system">[docs]</a>    <span class="k">def</span> <span class="nf">dump_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MolecularSystem.dump_system"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.dump_system">[docs]</a>    <span class="k">def</span> <span class="nf">dump_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump a :class:`MolecularSystem` to a file (PDB or XYZ).</span>
 
@@ -1254,7 +1254,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span><span class="o">.</span><span class="n">dump2file</span><span class="p">(</span>
             <span class="n">system_dict</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">atom_ids</span><span class="o">=</span><span class="n">atom_ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MolecularSystem.dump_system_json"><a class="viewcode-back" href="../../pywindow.molecular.html#pywindow.molecular.MolecularSystem.dump_system_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_system_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MolecularSystem.dump_system_json"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.dump_system_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_system_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump a :class:`MolecularSystem` to a JSON dictionary.</span>
 
@@ -1314,7 +1314,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Marcin Miklitz.
+        &copy; Copyright 2017, Marcin Miklitz, Jelfs Materials Group.
 
     </p>
   </div>
@@ -1347,7 +1347,6 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

@@ -3,9 +3,9 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = python -msphinx
+SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = pywindow
-SOURCEDIR     = source
+SOURCEDIR     = ./source/
 BUILDDIR      = ..
 
 # Put it first so that "make" without argument is like "make help".
