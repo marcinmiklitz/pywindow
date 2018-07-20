@@ -1,10 +1,6 @@
 ![alt tag](docs/pyWINDOW_logo.png)
 ### Python package for the analysis of structural properties of molecular pores (*porous organic cages*, but also *MOFs* and *metalorganic cages* - see examples directory).
 
-### How to install `pywindow` with `conda`:
-
-`$ conda install --channel https://conda.anaconda.org/marcinmiklitz pywindow`
-
 ### Documentation
 
 https://marcinmiklitz.github.io/pywindow/
