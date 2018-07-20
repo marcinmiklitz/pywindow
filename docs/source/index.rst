@@ -91,8 +91,6 @@ force field deciphering tool.
 
     molsys.swap_atom_keys(some_forcefield)
 
-TEST
-----
 
 Indices and tables
 ------------------
