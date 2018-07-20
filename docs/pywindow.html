@@ -291,19 +291,19 @@ force field atom ids) and to extract single molecules for analysis as
 <ol class="arabic simple">
 <li>Using file as an input:</li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="sb">`filepath`</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">molecular</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="sb">`filepath`</span><span class="p">)</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li>Using RDKit molecule object as an input:</li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">rdkit</span><span class="o">.</span><span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">molecular</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">rdkit</span><span class="o">.</span><span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
 <li>Using a dictionary (or another <code class="xref py py-attr docutils literal notranslate"><span class="pre">MoleculeSystem.system</span></code>) as input:</li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_system</span><span class="p">({</span><span class="o">...</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">molecular</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_system</span><span class="p">({</span><span class="o">...</span><span class="p">})</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -537,7 +537,7 @@ that match criteria.</p>
 appropriate dictionary is passed to the function.</p>
 <p class="rubric">Example</p>
 <p>In this example all atom ids ‘he’ will be exchanged to ‘H’.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">swap_atom_keys</span><span class="p">({</span><span class="s1">&#39;he&#39;</span><span class="p">:</span> <span class="s1">&#39;H&#39;</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">molecular</span><span class="o">.</span><span class="n">MolecularSystem</span><span class="o">.</span><span class="n">swap_atom_keys</span><span class="p">({</span><span class="s1">&#39;he&#39;</span><span class="p">:</span> <span class="s1">&#39;H&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -951,24 +951,187 @@ with functions for molecular shape descriptors that require mass.</p>
 <div class="section" id="module-pywindow.trajectory">
 <span id="pywindow-trajectory-module"></span><h2>pywindow.trajectory module<a class="headerlink" href="#module-pywindow.trajectory" title="Permalink to this headline">¶</a></h2>
 <p>Module intended for the analysis of molecular dynamics trajectories.</p>
+<p>The trajectory file (DL_POLY_C:HISTORY, PDB or XYZ) should be loaded with
+the one of the corresponding classes (DLPOLY, PDB or XYZ, respectively).</p>
+<p class="rubric">Example</p>
+<p>In this example a DL_POLY_C HISTORY trajectory file is loaded.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pywindow</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">DLPOLY</span><span class="p">(</span><span class="s1">&#39;path/to/HISTORY&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, each of the trajectory frames can be extracted and returned as a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a> object for analysis. See
+<a class="reference internal" href="#module-pywindow.molecular" title="pywindow.molecular"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pywindow.molecular</span></code></a> docstring for more information.</p>
+<p>Alternatively, the analysis can be performed on a whole or a chunk of
+the trajectory with the <code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code> function. The benefit is
+that the analysis can be performed in parallel and the results stored as a
+single JSON dictionary in a straightforward way. Also, the deciphering of the
+force field atom ids and the rebuilding of molecules can be applied to each
+frame in a consitent and automated manner. The downfall is that at the
+moment it is not possible to choose the set of parameters that are being
+calculated in the <a class="reference internal" href="#pywindow.molecular.Molecule" title="pywindow.molecular.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.Molecule</span></code></a> as the
+<a class="reference internal" href="#pywindow.molecular.Molecule.full_analysis" title="pywindow.molecular.Molecule.full_analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.Molecule.full_analysis()</span></code></a> is invoked by default.
+However, the computational cost of calculating majority of the structural
+properties is miniscule and it is usually the
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.rebuild_system" title="pywindow.molecular.MolecularSystem.rebuild_system"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.rebuild_system()</span></code></a> step that is the
+bottleneck.</p>
 <dl class="class">
 <dt id="pywindow.trajectory.DLPOLY">
 <em class="property">class </em><code class="descclassname">pywindow.trajectory.</code><code class="descname">DLPOLY</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A container for a DL_POLY_C type trajectory (HISTORY).</p>
+<p>This function takes a DL_POLY_C trajectory file and maps it for the
+binary points in the file where each frame starts/ends. This way the
+process is fast, as it not require loading the trajectory into computer
+memory. When a frame is being extracted, it is only this frame that gets
+loaded to the memory.</p>
+<p>Frames can be accessed individually and loaded as an unmodified string,
+returned as a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a> (and analysed),
+dumped as PDB or XYZ or JSON (if dumped as a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.system" title="pywindow.molecular.MolecularSystem.system"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.system</span></code></a>)</p>
+<dl class="attribute">
+<dt id="pywindow.trajectory.DLPOLY.filepath">
+<code class="descname">filepath</code><a class="headerlink" href="#pywindow.trajectory.DLPOLY.filepath" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> – The filepath.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.trajectory.DLPOLY.system_id">
+<code class="descname">system_id</code><a class="headerlink" href="#pywindow.trajectory.DLPOLY.system_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> – The system id inherited from the filename.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.trajectory.DLPOLY.frames">
+<code class="descname">frames</code><a class="headerlink" href="#pywindow.trajectory.DLPOLY.frames" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> – A dictionary that is populated, on the fly, with the extracted frames.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.trajectory.DLPOLY.analysis_output">
+<code class="descname">analysis_output</code><a class="headerlink" href="#pywindow.trajectory.DLPOLY.analysis_output" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> – A dictionary that is populated, on the fly, with the analysis output.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pywindow.trajectory.DLPOLY.analysis">
 <code class="descname">analysis</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>ncpus=1</em>, <em>_ncpus=1</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY.analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY.analysis" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Perform structural analysis on a frame/ set of frames.</p>
+<p>Depending on the passed parameters a frame, a list of particular
+frames, a range of frames (from, to), or all frames can be analysed
+with this function.</p>
+<p>The analysis is performed on each frame and each discrete molecule in
+that frame separately. The steps are as follows:</p>
+<ol class="arabic simple">
+<li>A frame is extracted and returned as a <code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code>.</li>
+<li>If <cite>swap_atoms</cite> is set the atom ids are swapped.</li>
+<li>If <cite>forcefield</cite> is set the atom ids are deciphered.</li>
+<li>If <cite>rebuild</cite> is set the molecules in the system are rebuild.</li>
+<li>Each discrete molecule is extracted as <code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></li>
+<li>Each molecule is analysed with <code class="xref py py-func docutils literal notranslate"><span class="pre">Molecule.full_analysis()</span></code></li>
+<li>Analysis output populates the <a class="reference internal" href="#pywindow.trajectory.DLPOLY.analysis_output" title="pywindow.trajectory.DLPOLY.analysis_output"><code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code></a> dictionary.</li>
+</ol>
+<p>As the analysis of trajectories often have to be unique, many options
+are conditional.</p>
+<p>A side effect of this function is that the analysed frames are also
+returned to the <a class="reference internal" href="#pywindow.trajectory.DLPOLY.frames" title="pywindow.trajectory.DLPOLY.frames"><code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code></a> mimicking the behaviour of the
+<a class="reference internal" href="#pywindow.trajectory.DLPOLY.get_frames" title="pywindow.trajectory.DLPOLY.get_frames"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_frames()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frames</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specified frame (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>), or frames (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>), or
+range (<code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code>), or <cite>all</cite>/<cite>everything</cite> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>).
+(default=’all’)</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, an output already storred in <a class="reference internal" href="#pywindow.trajectory.DLPOLY.analysis_output" title="pywindow.trajectory.DLPOLY.analysis_output"><code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code></a> can
+be override. (default=False)</li>
+<li><strong>swap_atoms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, optional) – If this kwarg is passed with an appropriate dictionary a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.swap_atom_keys()</span></code></a> will
+be applied to the extracted frame.</li>
+<li><strong>forcefield</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, optional) – If this kwarg is passed with appropriate forcefield keyword a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.decipher_atom_keys" title="pywindow.molecular.MolecularSystem.decipher_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.decipher_atom_keys()</span></code></a>
+will be applied to the extracted frame.</li>
+<li><strong>modular</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If this kwarg is passed a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.make_modular()</span></code></a>
+will be applied to the extracted frame. (default=False)</li>
+<li><strong>rebuild</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If this kwarg is passed a <cite>rebuild=True</cite> is passed to
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.make_modular()</span></code></a> that
+will be applied to the extracted frame. (default=False)</li>
+<li><strong>ncpus</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, optional) – If ncpus &gt; 1, then the analysis is performed in parallel for the
+specified number of parallel jobs. Otherwise, it runs in serial.
+(default=1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong> – The function returns <cite>None</cite>, the analysis output is
+returned to <a class="reference internal" href="#pywindow.trajectory.DLPOLY.analysis_output" title="pywindow.trajectory.DLPOLY.analysis_output"><code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code></a> dictionary.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pywindow.trajectory.DLPOLY.get_frames">
-<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY.get_frames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY.get_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract frames from the trajectory file.</p>
+<p>Depending on the passed parameters a frame, a list of particular
+frames, a range of frames (from, to), or all frames can be extracted
+with this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frames</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specified frame (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>), or frames (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>), or
+range (<code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code>), or <cite>all</cite>/<cite>everything</cite> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>).
+(default=`all`)</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, a frame already storred in <a class="reference internal" href="#pywindow.trajectory.DLPOLY.frames" title="pywindow.trajectory.DLPOLY.frames"><code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code></a> can be override.
+(default=False)</li>
+<li><strong>extract_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If False, a frame is returned as a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> block as in the
+trajectory file. Ohterwise, it is extracted and returned as
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a>. (default=True)</li>
+<li><strong>swap_atoms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, optional) – If this kwarg is passed with an appropriate dictionary a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.swap_atom_keys()</span></code></a> will
+be applied to the extracted frame.</li>
+<li><strong>forcefield</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, optional) – If this kwarg is passed with appropriate forcefield keyword a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.decipher_atom_keys" title="pywindow.molecular.MolecularSystem.decipher_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.decipher_atom_keys()</span></code></a>
+will be applied to the extracted frame.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a> – If a single frame is extracted.</li>
+<li><strong>None</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code>) – If more than one frame is extracted, the frames are returned to
+<a class="reference internal" href="#pywindow.trajectory.DLPOLY.frames" title="pywindow.trajectory.DLPOLY.frames"><code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code></a></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pywindow.trajectory.DLPOLY.save_analysis">
 <code class="descname">save_analysis</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#DLPOLY.save_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.DLPOLY.save_analysis" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dump the content of <a class="reference internal" href="#pywindow.trajectory.DLPOLY.analysis_output" title="pywindow.trajectory.DLPOLY.analysis_output"><code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code></a> as JSON dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The filepath for the JSON file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>None</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pywindow.trajectory.DLPOLY.save_frames">
@@ -984,16 +1147,127 @@ with functions for molecular shape descriptors that require mass.</p>
 <dl class="method">
 <dt id="pywindow.trajectory.PDB.analysis">
 <code class="descname">analysis</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>ncpus=1</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB.analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB.analysis" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Perform structural analysis on a frame/ set of frames.</p>
+<p>Depending on the passed parameters a frame, a list of particular
+frames, a range of frames (from, to), or all frames can be analysed
+with this function.</p>
+<p>The analysis is performed on each frame and each discrete molecule in
+that frame separately. The steps are as follows:</p>
+<ol class="arabic simple">
+<li>A frame is extracted and returned as a <code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code>.</li>
+<li>If <cite>swap_atoms</cite> is set the atom ids are swapped.</li>
+<li>If <cite>forcefield</cite> is set the atom ids are deciphered.</li>
+<li>If <cite>rebuild</cite> is set the molecules in the system are rebuild.</li>
+<li>Each discrete molecule is extracted as <code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></li>
+<li>Each molecule is analysed with <code class="xref py py-func docutils literal notranslate"><span class="pre">Molecule.full_analysis()</span></code></li>
+<li>Analysis output populates the <code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code> dictionary.</li>
+</ol>
+<p>As the analysis of trajectories often have to be unique, many options
+are conditional.</p>
+<p>A side effect of this function is that the analysed frames are also
+returned to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code> mimicking the behaviour of the
+<a class="reference internal" href="#pywindow.trajectory.PDB.get_frames" title="pywindow.trajectory.PDB.get_frames"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_frames()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frames</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specified frame (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>), or frames (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>), or
+range (<code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code>), or <cite>all</cite>/<cite>everything</cite> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>).
+(default=’all’)</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, an output already storred in <code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code> can
+be override. (default=False)</li>
+<li><strong>swap_atoms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, optional) – If this kwarg is passed with an appropriate dictionary a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.swap_atom_keys()</span></code></a> will
+be applied to the extracted frame.</li>
+<li><strong>forcefield</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, optional) – If this kwarg is passed with appropriate forcefield keyword a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.decipher_atom_keys" title="pywindow.molecular.MolecularSystem.decipher_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.decipher_atom_keys()</span></code></a>
+will be applied to the extracted frame.</li>
+<li><strong>modular</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If this kwarg is passed a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.make_modular()</span></code></a>
+will be applied to the extracted frame. (default=False)</li>
+<li><strong>rebuild</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If this kwarg is passed a <cite>rebuild=True</cite> is passed to
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.make_modular()</span></code></a> that
+will be applied to the extracted frame. (default=False)</li>
+<li><strong>ncpus</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, optional) – If ncpus &gt; 1, then the analysis is performed in parallel for the
+specified number of parallel jobs. Otherwise, it runs in serial.
+(default=1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong> – The function returns <cite>None</cite>, the analysis output is
+returned to <code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code> dictionary.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pywindow.trajectory.PDB.get_frames">
-<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB.get_frames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB.get_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract frames from the trajectory file.</p>
+<p>Depending on the passed parameters a frame, a list of particular
+frames, a range of frames (from, to), or all frames can be extracted
+with this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frames</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specified frame (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>), or frames (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>), or
+range (<code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code>), or <cite>all</cite>/<cite>everything</cite> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>).
+(default=`all`)</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, a frame already storred in <code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code> can be override.
+(default=False)</li>
+<li><strong>extract_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If False, a frame is returned as a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> block as in the
+trajectory file. Ohterwise, it is extracted and returned as
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a>. (default=True)</li>
+<li><strong>swap_atoms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, optional) – If this kwarg is passed with an appropriate dictionary a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.swap_atom_keys()</span></code></a> will
+be applied to the extracted frame.</li>
+<li><strong>forcefield</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, optional) – If this kwarg is passed with appropriate forcefield keyword a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.decipher_atom_keys" title="pywindow.molecular.MolecularSystem.decipher_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.decipher_atom_keys()</span></code></a>
+will be applied to the extracted frame.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a> – If a single frame is extracted.</li>
+<li><strong>None</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code>) – If more than one frame is extracted, the frames are returned to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pywindow.trajectory.PDB.save_analysis">
 <code class="descname">save_analysis</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB.save_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB.save_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump the content of <code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code> as JSON dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The filepath for the JSON file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>None</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.PDB.save_frames">
+<code class="descname">save_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>filepath=None</em>, <em>filetype='pdb'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#PDB.save_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.PDB.save_frames" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1002,19 +1276,170 @@ with functions for molecular shape descriptors that require mass.</p>
 <dt id="pywindow.trajectory.XYZ">
 <em class="property">class </em><code class="descclassname">pywindow.trajectory.</code><code class="descname">XYZ</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A container for an XYZ type trajectory.</p>
+<p>This function takes an XYZ trajectory file and maps it for the
+binary points in the file where each frame starts/ends. This way the
+process is fast, as it not require loading the trajectory into computer
+memory. When a frame is being extracted, it is only this frame that gets
+loaded to the memory.</p>
+<p>Frames can be accessed individually and loaded as an unmodified string,
+returned as a <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a> (and analysed),
+dumped as PDB or XYZ or JSON (if dumped as a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.system" title="pywindow.molecular.MolecularSystem.system"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.system</span></code></a>)</p>
+<dl class="attribute">
+<dt id="pywindow.trajectory.XYZ.filepath">
+<code class="descname">filepath</code><a class="headerlink" href="#pywindow.trajectory.XYZ.filepath" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> – The filepath.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.trajectory.XYZ.filename">
+<code class="descname">filename</code><a class="headerlink" href="#pywindow.trajectory.XYZ.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> – The filename.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.trajectory.XYZ.system_id">
+<code class="descname">system_id</code><a class="headerlink" href="#pywindow.trajectory.XYZ.system_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> – The system id inherited from the filename.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.trajectory.XYZ.frames">
+<code class="descname">frames</code><a class="headerlink" href="#pywindow.trajectory.XYZ.frames" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> – A dictionary that is populated, on the fly, with the extracted frames.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywindow.trajectory.XYZ.analysis_output">
+<code class="descname">analysis_output</code><a class="headerlink" href="#pywindow.trajectory.XYZ.analysis_output" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> – A dictionary that is populated, on the fly, with the analysis output.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pywindow.trajectory.XYZ.analysis">
 <code class="descname">analysis</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>ncpus=1</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ.analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ.analysis" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Perform structural analysis on a frame/ set of frames.</p>
+<p>Depending on the passed parameters a frame, a list of particular
+frames, a range of frames (from, to), or all frames can be analysed
+with this function.</p>
+<p>The analysis is performed on each frame and each discrete molecule in
+that frame separately. The steps are as follows:</p>
+<ol class="arabic simple">
+<li>A frame is extracted and returned as a <code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code>.</li>
+<li>If <cite>swap_atoms</cite> is set the atom ids are swapped.</li>
+<li>If <cite>forcefield</cite> is set the atom ids are deciphered.</li>
+<li>If <cite>rebuild</cite> is set the molecules in the system are rebuild.</li>
+<li>Each discrete molecule is extracted as <code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></li>
+<li>Each molecule is analysed with <code class="xref py py-func docutils literal notranslate"><span class="pre">Molecule.full_analysis()</span></code></li>
+<li>Analysis output populates the <a class="reference internal" href="#pywindow.trajectory.XYZ.analysis_output" title="pywindow.trajectory.XYZ.analysis_output"><code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code></a> dictionary.</li>
+</ol>
+<p>As the analysis of trajectories often have to be unique, many options
+are conditional.</p>
+<p>A side effect of this function is that the analysed frames are also
+returned to the <a class="reference internal" href="#pywindow.trajectory.XYZ.frames" title="pywindow.trajectory.XYZ.frames"><code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code></a> mimicking the behaviour of the
+<a class="reference internal" href="#pywindow.trajectory.XYZ.get_frames" title="pywindow.trajectory.XYZ.get_frames"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_frames()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frames</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specified frame (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>), or frames (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>), or
+range (<code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code>), or <cite>all</cite>/<cite>everything</cite> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>).
+(default=’all’)</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, an output already storred in <a class="reference internal" href="#pywindow.trajectory.XYZ.analysis_output" title="pywindow.trajectory.XYZ.analysis_output"><code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code></a> can
+be override. (default=False)</li>
+<li><strong>swap_atoms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, optional) – If this kwarg is passed with an appropriate dictionary a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.swap_atom_keys()</span></code></a> will
+be applied to the extracted frame.</li>
+<li><strong>forcefield</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, optional) – If this kwarg is passed with appropriate forcefield keyword a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.decipher_atom_keys" title="pywindow.molecular.MolecularSystem.decipher_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.decipher_atom_keys()</span></code></a>
+will be applied to the extracted frame.</li>
+<li><strong>modular</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If this kwarg is passed a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.make_modular()</span></code></a>
+will be applied to the extracted frame. (default=False)</li>
+<li><strong>rebuild</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If this kwarg is passed a <cite>rebuild=True</cite> is passed to
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.make_modular" title="pywindow.molecular.MolecularSystem.make_modular"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.make_modular()</span></code></a> that
+will be applied to the extracted frame. (default=False)</li>
+<li><strong>ncpus</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, optional) – If ncpus &gt; 1, then the analysis is performed in parallel for the
+specified number of parallel jobs. Otherwise, it runs in serial.
+(default=1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>None</strong> – The function returns <cite>None</cite>, the analysis output is
+returned to <a class="reference internal" href="#pywindow.trajectory.XYZ.analysis_output" title="pywindow.trajectory.XYZ.analysis_output"><code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code></a> dictionary.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pywindow.trajectory.XYZ.get_frames">
-<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ.get_frames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">get_frames</code><span class="sig-paren">(</span><em>frames='all'</em>, <em>override=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ.get_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ.get_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract frames from the trajectory file.</p>
+<p>Depending on the passed parameters a frame, a list of particular
+frames, a range of frames (from, to), or all frames can be extracted
+with this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frames</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specified frame (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>), or frames (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>), or
+range (<code class="xref py py-class docutils literal notranslate"><span class="pre">touple</span></code>), or <cite>all</cite>/<cite>everything</cite> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>).
+(default=`all`)</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, a frame already storred in <a class="reference internal" href="#pywindow.trajectory.XYZ.frames" title="pywindow.trajectory.XYZ.frames"><code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code></a> can be override.
+(default=False)</li>
+<li><strong>extract_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, optional) – If False, a frame is returned as a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> block as in the
+trajectory file. Ohterwise, it is extracted and returned as
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a>. (default=True)</li>
+<li><strong>swap_atoms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, optional) – If this kwarg is passed with an appropriate dictionary a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.swap_atom_keys" title="pywindow.molecular.MolecularSystem.swap_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.swap_atom_keys()</span></code></a> will
+be applied to the extracted frame.</li>
+<li><strong>forcefield</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, optional) – If this kwarg is passed with appropriate forcefield keyword a
+<a class="reference internal" href="#pywindow.molecular.MolecularSystem.decipher_atom_keys" title="pywindow.molecular.MolecularSystem.decipher_atom_keys"><code class="xref py py-func docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.decipher_atom_keys()</span></code></a>
+will be applied to the extracted frame.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a> – If a single frame is extracted.</li>
+<li><strong>None</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code>) – If more than one frame is extracted, the frames are returned to
+<a class="reference internal" href="#pywindow.trajectory.XYZ.frames" title="pywindow.trajectory.XYZ.frames"><code class="xref py py-attr docutils literal notranslate"><span class="pre">frames</span></code></a></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pywindow.trajectory.XYZ.save_analysis">
 <code class="descname">save_analysis</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ.save_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ.save_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump the content of <a class="reference internal" href="#pywindow.trajectory.XYZ.analysis_output" title="pywindow.trajectory.XYZ.analysis_output"><code class="xref py py-attr docutils literal notranslate"><span class="pre">analysis_output</span></code></a> as JSON dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The filepath for the JSON file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>None</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoneType</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywindow.trajectory.XYZ.save_frames">
+<code class="descname">save_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>filepath=None</em>, <em>filetype='pdb'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#XYZ.save_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.XYZ.save_frames" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1022,7 +1447,30 @@ with functions for molecular shape descriptors that require mass.</p>
 <dl class="function">
 <dt id="pywindow.trajectory.make_supercell">
 <code class="descclassname">pywindow.trajectory.</code><code class="descname">make_supercell</code><span class="sig-paren">(</span><em>system, matrix, supercell=[1, 1, 1]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywindow/trajectory.html#make_supercell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywindow.trajectory.make_supercell" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return a supercell.</p>
+<p>This functions takes the input unitcell and creates a supercell of it that
+is returned as a new <a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>system</strong> (<a class="reference internal" href="#pywindow.molecular.MolecularSystem.system" title="pywindow.molecular.MolecularSystem.system"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem.system</span></code></a>) – The unit cell for creation of the supercell</li>
+<li><strong>matrix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – The unit cell parameters in form of a lattice.</li>
+<li><strong>supercell</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, optional) – A list that specifies the size of the supercell in the a, b and c
+direction. (default=[1, 1, 1])</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns the created supercell as a new <code class="xref py py-class docutils literal notranslate"><span class="pre">MolecularSystem</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pywindow.molecular.MolecularSystem" title="pywindow.molecular.MolecularSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywindow.molecular.MolecularSystem</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-pywindow.utilities">

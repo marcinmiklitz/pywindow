@@ -139,7 +139,39 @@
            <div itemprop="articleBody">
             
   <h1>Source code for pywindow.trajectory</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Module intended for the analysis of molecular dynamics trajectories.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module intended for the analysis of molecular dynamics trajectories.</span>
+
+<span class="sd">The trajectory file (DL_POLY_C:HISTORY, PDB or XYZ) should be loaded with</span>
+<span class="sd">the one of the corresponding classes (DLPOLY, PDB or XYZ, respectively).</span>
+
+<span class="sd">Example</span>
+<span class="sd">-------</span>
+<span class="sd">In this example a DL_POLY_C HISTORY trajectory file is loaded.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    pywindow.trajectory.DLPOLY(&#39;path/to/HISTORY&#39;)</span>
+
+<span class="sd">Then, each of the trajectory frames can be extracted and returned as a</span>
+<span class="sd">:class:`pywindow.molecular.MolecularSystem` object for analysis. See</span>
+<span class="sd">:mod:`pywindow.molecular` docstring for more information.</span>
+
+<span class="sd">Alternatively, the analysis can be performed on a whole or a chunk of</span>
+<span class="sd">the trajectory with the :func:`analysis()` function. The benefit is</span>
+<span class="sd">that the analysis can be performed in parallel and the results stored as a</span>
+<span class="sd">single JSON dictionary in a straightforward way. Also, the deciphering of the</span>
+<span class="sd">force field atom ids and the rebuilding of molecules can be applied to each</span>
+<span class="sd">frame in a consitent and automated manner. The downfall is that at the</span>
+<span class="sd">moment it is not possible to choose the set of parameters that are being</span>
+<span class="sd">calculated in the :class:`pywindow.molecular.Molecule` as the</span>
+<span class="sd">:func:`pywindow.molecular.Molecule.full_analysis()` is invoked by default.</span>
+<span class="sd">However, the computational cost of calculating majority of the structural</span>
+<span class="sd">properties is miniscule and it is usually the</span>
+<span class="sd">:func:`pywindow.molecular.MolecularSystem.rebuild_system()` step that is the</span>
+<span class="sd">bottleneck.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
@@ -175,12 +207,65 @@
 
 
 <div class="viewcode-block" id="make_supercell"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.make_supercell">[docs]</a><span class="k">def</span> <span class="nf">make_supercell</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">supercell</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a supercell.</span>
+
+<span class="sd">    This functions takes the input unitcell and creates a supercell of it that</span>
+<span class="sd">    is returned as a new :class:`pywindow.molecular.MolecularSystem`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    system : :attr:`pywindow.molecular.MolecularSystem.system`</span>
+<span class="sd">        The unit cell for creation of the supercell</span>
+
+<span class="sd">    matrix : :class:`numpy.array`</span>
+<span class="sd">        The unit cell parameters in form of a lattice.</span>
+
+<span class="sd">    supercell : :class:`list`, optional</span>
+<span class="sd">        A list that specifies the size of the supercell in the a, b and c</span>
+<span class="sd">        direction. (default=[1, 1, 1])</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :class:`pywindow.molecular.MolecularSystem`</span>
+<span class="sd">        Returns the created supercell as a new :class:`MolecularSystem`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">user_supercell</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">1</span><span class="p">]]]</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">create_supercell</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">supercell</span><span class="o">=</span><span class="n">user_supercell</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">MolecularSystem</span><span class="o">.</span><span class="n">load_system</span><span class="p">(</span><span class="n">system</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DLPOLY"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.DLPOLY">[docs]</a><span class="k">class</span> <span class="nc">DLPOLY</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container for a DL_POLY_C type trajectory (HISTORY).</span>
+
+<span class="sd">    This function takes a DL_POLY_C trajectory file and maps it for the</span>
+<span class="sd">    binary points in the file where each frame starts/ends. This way the</span>
+<span class="sd">    process is fast, as it not require loading the trajectory into computer</span>
+<span class="sd">    memory. When a frame is being extracted, it is only this frame that gets</span>
+<span class="sd">    loaded to the memory.</span>
+
+<span class="sd">    Frames can be accessed individually and loaded as an unmodified string,</span>
+<span class="sd">    returned as a :class:`pywindow.molecular.MolecularSystem` (and analysed),</span>
+<span class="sd">    dumped as PDB or XYZ or JSON (if dumped as a</span>
+<span class="sd">    :attr:`pywindow.molecular.MolecularSystem.system`)</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepath : :class:`str`</span>
+<span class="sd">        The filepath.</span>
+
+<span class="sd">    system_id : :class:`str`</span>
+<span class="sd">        The system id inherited from the filename.</span>
+
+<span class="sd">    frames : :class:`dict`</span>
+<span class="sd">        A dictionary that is populated, on the fly, with the extracted frames.</span>
+
+<span class="sd">    analysis_output : :class:`dict`</span>
+<span class="sd">        A dictionary that is populated, on the fly, with the analysis output.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="c1"># Image conventions - periodic boundary key.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_imcon</span> <span class="o">=</span> <span class="p">{</span>
@@ -270,7 +355,50 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">no_of_atoms</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">header</span>
 
-<div class="viewcode-block" id="DLPOLY.get_frames"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.DLPOLY.get_frames">[docs]</a>    <span class="k">def</span> <span class="nf">get_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DLPOLY.get_frames"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.DLPOLY.get_frames">[docs]</a>    <span class="k">def</span> <span class="nf">get_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract frames from the trajectory file.</span>
+
+<span class="sd">        Depending on the passed parameters a frame, a list of particular</span>
+<span class="sd">        frames, a range of frames (from, to), or all frames can be extracted</span>
+<span class="sd">        with this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : :class:`int` or :class:`list` or :class:`touple` or :class:`str`</span>
+<span class="sd">            Specified frame (:class:`int`), or frames (:class:`list`), or</span>
+<span class="sd">            range (:class:`touple`), or `all`/`everything` (:class:`str`).</span>
+<span class="sd">            (default=`all`)</span>
+
+<span class="sd">        override : :class:`bool`</span>
+<span class="sd">            If True, a frame already storred in :attr:`frames` can be override.</span>
+<span class="sd">            (default=False)</span>
+
+<span class="sd">        extract_data : :class:`bool`, optional</span>
+<span class="sd">            If False, a frame is returned as a :class:`str` block as in the</span>
+<span class="sd">            trajectory file. Ohterwise, it is extracted and returned as</span>
+<span class="sd">            :class:`pywindow.molecular.MolecularSystem`. (default=True)</span>
+
+<span class="sd">        swap_atoms : :class:`dict`, optional</span>
+<span class="sd">            If this kwarg is passed with an appropriate dictionary a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.swap_atom_keys()` will</span>
+<span class="sd">            be applied to the extracted frame.</span>
+
+<span class="sd">        forcefield : :class:`str`, optional</span>
+<span class="sd">            If this kwarg is passed with appropriate forcefield keyword a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.decipher_atom_keys()`</span>
+<span class="sd">            will be applied to the extracted frame.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`pywindow.molecular.MolecularSystem`</span>
+<span class="sd">            If a single frame is extracted.</span>
+
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">            If more than one frame is extracted, the frames are returned to</span>
+<span class="sd">            :attr:`frames`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">override</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -382,7 +510,74 @@
 <div class="viewcode-block" id="DLPOLY.analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.DLPOLY.analysis">[docs]</a>    <span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">_ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                 <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform structural analysis on a frame/ set of frames.</span>
+
+<span class="sd">        Depending on the passed parameters a frame, a list of particular</span>
+<span class="sd">        frames, a range of frames (from, to), or all frames can be analysed</span>
+<span class="sd">        with this function.</span>
+
+<span class="sd">        The analysis is performed on each frame and each discrete molecule in</span>
+<span class="sd">        that frame separately. The steps are as follows:</span>
+
+<span class="sd">        1. A frame is extracted and returned as a :class:`MolecularSystem`.</span>
+<span class="sd">        2. If `swap_atoms` is set the atom ids are swapped.</span>
+<span class="sd">        3. If `forcefield` is set the atom ids are deciphered.</span>
+<span class="sd">        4. If `rebuild` is set the molecules in the system are rebuild.</span>
+<span class="sd">        5. Each discrete molecule is extracted as :class:`Molecule`</span>
+<span class="sd">        6. Each molecule is analysed with :func:`Molecule.full_analysis()`</span>
+<span class="sd">        7. Analysis output populates the :attr:`analysis_output` dictionary.</span>
+
+<span class="sd">        As the analysis of trajectories often have to be unique, many options</span>
+<span class="sd">        are conditional.</span>
+
+<span class="sd">        A side effect of this function is that the analysed frames are also</span>
+<span class="sd">        returned to the :attr:`frames` mimicking the behaviour of the</span>
+<span class="sd">        :func:`get_frames()`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : :class:`int` or :class:`list` or :class:`touple` or :class:`str`</span>
+<span class="sd">            Specified frame (:class:`int`), or frames (:class:`list`), or</span>
+<span class="sd">            range (:class:`touple`), or `all`/`everything` (:class:`str`).</span>
+<span class="sd">            (default=&#39;all&#39;)</span>
+
+<span class="sd">        override : :class:`bool`</span>
+<span class="sd">            If True, an output already storred in :attr:`analysis_output` can</span>
+<span class="sd">            be override. (default=False)</span>
+
+<span class="sd">        swap_atoms : :class:`dict`, optional</span>
+<span class="sd">            If this kwarg is passed with an appropriate dictionary a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.swap_atom_keys()` will</span>
+<span class="sd">            be applied to the extracted frame.</span>
+
+<span class="sd">        forcefield : :class:`str`, optional</span>
+<span class="sd">            If this kwarg is passed with appropriate forcefield keyword a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.decipher_atom_keys()`</span>
+<span class="sd">            will be applied to the extracted frame.</span>
+
+<span class="sd">        modular : :class:`bool`, optional</span>
+<span class="sd">            If this kwarg is passed a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.make_modular()`</span>
+<span class="sd">            will be applied to the extracted frame. (default=False)</span>
+
+<span class="sd">        rebuild : :class:`bool`, optional</span>
+<span class="sd">            If this kwarg is passed a `rebuild=True` is passed to</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.make_modular()` that</span>
+<span class="sd">            will be applied to the extracted frame. (default=False)</span>
+
+<span class="sd">        ncpus : :class:`int`, optional</span>
+<span class="sd">            If ncpus &gt; 1, then the analysis is performed in parallel for the</span>
+<span class="sd">            specified number of parallel jobs. Otherwise, it runs in serial.</span>
+<span class="sd">            (default=1)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">            The function returns `None`, the analysis output is</span>
+<span class="sd">            returned to :attr:`analysis_output` dictionary.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frames_for_analysis</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># First populate the frames_for_analysis list.</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -617,6 +812,18 @@
                         <span class="k">raise</span> <span class="n">_TrajectoryError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DLPOLY.save_analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.DLPOLY.save_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">save_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dump the content of :attr:`analysis_output` as JSON dictionary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">            The filepath for the JSON file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We pass a copy of the analysis attribute dictionary.</span>
         <span class="n">dict_obj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_output</span><span class="p">)</span>
         <span class="c1"># If no filepath is provided we create one.</span>
@@ -682,6 +889,38 @@
 
 
 <div class="viewcode-block" id="XYZ"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.XYZ">[docs]</a><span class="k">class</span> <span class="nc">XYZ</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container for an XYZ type trajectory.</span>
+
+<span class="sd">    This function takes an XYZ trajectory file and maps it for the</span>
+<span class="sd">    binary points in the file where each frame starts/ends. This way the</span>
+<span class="sd">    process is fast, as it not require loading the trajectory into computer</span>
+<span class="sd">    memory. When a frame is being extracted, it is only this frame that gets</span>
+<span class="sd">    loaded to the memory.</span>
+
+<span class="sd">    Frames can be accessed individually and loaded as an unmodified string,</span>
+<span class="sd">    returned as a :class:`pywindow.molecular.MolecularSystem` (and analysed),</span>
+<span class="sd">    dumped as PDB or XYZ or JSON (if dumped as a</span>
+<span class="sd">    :attr:`pywindow.molecular.MolecularSystem.system`)</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepath : :class:`str`</span>
+<span class="sd">        The filepath.</span>
+
+<span class="sd">    filename : :class:`str`</span>
+<span class="sd">        The filename.</span>
+
+<span class="sd">    system_id : :class:`str`</span>
+<span class="sd">        The system id inherited from the filename.</span>
+
+<span class="sd">    frames : :class:`dict`</span>
+<span class="sd">        A dictionary that is populated, on the fly, with the extracted frames.</span>
+
+<span class="sd">    analysis_output : :class:`dict`</span>
+<span class="sd">        A dictionary that is populated, on the fly, with the analysis output.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
@@ -726,7 +965,50 @@
                     <span class="n">progress</span> <span class="o">=</span> <span class="n">progress</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">bline</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">no_of_frames</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="XYZ.get_frames"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.XYZ.get_frames">[docs]</a>    <span class="k">def</span> <span class="nf">get_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="XYZ.get_frames"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.XYZ.get_frames">[docs]</a>    <span class="k">def</span> <span class="nf">get_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract frames from the trajectory file.</span>
+
+<span class="sd">        Depending on the passed parameters a frame, a list of particular</span>
+<span class="sd">        frames, a range of frames (from, to), or all frames can be extracted</span>
+<span class="sd">        with this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : :class:`int` or :class:`list` or :class:`touple` or :class:`str`</span>
+<span class="sd">            Specified frame (:class:`int`), or frames (:class:`list`), or</span>
+<span class="sd">            range (:class:`touple`), or `all`/`everything` (:class:`str`).</span>
+<span class="sd">            (default=`all`)</span>
+
+<span class="sd">        override : :class:`bool`</span>
+<span class="sd">            If True, a frame already storred in :attr:`frames` can be override.</span>
+<span class="sd">            (default=False)</span>
+
+<span class="sd">        extract_data : :class:`bool`, optional</span>
+<span class="sd">            If False, a frame is returned as a :class:`str` block as in the</span>
+<span class="sd">            trajectory file. Ohterwise, it is extracted and returned as</span>
+<span class="sd">            :class:`pywindow.molecular.MolecularSystem`. (default=True)</span>
+
+<span class="sd">        swap_atoms : :class:`dict`, optional</span>
+<span class="sd">            If this kwarg is passed with an appropriate dictionary a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.swap_atom_keys()` will</span>
+<span class="sd">            be applied to the extracted frame.</span>
+
+<span class="sd">        forcefield : :class:`str`, optional</span>
+<span class="sd">            If this kwarg is passed with appropriate forcefield keyword a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.decipher_atom_keys()`</span>
+<span class="sd">            will be applied to the extracted frame.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`pywindow.molecular.MolecularSystem`</span>
+<span class="sd">            If a single frame is extracted.</span>
+
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">            If more than one frame is extracted, the frames are returned to</span>
+<span class="sd">            :attr:`frames`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">override</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -800,6 +1082,74 @@
         <span class="k">return</span> <span class="n">frame_data</span>
 
 <div class="viewcode-block" id="XYZ.analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.XYZ.analysis">[docs]</a>    <span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform structural analysis on a frame/ set of frames.</span>
+
+<span class="sd">        Depending on the passed parameters a frame, a list of particular</span>
+<span class="sd">        frames, a range of frames (from, to), or all frames can be analysed</span>
+<span class="sd">        with this function.</span>
+
+<span class="sd">        The analysis is performed on each frame and each discrete molecule in</span>
+<span class="sd">        that frame separately. The steps are as follows:</span>
+
+<span class="sd">        1. A frame is extracted and returned as a :class:`MolecularSystem`.</span>
+<span class="sd">        2. If `swap_atoms` is set the atom ids are swapped.</span>
+<span class="sd">        3. If `forcefield` is set the atom ids are deciphered.</span>
+<span class="sd">        4. If `rebuild` is set the molecules in the system are rebuild.</span>
+<span class="sd">        5. Each discrete molecule is extracted as :class:`Molecule`</span>
+<span class="sd">        6. Each molecule is analysed with :func:`Molecule.full_analysis()`</span>
+<span class="sd">        7. Analysis output populates the :attr:`analysis_output` dictionary.</span>
+
+<span class="sd">        As the analysis of trajectories often have to be unique, many options</span>
+<span class="sd">        are conditional.</span>
+
+<span class="sd">        A side effect of this function is that the analysed frames are also</span>
+<span class="sd">        returned to the :attr:`frames` mimicking the behaviour of the</span>
+<span class="sd">        :func:`get_frames()`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : :class:`int` or :class:`list` or :class:`touple` or :class:`str`</span>
+<span class="sd">            Specified frame (:class:`int`), or frames (:class:`list`), or</span>
+<span class="sd">            range (:class:`touple`), or `all`/`everything` (:class:`str`).</span>
+<span class="sd">            (default=&#39;all&#39;)</span>
+
+<span class="sd">        override : :class:`bool`</span>
+<span class="sd">            If True, an output already storred in :attr:`analysis_output` can</span>
+<span class="sd">            be override. (default=False)</span>
+
+<span class="sd">        swap_atoms : :class:`dict`, optional</span>
+<span class="sd">            If this kwarg is passed with an appropriate dictionary a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.swap_atom_keys()` will</span>
+<span class="sd">            be applied to the extracted frame.</span>
+
+<span class="sd">        forcefield : :class:`str`, optional</span>
+<span class="sd">            If this kwarg is passed with appropriate forcefield keyword a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.decipher_atom_keys()`</span>
+<span class="sd">            will be applied to the extracted frame.</span>
+
+<span class="sd">        modular : :class:`bool`, optional</span>
+<span class="sd">            If this kwarg is passed a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.make_modular()`</span>
+<span class="sd">            will be applied to the extracted frame. (default=False)</span>
+
+<span class="sd">        rebuild : :class:`bool`, optional</span>
+<span class="sd">            If this kwarg is passed a `rebuild=True` is passed to</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.make_modular()` that</span>
+<span class="sd">            will be applied to the extracted frame. (default=False)</span>
+
+<span class="sd">        ncpus : :class:`int`, optional</span>
+<span class="sd">            If ncpus &gt; 1, then the analysis is performed in parallel for the</span>
+<span class="sd">            specified number of parallel jobs. Otherwise, it runs in serial.</span>
+<span class="sd">            (default=1)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">            The function returns `None`, the analysis output is</span>
+<span class="sd">            returned to :attr:`analysis_output` dictionary.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">override</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">analysis_output</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -932,6 +1282,18 @@
             <span class="k">raise</span> <span class="n">_ParallelAnalysisError</span><span class="p">(</span><span class="s2">&quot;Parallel analysis failed.&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="XYZ.save_analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.XYZ.save_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">save_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dump the content of :attr:`analysis_output` as JSON dictionary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">            The filepath for the JSON file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We pass a copy of the analysis attribute dictionary.</span>
         <span class="n">dict_obj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_output</span><span class="p">)</span>
         <span class="c1"># If no filepath is provided we create one.</span>
@@ -942,11 +1304,94 @@
             <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">filepath</span><span class="p">))</span>
         <span class="c1"># Dump the dictionary to json file.</span>
         <span class="n">Output</span><span class="p">()</span><span class="o">.</span><span class="n">dump2json</span><span class="p">(</span><span class="n">dict_obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">to_list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span></div></div>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="XYZ.save_frames"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.XYZ.save_frames">[docs]</a>    <span class="k">def</span> <span class="nf">save_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetype</span><span class="o">=</span><span class="s1">&#39;pdb&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;pdb&quot;</span><span class="p">:</span> <span class="n">Output</span><span class="p">()</span><span class="o">.</span><span class="n">_save_pdb</span><span class="p">,</span>
+            <span class="s2">&quot;xyz&quot;</span><span class="p">:</span> <span class="n">Output</span><span class="p">()</span><span class="o">.</span><span class="n">_save_xyz</span><span class="p">,</span>
+            <span class="s2">&quot;decipher&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;forcefield&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">filetype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">_FormatError</span><span class="p">(</span><span class="s2">&quot;The &#39;</span><span class="si">{0}</span><span class="s2">&#39; file format is not supported&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">filetype</span><span class="p">))</span>
+        <span class="n">frames_to_get</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">frames_to_get</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">frames_to_get</span> <span class="o">=</span> <span class="n">frames</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">frames_to_get</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">frames</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;everything&#39;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_of_frames</span><span class="p">):</span>
+                    <span class="n">frames_to_get</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames_to_get</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">frame</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_frames</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="c1"># If no filepath is provided we create one.</span>
+        <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system_id</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames_to_get</span><span class="p">:</span>
+            <span class="n">frame_molsys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">settings</span><span class="p">[</span>
+                    <span class="s1">&#39;decipher&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;forcefield&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;swap_atoms&quot;</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;swap_atoms&quot;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="n">frame_molsys</span><span class="o">.</span><span class="n">swap_atom_keys</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;swap_atoms&quot;</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">_FunctionError</span><span class="p">(</span>
+                            <span class="s2">&quot;The swap_atom_keys function only accepts &quot;</span>
+                            <span class="s2">&quot;&#39;swap_atoms&#39; argument in form of a dictionary.&quot;</span><span class="p">)</span>
+                <span class="n">frame_molsys</span><span class="o">.</span><span class="n">decipher_atom_keys</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;forcefield&quot;</span><span class="p">])</span>
+            <span class="n">ffilepath</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">filepath</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">frame</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="s1">&#39;elements&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">frame_molsys</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">_FunctionError</span><span class="p">(</span>
+                    <span class="s2">&quot;The frame (MolecularSystem object) needs to have &quot;</span>
+                    <span class="s2">&quot;&#39;elements&#39; attribute within the system dictionary. &quot;</span>
+                    <span class="s2">&quot;It is, therefore, neccessary that you set a decipher &quot;</span>
+                    <span class="s2">&quot;keyword to True. (see manual)&quot;</span><span class="p">)</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">filetype</span><span class="o">.</span><span class="n">lower</span><span class="p">()](</span><span class="n">frame_molsys</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">ffilepath</span><span class="p">,</span> <span class="o">**</span>
+                                       <span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="PDB"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.PDB">[docs]</a><span class="k">class</span> <span class="nc">PDB</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A container for an PDB type trajectory.</span>
+
+<span class="sd">        This function takes an PDB trajectory file and maps it for the</span>
+<span class="sd">        binary points in the file where each frame starts/ends. This way the</span>
+<span class="sd">        process is fast, as it not require loading the trajectory into computer</span>
+<span class="sd">        memory. When a frame is being extracted, it is only this frame that gets</span>
+<span class="sd">        loaded to the memory.</span>
+
+<span class="sd">        Frames can be accessed individually and loaded as an unmodified string,</span>
+<span class="sd">        returned as a :class:`pywindow.molecular.MolecularSystem` (and analysed),</span>
+<span class="sd">        dumped as PDB or XYZ or JSON (if dumped as a</span>
+<span class="sd">        :attr:`pywindow.molecular.MolecularSystem.system`)</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">            The filepath.</span>
+
+<span class="sd">        filename : :class:`str`</span>
+<span class="sd">            The filename.</span>
+
+<span class="sd">        system_id : :class:`str`</span>
+<span class="sd">            The system id inherited from the filename.</span>
+
+<span class="sd">        frames : :class:`dict`</span>
+<span class="sd">            A dictionary that is populated, on the fly, with the extracted frames.</span>
+
+<span class="sd">        analysis_output : :class:`dict`</span>
+<span class="sd">            A dictionary that is populated, on the fly, with the analysis output.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">system_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -992,7 +1437,50 @@
                     <span class="n">progress</span> <span class="o">=</span> <span class="n">progress</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">bline</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">no_of_frames</span> <span class="o">=</span> <span class="n">frame</span>
 
-<div class="viewcode-block" id="PDB.get_frames"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.PDB.get_frames">[docs]</a>    <span class="k">def</span> <span class="nf">get_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="PDB.get_frames"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.PDB.get_frames">[docs]</a>    <span class="k">def</span> <span class="nf">get_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract frames from the trajectory file.</span>
+
+<span class="sd">        Depending on the passed parameters a frame, a list of particular</span>
+<span class="sd">        frames, a range of frames (from, to), or all frames can be extracted</span>
+<span class="sd">        with this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : :class:`int` or :class:`list` or :class:`touple` or :class:`str`</span>
+<span class="sd">            Specified frame (:class:`int`), or frames (:class:`list`), or</span>
+<span class="sd">            range (:class:`touple`), or `all`/`everything` (:class:`str`).</span>
+<span class="sd">            (default=`all`)</span>
+
+<span class="sd">        override : :class:`bool`</span>
+<span class="sd">            If True, a frame already storred in :attr:`frames` can be override.</span>
+<span class="sd">            (default=False)</span>
+
+<span class="sd">        extract_data : :class:`bool`, optional</span>
+<span class="sd">            If False, a frame is returned as a :class:`str` block as in the</span>
+<span class="sd">            trajectory file. Ohterwise, it is extracted and returned as</span>
+<span class="sd">            :class:`pywindow.molecular.MolecularSystem`. (default=True)</span>
+
+<span class="sd">        swap_atoms : :class:`dict`, optional</span>
+<span class="sd">            If this kwarg is passed with an appropriate dictionary a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.swap_atom_keys()` will</span>
+<span class="sd">            be applied to the extracted frame.</span>
+
+<span class="sd">        forcefield : :class:`str`, optional</span>
+<span class="sd">            If this kwarg is passed with appropriate forcefield keyword a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.decipher_atom_keys()`</span>
+<span class="sd">            will be applied to the extracted frame.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`pywindow.molecular.MolecularSystem`</span>
+<span class="sd">            If a single frame is extracted.</span>
+
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">            If more than one frame is extracted, the frames are returned to</span>
+<span class="sd">            :attr:`frames`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">override</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -1073,6 +1561,74 @@
         <span class="k">return</span> <span class="n">frame_data</span>
 
 <div class="viewcode-block" id="PDB.analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.PDB.analysis">[docs]</a>    <span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform structural analysis on a frame/ set of frames.</span>
+
+<span class="sd">        Depending on the passed parameters a frame, a list of particular</span>
+<span class="sd">        frames, a range of frames (from, to), or all frames can be analysed</span>
+<span class="sd">        with this function.</span>
+
+<span class="sd">        The analysis is performed on each frame and each discrete molecule in</span>
+<span class="sd">        that frame separately. The steps are as follows:</span>
+
+<span class="sd">        1. A frame is extracted and returned as a :class:`MolecularSystem`.</span>
+<span class="sd">        2. If `swap_atoms` is set the atom ids are swapped.</span>
+<span class="sd">        3. If `forcefield` is set the atom ids are deciphered.</span>
+<span class="sd">        4. If `rebuild` is set the molecules in the system are rebuild.</span>
+<span class="sd">        5. Each discrete molecule is extracted as :class:`Molecule`</span>
+<span class="sd">        6. Each molecule is analysed with :func:`Molecule.full_analysis()`</span>
+<span class="sd">        7. Analysis output populates the :attr:`analysis_output` dictionary.</span>
+
+<span class="sd">        As the analysis of trajectories often have to be unique, many options</span>
+<span class="sd">        are conditional.</span>
+
+<span class="sd">        A side effect of this function is that the analysed frames are also</span>
+<span class="sd">        returned to the :attr:`frames` mimicking the behaviour of the</span>
+<span class="sd">        :func:`get_frames()`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : :class:`int` or :class:`list` or :class:`touple` or :class:`str`</span>
+<span class="sd">            Specified frame (:class:`int`), or frames (:class:`list`), or</span>
+<span class="sd">            range (:class:`touple`), or `all`/`everything` (:class:`str`).</span>
+<span class="sd">            (default=&#39;all&#39;)</span>
+
+<span class="sd">        override : :class:`bool`</span>
+<span class="sd">            If True, an output already storred in :attr:`analysis_output` can</span>
+<span class="sd">            be override. (default=False)</span>
+
+<span class="sd">        swap_atoms : :class:`dict`, optional</span>
+<span class="sd">            If this kwarg is passed with an appropriate dictionary a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.swap_atom_keys()` will</span>
+<span class="sd">            be applied to the extracted frame.</span>
+
+<span class="sd">        forcefield : :class:`str`, optional</span>
+<span class="sd">            If this kwarg is passed with appropriate forcefield keyword a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.decipher_atom_keys()`</span>
+<span class="sd">            will be applied to the extracted frame.</span>
+
+<span class="sd">        modular : :class:`bool`, optional</span>
+<span class="sd">            If this kwarg is passed a</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.make_modular()`</span>
+<span class="sd">            will be applied to the extracted frame. (default=False)</span>
+
+<span class="sd">        rebuild : :class:`bool`, optional</span>
+<span class="sd">            If this kwarg is passed a `rebuild=True` is passed to</span>
+<span class="sd">            :func:`pywindow.molecular.MolecularSystem.make_modular()` that</span>
+<span class="sd">            will be applied to the extracted frame. (default=False)</span>
+
+<span class="sd">        ncpus : :class:`int`, optional</span>
+<span class="sd">            If ncpus &gt; 1, then the analysis is performed in parallel for the</span>
+<span class="sd">            specified number of parallel jobs. Otherwise, it runs in serial.</span>
+<span class="sd">            (default=1)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">            The function returns `None`, the analysis output is</span>
+<span class="sd">            returned to :attr:`analysis_output` dictionary.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">override</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">analysis_output</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -1205,6 +1761,18 @@
             <span class="k">raise</span> <span class="n">_ParallelAnalysisError</span><span class="p">(</span><span class="s2">&quot;Parallel analysis failed.&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PDB.save_analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.PDB.save_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">save_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dump the content of :attr:`analysis_output` as JSON dictionary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">            The filepath for the JSON file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We pass a copy of the analysis attribute dictionary.</span>
         <span class="n">dict_obj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_output</span><span class="p">)</span>
         <span class="c1"># If no filepath is provided we create one.</span>
@@ -1215,7 +1783,58 @@
             <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">filepath</span><span class="p">))</span>
         <span class="c1"># Dump the dictionary to json file.</span>
         <span class="n">Output</span><span class="p">()</span><span class="o">.</span><span class="n">dump2json</span><span class="p">(</span><span class="n">dict_obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">to_list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span></div></div>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="PDB.save_frames"><a class="viewcode-back" href="../../pywindow.html#pywindow.trajectory.PDB.save_frames">[docs]</a>    <span class="k">def</span> <span class="nf">save_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetype</span><span class="o">=</span><span class="s1">&#39;pdb&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;pdb&quot;</span><span class="p">:</span> <span class="n">Output</span><span class="p">()</span><span class="o">.</span><span class="n">_save_pdb</span><span class="p">,</span>
+            <span class="s2">&quot;xyz&quot;</span><span class="p">:</span> <span class="n">Output</span><span class="p">()</span><span class="o">.</span><span class="n">_save_xyz</span><span class="p">,</span>
+            <span class="s2">&quot;decipher&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;forcefield&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">filetype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">_FormatError</span><span class="p">(</span><span class="s2">&quot;The &#39;</span><span class="si">{0}</span><span class="s2">&#39; file format is not supported&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">filetype</span><span class="p">))</span>
+        <span class="n">frames_to_get</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">frames_to_get</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">frames_to_get</span> <span class="o">=</span> <span class="n">frames</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">frames_to_get</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">frames</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;everything&#39;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_of_frames</span><span class="p">):</span>
+                    <span class="n">frames_to_get</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames_to_get</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">frame</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_frames</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="c1"># If no filepath is provided we create one.</span>
+        <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system_id</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames_to_get</span><span class="p">:</span>
+            <span class="n">frame_molsys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">settings</span><span class="p">[</span>
+                    <span class="s1">&#39;decipher&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;forcefield&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;swap_atoms&quot;</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;swap_atoms&quot;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="n">frame_molsys</span><span class="o">.</span><span class="n">swap_atom_keys</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;swap_atoms&quot;</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">_FunctionError</span><span class="p">(</span>
+                            <span class="s2">&quot;The swap_atom_keys function only accepts &quot;</span>
+                            <span class="s2">&quot;&#39;swap_atoms&#39; argument in form of a dictionary.&quot;</span><span class="p">)</span>
+                <span class="n">frame_molsys</span><span class="o">.</span><span class="n">decipher_atom_keys</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;forcefield&quot;</span><span class="p">])</span>
+            <span class="n">ffilepath</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">filepath</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">frame</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="s1">&#39;elements&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">frame_molsys</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">_FunctionError</span><span class="p">(</span>
+                    <span class="s2">&quot;The frame (MolecularSystem object) needs to have &quot;</span>
+                    <span class="s2">&quot;&#39;elements&#39; attribute within the system dictionary. &quot;</span>
+                    <span class="s2">&quot;It is, therefore, neccessary that you set a decipher &quot;</span>
+                    <span class="s2">&quot;keyword to True. (see manual)&quot;</span><span class="p">)</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">filetype</span><span class="o">.</span><span class="n">lower</span><span class="p">()](</span><span class="n">frame_molsys</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">ffilepath</span><span class="p">,</span> <span class="o">**</span>
+                                       <span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

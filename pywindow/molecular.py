@@ -769,19 +769,19 @@ class MolecularSystem:
 
     .. code-block:: python
 
-        pywindow.MolecularSystem.load_file(`filepath`)
+        pywindow.molecular.MolecularSystem.load_file(`filepath`)
 
     2. Using RDKit molecule object as an input:
 
     .. code-block:: python
 
-        pywindow.MolecularSystem.load_rdkit_mol(rdkit.Chem.rdchem.Mol)
+        pywindow.molecular.MolecularSystem.load_rdkit_mol(rdkit.Chem.rdchem.Mol)
 
     3. Using a dictionary (or another :attr:`MoleculeSystem.system`) as input:
 
     .. code-block:: python
 
-        pywindow.MolecularSystem.load_system({...})
+        pywindow.molecular.MolecularSystem.load_system({...})
 
     Attributes
     ----------
@@ -935,7 +935,7 @@ class MolecularSystem:
 
         .. code-block:: python
 
-            pywindow.MolecularSystem.swap_atom_keys({'he': 'H'})
+            pywindow.molecular.MolecularSystem.swap_atom_keys({'he': 'H'})
 
         Parameters
         ----------
