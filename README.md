@@ -5,6 +5,10 @@
 
 `$ conda install --channel https://conda.anaconda.org/marcinmiklitz pywindow`
 
+### Documentation
+
+https://marcinmiklitz.github.io/pywindow/
+
 Structural parameters associated with porous organic molecules that are available
 to calculate using `pywindow` software.
 
@@ -18,11 +22,6 @@ to calculate using `pywindow` software.
 * d<sub>window</sub>: the circular diameter of an xth window of a molecule.
 
 Instructions and examples how to calculate these structural parameters are in form of Jupyter notebooks in the examples diretory.
-
-
-### Windows
-
-Definition.
 
 ---------------------------------------------------------------
 MIT License | Copyright (c) 2017 Marcin Miklitz, Jelfs Materials Group
