@@ -36,6 +36,10 @@ Git clone the pywindow repository or download a zipped version.
 
 Examples
 --------
+
+For the specific examples of ``pywindow`` usage see Examples/ directory in the
+``pywindow`` Github repository.
+
 Loading input
 .............
 
