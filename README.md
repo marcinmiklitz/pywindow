@@ -3,7 +3,7 @@
 
 ### Documentation
 
-https://marcinmiklitz.github.io/pywindow/
+https://jelfsmaterialsgroup.github.io/pywindow/
 
 ### How to install `pywindow`
 
