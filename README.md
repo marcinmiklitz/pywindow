@@ -1,9 +1,21 @@
 ![alt tag](docs/pyWINDOW_logo.png)
 ### Python package for the analysis of structural properties of molecular pores (*porous organic cages*, but also *MOFs* and *metalorganic cages* - see examples directory).
 
-### How to install `pywindow` with `conda`:
+### Documentation
 
-`$ conda install --channel https://conda.anaconda.org/marcinmiklitz pywindow`
+https://jelfsmaterialsgroup.github.io/pywindow/
+
+### How to install `pywindow`
+
+Git clone this repository or download a zipped version.
+
+cd pywindow/
+
+and run
+
+python setup.py install
+
+### Overview
 
 Structural parameters associated with porous organic molecules that are available
 to calculate using `pywindow` software.
@@ -17,12 +29,7 @@ to calculate using `pywindow` software.
 * V<sub>void_opt</sub>: the optimised intrinsic void volume of a molecule.
 * d<sub>window</sub>: the circular diameter of an xth window of a molecule.
 
-Instructions and examples how to calculate these structural parameters are in form of Jupyter notebooks in the examples diretory.
-
-
-### Windows
-
-Definition.
+Instructions and examples how to calculate these structural parameters are in form of Jupyter notebooks in the examples directory.
 
 ---------------------------------------------------------------
 MIT License | Copyright (c) 2017 Marcin Miklitz, Jelfs Materials Group

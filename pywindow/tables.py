@@ -2,28 +2,23 @@
 """
 This module containes general-purpose chemical data (aka tables).
 
-The dictionaries defined here:
-    -the atomic masses
-    -van der Waals radii
-    -covalent radii (used for bonds determination)
-    -OPLS force field atom keys
-are independent of the rest of pywindow.
-
 Sources:
-[1] www.ccdc.cam.ac.uk/Lists/ResourceFileList/Elemental_Radii.xlsx, (access
+
+    1. www.ccdc.cam.ac.uk/Lists/ResourceFileList/Elemental_Radii.xlsx, (access
     date: 13 Oct 2015)
-[2] C. W. Yong, 'DL_FIELD - A force field and model development tool for
+
+    2. C. W. Yong, 'DL_FIELD - A force field and model development tool for
     DL_POLY', R. Blake, Ed., CSE Frontier, STFC Computational Science and
     Engineering, Daresbury Laboratory, UK, p38-40 (2010)
 
-Edit 1:
-[1] https://www.ccdc.cam.ac.uk/support-and-resources/ccdcresources/
+    3. https://www.ccdc.cam.ac.uk/support-and-resources/ccdcresources/
     Elemental_Radii.xlsx (access date: 26 Jul 2017)
 
-Edit 2:
-Added atomic mass, atomic can der Waals radius and covalent radius that equal
-1 for a dummy atom `X`. This is for the shape descriptors calculations to use
-the function for molecular descriptors that requires mass.
+Note:
+
+Added atomic mass, atomic van der Waals radius and covalent radius, that equals
+1, for a dummy atom `X`. This is for the shape descriptors calculations to use
+with functions for molecular shape descriptors that require mass.
 """
 
 

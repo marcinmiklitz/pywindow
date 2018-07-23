@@ -1,0 +1,1362 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pywindow.molecular &mdash; pywindow  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pywindow
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pywindow</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pywindow.molecular</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pywindow.molecular</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Defines :class:`MolecularSystem` and :class:`Molecule` classes.</span>
+
+<span class="sd">This module is the most important part of the ``pywindow`` package, as it is</span>
+<span class="sd">at the frontfront of the interaction with the user. The two main classes</span>
+<span class="sd">defined here: :class:`MolecularSystem` and :class:`Molecule` are used to</span>
+<span class="sd">store and analyse single molecules or assemblies of single molecules.</span>
+
+<span class="sd">The :class:`MolecularSystem` is used as a first step to the analysis. It allows</span>
+<span class="sd">to load data, to refine it (rebuild molecules in a periodic system, decipher</span>
+<span class="sd">force field atom ids) and to extract single molecules for analysis as</span>
+<span class="sd">:class:`Molecule` instances.</span>
+
+<span class="sd">To get started see :class:`MolecularSystem`.</span>
+
+<span class="sd">To get started with the analysis of Molecular Dynamic trajectories go to</span>
+<span class="sd">:mod:`pywindow.trajectory`.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">ConvexHull</span>
+
+<span class="kn">from</span> <span class="nn">.io_tools</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
+<span class="kn">from</span> <span class="nn">.utilities</span> <span class="k">import</span> <span class="p">(</span><span class="n">discrete_molecules</span><span class="p">,</span>
+                        <span class="n">decipher_atom_key</span><span class="p">,</span>
+                        <span class="n">molecular_weight</span><span class="p">,</span>
+                        <span class="n">center_of_mass</span><span class="p">,</span>
+                        <span class="n">max_dim</span><span class="p">,</span>
+                        <span class="n">pore_diameter</span><span class="p">,</span>
+                        <span class="n">opt_pore_diameter</span><span class="p">,</span>
+                        <span class="n">sphere_volume</span><span class="p">,</span>
+                        <span class="n">find_windows</span><span class="p">,</span>
+                        <span class="n">shift_com</span><span class="p">,</span>
+                        <span class="n">create_supercell</span><span class="p">,</span>
+                        <span class="n">is_inside_polyhedron</span><span class="p">,</span>
+                        <span class="n">find_average_diameter</span><span class="p">,</span>
+                        <span class="n">calculate_pore_shape</span><span class="p">,</span>
+                        <span class="n">circumcircle</span><span class="p">,</span>
+                        <span class="n">to_list</span><span class="p">,</span>
+                        <span class="n">align_principal_ax</span><span class="p">,</span>
+                        <span class="n">get_inertia_tensor</span><span class="p">,</span>
+                        <span class="n">get_gyration_tensor</span><span class="p">,</span>
+                        <span class="n">calc_asphericity</span><span class="p">,</span>
+                        <span class="n">calc_acylidricity</span><span class="p">,</span>
+                        <span class="n">calc_relative_shape_anisotropy</span><span class="p">,</span>
+                        <span class="n">find_windows_new</span><span class="p">,</span>
+                        <span class="n">calculate_window_diameter</span><span class="p">,</span>
+                        <span class="n">get_window_com</span><span class="p">,</span>
+                        <span class="n">window_shape</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_MolecularSystemError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+
+
+<span class="k">class</span> <span class="nc">_NotAModularSystem</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+
+
+<span class="k">class</span> <span class="nc">_Shape</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class containing shape descriptors.</span>
+
+<span class="sd">    This class allows other classes, such as :class:`Pore` and</span>
+<span class="sd">    :class:`Molecule`, inherit shape descriptors (applicable to any set of</span>
+<span class="sd">    points in a 3D Cartesian space, let it be a shape of an intrinsic pore or</span>
+<span class="sd">    shape of a molecule) such as asphericity, acylidricity and relative shape</span>
+<span class="sd">    anisotropy. This class should not be used by itself.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_asphericity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return asphericity of a shape.</span>
+
+<span class="sd">        The asphericity of a shape is weighted by the mass assigned to each</span>
+<span class="sd">        coordinate (associated with the element). In case if `elements` is</span>
+<span class="sd">        `None`, mass of each element = 1 and this returns a non-weighted value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">           The asphericity of a shape.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_asphericity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_acylidricity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return acylidricity of a shape.</span>
+
+<span class="sd">        The acylidricity of a shape is weighted by the mass assigned to each</span>
+<span class="sd">        coordinate (associated with the element). In case if `elements` is</span>
+<span class="sd">        `None`, mass of each element = 1 and this returns a non-weighted value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">           The acylidricity of a shape.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_acylidricity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_relative_shape_anisotropy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return relative shape anisotropy of a shape.</span>
+
+<span class="sd">        The relative shape anisotropy of a shape is weighted by the mass</span>
+<span class="sd">        assigned to each coordinate (associated with the element). In case if</span>
+<span class="sd">        `elements` is `None`, mass of each element = 1 and this returns a</span>
+<span class="sd">        non-weighted value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">           The relative shape anisotropy of a shape.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_relative_shape_anisotropy</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inertia_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return inertia tensor of a shape.</span>
+
+<span class="sd">        The inertia tensor of a shape is weighted by the mass assigned to each</span>
+<span class="sd">        coordinate (associated with the element). In case if `elements` is</span>
+<span class="sd">        `None`, mass of each element = 1 and this returns a non-weighted value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.array`</span>
+<span class="sd">           The inertia tensor of a shape.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">get_inertia_tensor</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">gyration_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return gyration tensor of a shape.</span>
+
+<span class="sd">        The gyration tensor of a shape is weighted by the mass assigned to each</span>
+<span class="sd">        coordinate (associated with the element). In case if `elements` is</span>
+<span class="sd">        `None`, mass of each element = 1 and this returns a non-weighted value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.array`</span>
+<span class="sd">           The gyration tensor of a shape.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">get_gyration_tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_Pore</span><span class="p">(</span><span class="n">_Shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Under development.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coordinates</span> <span class="o">=</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">closest_atom</span> <span class="o">=</span> <span class="n">pore_diameter</span><span class="p">(</span>
+            <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spherical_volume</span> <span class="o">=</span> <span class="n">sphere_volume</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;com&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">centre_coordinates</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">centre_coordinates</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimised</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">optimise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">closest_atom</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">centre_coordinates</span><span class="p">)</span> <span class="o">=</span> <span class="n">opt_pore_diameter</span><span class="p">(</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_coordinates</span><span class="p">,</span>
+             <span class="n">com</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">centre_coordinates</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spherical_volume</span> <span class="o">=</span> <span class="n">sphere_volume</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimised</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">calculate_pore_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coordinates</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coordinates</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_Window</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Under development.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">com_adjust</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span> <span class="o">=</span> <span class="n">window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mol_coordinates</span> <span class="o">=</span> <span class="n">coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mol_elements</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">com_correction</span> <span class="o">=</span> <span class="n">com_adjust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convexhull</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">calculate_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">diameter</span> <span class="o">=</span> <span class="n">calculate_window_diameter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol_elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol_coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">diameter</span>
+
+    <span class="k">def</span> <span class="nf">calculate_centre_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">com</span> <span class="o">=</span> <span class="n">get_window_com</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol_elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol_coordinates</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">com_correction</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">com</span>
+
+    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">window_shape</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol_elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol_coordinates</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">def</span> <span class="nf">get_convexhull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">verticesx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">verticesy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convexhull</span> <span class="o">=</span> <span class="n">verticesx</span><span class="p">,</span> <span class="n">verticesy</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convexhull</span>
+
+
+<div class="viewcode-block" id="Molecule"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule">[docs]</a><span class="k">class</span> <span class="nc">Molecule</span><span class="p">(</span><span class="n">_Shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for a single molecule.</span>
+
+<span class="sd">    This class is meant for the analysis of single molecules, molecular pores</span>
+<span class="sd">    especially. The object passed to this class should therefore be a finite</span>
+<span class="sd">    and interconnected individuum.</span>
+
+<span class="sd">    This class should not be initialised directly, but result from</span>
+<span class="sd">    :func:`MolecularSystem.system_to_molecule()` or</span>
+<span class="sd">    :func:`MolecularSystem.make_modular()`.</span>
+
+<span class="sd">    Methods in :class:`Molecule` allow to calculate:</span>
+
+<span class="sd">        1. The maximum diameter of a molecule.</span>
+
+<span class="sd">        2. The average diameter of a molecule.</span>
+
+<span class="sd">        3. The intrinsic void diameter of a molecule.</span>
+
+<span class="sd">        4. The intrinsic void volume of a molecule.</span>
+
+<span class="sd">        5. The optimised intrinsic void diameter of a molecule.</span>
+
+<span class="sd">        6. The optimised intrinsic void volume of a molecule.</span>
+
+<span class="sd">        7. The circular diameter of a window of a molecule.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mol : :class:`dict`</span>
+<span class="sd">        The :attr:`Molecular.System.system` dictionary passed to the</span>
+<span class="sd">        :class:`Molecule` which is esentially a container of the information</span>
+<span class="sd">        that compose a molecular entity, such as the coordinates and</span>
+<span class="sd">        atom ids and/or elements.</span>
+
+<span class="sd">    no_of_atoms : :class:`int`</span>
+<span class="sd">        The number of atoms in the molecule.</span>
+
+<span class="sd">    elements : :class:`numpy.array`</span>
+<span class="sd">        An array containing the elements, as strings, composing the molecule.</span>
+
+<span class="sd">    atom_ids : :class:`numpy.array` (conditional)</span>
+<span class="sd">        If the :attr:`Molecule.mol` contains &#39;atom_ids&#39; keyword, the force</span>
+<span class="sd">        field ids of the elements.</span>
+
+<span class="sd">    coordinates : :class:`numpy.array`</span>
+<span class="sd">        The x, y and z atomic Cartesian coordinates of all elements.</span>
+
+<span class="sd">    parent_system : :class:`str`</span>
+<span class="sd">        The :attr:`name` of :class:`MolecularSystem` passed to</span>
+<span class="sd">        :class:`Molecule`.</span>
+
+<span class="sd">    molecule_id : :class:`any`</span>
+<span class="sd">        The molecule id passed when initialising :class:`Molecule`.</span>
+
+<span class="sd">    properties : :class:`dict`</span>
+<span class="sd">        A dictionary that is populated by the output of</span>
+<span class="sd">        :class:`Molecule` methods.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">mol_id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span> <span class="o">=</span> <span class="n">Output</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mol</span> <span class="o">=</span> <span class="n">mol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">no_of_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">mol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;atom_ids&#39;</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atom_ids</span> <span class="o">=</span> <span class="n">mol</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">mol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_system</span> <span class="o">=</span> <span class="n">system_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecule_id</span> <span class="o">=</span> <span class="n">mol_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;no_of_atoms&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_of_atoms</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_windows</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_load_rdkit_mol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">system_name</span><span class="o">=</span><span class="s1">&#39;rdkit&#39;</span><span class="p">,</span> <span class="n">mol_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class:`Molecule` from :class:`rdkit.Chem.rdchem.Mol`.</span>
+
+<span class="sd">        To be used only by expert users.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mol : :class:`rdkit.Chem.rdchem.Mol`</span>
+<span class="sd">           An RDKit molecule object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`pywindow.molecular.Molecule`</span>
+<span class="sd">            :class:`Molecule`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Input</span><span class="p">()</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">mol_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Molecule.full_analysis"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.full_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">full_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a full structural analysis of a molecule.</span>
+
+<span class="sd">        This invokes other methods:</span>
+
+<span class="sd">            1. :attr:`molecular_weight()`</span>
+
+<span class="sd">            2. :attr:`calculate_centre_of_mass()`</span>
+
+<span class="sd">            3. :attr:`calculate_maximum_diameter()`</span>
+
+<span class="sd">            4. :attr:`calculate_average_diameter()`</span>
+
+<span class="sd">            5. :attr:`calculate_pore_diameter()`</span>
+
+<span class="sd">            6. :attr:`calculate_pore_volume()`</span>
+
+<span class="sd">            7. :attr:`calculate_pore_diameter_opt()`</span>
+
+<span class="sd">            8. :attr:`calculate_pore_volume_opt()`</span>
+
+<span class="sd">            9. :attr:`calculate_pore_diameter_opt()`</span>
+
+<span class="sd">            10. :attr:`calculate_windows()`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ncpus : :class:`int`</span>
+<span class="sd">            Number of CPUs used for the parallelised parts of</span>
+<span class="sd">            :func:`pywindow.utilities.find_windows()`. (default=1=serial)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :attr:`Molecule.properties`</span>
+<span class="sd">            The updated :attr:`Molecule.properties` with returns of all</span>
+<span class="sd">            used methods.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecular_weight</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_centre_of_mass</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_maximum_diameter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_average_diameter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_pore_diameter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_pore_volume</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_pore_diameter_opt</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_pore_volume_opt</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_windows</span><span class="p">(</span><span class="n">ncpus</span><span class="o">=</span><span class="n">ncpus</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># self._circumcircle(**kwargs)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span></div>
+
+    <span class="k">def</span> <span class="nf">_align_to_principal_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">align_molsys</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">align_molsys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">align_principal_ax_all</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">align_principal_ax</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aligned_to_principal_axes</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_get_pore</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Pore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="n">find_windows_new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">windows</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">windows</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Window</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">windows</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">window</span><span class="p">]),</span> <span class="n">window</span><span class="p">,</span> <span class="n">windows</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                       <span class="n">windows</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">windows</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">windows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">window</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">windows</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Molecule.calculate_centre_of_mass"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_centre_of_mass">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_centre_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the xyz coordinates of the centre of mass of a molecule.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.array`</span>
+<span class="sd">            The centre of mass of the molecule.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centre_of_mass</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;centre_of_mass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_of_mass</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_of_mass</span></div>
+
+<div class="viewcode-block" id="Molecule.calculate_maximum_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_maximum_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_maximum_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the maximum diamension of a molecule.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">            The maximum dimension of the molecule.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxd_atom_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxd_atom_2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum_diameter</span> <span class="o">=</span> <span class="n">max_dim</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;maximum_diameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;diameter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum_diameter</span><span class="p">,</span>
+            <span class="s1">&#39;atom_1&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxd_atom_1</span><span class="p">),</span>
+            <span class="s1">&#39;atom_2&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxd_atom_2</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum_diameter</span></div>
+
+<div class="viewcode-block" id="Molecule.calculate_average_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_average_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_average_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the average diamension of a molecule.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">            The average dimension of the molecule.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">average_diameter</span> <span class="o">=</span> <span class="n">find_average_diameter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_diameter</span></div>
+
+<div class="viewcode-block" id="Molecule.calculate_pore_diameter"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_pore_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the intrinsic pore diameter.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">            The intrinsic pore diameter.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pore_diameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_closest_atom</span> <span class="o">=</span> <span class="n">pore_diameter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;pore_diameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;diameter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diameter</span><span class="p">,</span>
+            <span class="s1">&#39;atom&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pore_closest_atom</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diameter</span></div>
+
+<div class="viewcode-block" id="Molecule.calculate_pore_volume"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_pore_volume">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the intrinsic pore volume.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">            The intrinsic pore volume.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pore_volume</span> <span class="o">=</span> <span class="n">sphere_volume</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_pore_diameter</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;pore_volume&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_volume</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_volume</span></div>
+
+<div class="viewcode-block" id="Molecule.calculate_pore_diameter_opt"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_pore_diameter_opt">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_diameter_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the intrinsic pore diameter (for the optimised pore centre).</span>
+
+<span class="sd">        Similarly to :func:`calculate_pore_diameter` this method returns the</span>
+<span class="sd">        the intrinsic pore diameter, however, first a better approximation</span>
+<span class="sd">        of the pore centre is found with optimisation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">            The intrinsic pore diameter.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pore_diameter_opt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_opt_closest_atom</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">pore_opt_COM</span><span class="p">)</span> <span class="o">=</span> <span class="n">opt_pore_diameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;pore_diameter_opt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;diameter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diameter_opt</span><span class="p">,</span>
+            <span class="s1">&#39;atom_1&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pore_opt_closest_atom</span><span class="p">),</span>
+            <span class="s1">&#39;centre_of_mass&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_opt_COM</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diameter_opt</span></div>
+
+<div class="viewcode-block" id="Molecule.calculate_pore_volume_opt"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_pore_volume_opt">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pore_volume_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the intrinsic pore volume (for the optimised pore centre).</span>
+
+<span class="sd">        Similarly to :func:`calculate_pore_volume` this method returns the</span>
+<span class="sd">        the volume intrinsic pore diameter, however, for the</span>
+<span class="sd">        :func:`calculate_pore_diameter_opt` returned value.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">            The intrinsic pore volume.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pore_volume_opt</span> <span class="o">=</span> <span class="n">sphere_volume</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_pore_diameter_opt</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;pore_volume_opt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_volume_opt</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_volume_opt</span></div>
+
+    <span class="k">def</span> <span class="nf">_calculate_pore_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;shape.xyz&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">calculate_pore_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">shape_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+        <span class="n">Output</span><span class="p">()</span><span class="o">.</span><span class="n">_save_xyz</span><span class="p">(</span><span class="n">shape_obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="Molecule.calculate_windows"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.calculate_windows">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the diameters of all windows in a molecule.</span>
+
+<span class="sd">        This function first finds and then measures the diameters of all the</span>
+<span class="sd">        window in the molecule.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.array`</span>
+<span class="sd">            An array of windows&#39; diameters.</span>
+
+<span class="sd">        :class:`NoneType`</span>
+<span class="sd">            If no windows were found.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="n">find_windows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">windows</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;windows&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;diameters&#39;</span><span class="p">:</span> <span class="n">windows</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;centre_of_mass&#39;</span><span class="p">:</span> <span class="n">windows</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">windows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;windows&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;diameters&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="s1">&#39;centre_of_mass&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="p">}}</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Molecule.shift_to_origin"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.shift_to_origin">[docs]</a>    <span class="k">def</span> <span class="nf">shift_to_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shift a molecule to Origin.</span>
+
+<span class="sd">        This function takes the molecule&#39;s coordinates and adjust them so that</span>
+<span class="sd">        the centre of mass of the molecule coincides with the origin of the</span>
+<span class="sd">        coordinate system.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">shift_com</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Molecule.molecular_weight"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.molecular_weight">[docs]</a>    <span class="k">def</span> <span class="nf">molecular_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the molecular weight of a molecule.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`float`</span>
+<span class="sd">            The molecular weight of the molecule.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MW</span> <span class="o">=</span> <span class="n">molecular_weight</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">MW</span></div>
+
+<div class="viewcode-block" id="Molecule.dump_properties_json"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.dump_properties_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_properties_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">molecular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dump content of :attr:`Molecule.properties` to a JSON dictionary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">           The filepath for the dumped file. If :class:`None`, the file is</span>
+<span class="sd">           dumped localy with :attr:`molecule_id` as filename.</span>
+<span class="sd">           (defualt=None)</span>
+
+<span class="sd">        molecular : :class:`bool`</span>
+<span class="sd">            If False, dump only the content of :attr:`Molecule.properties`,</span>
+<span class="sd">            if True, dump all the information about :class:`Molecule`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We pass a copy of the properties dictionary.</span>
+        <span class="n">dict_obj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
+        <span class="c1"># If molecular data is also required we update the dictionary.</span>
+        <span class="k">if</span> <span class="n">molecular</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">dict_obj</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mol</span><span class="p">)</span>
+        <span class="c1"># If no filepath is provided we create one.</span>
+        <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_system</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">molecule_id</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">filepath</span><span class="p">))</span>
+        <span class="c1"># Dump the dictionary to json file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span><span class="o">.</span><span class="n">dump2json</span><span class="p">(</span><span class="n">dict_obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">to_list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Molecule.dump_molecule"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.Molecule.dump_molecule">[docs]</a>    <span class="k">def</span> <span class="nf">dump_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_coms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dump a :class:`Molecule` to a file (PDB or XYZ).</span>
+
+<span class="sd">        Kwargs are passed to :func:`pywindow.io_tools.Output.dump2file()`.</span>
+
+<span class="sd">        For validation purposes an overlay of window centres and COMs can also</span>
+<span class="sd">        be dumped as:</span>
+
+<span class="sd">        He - for the centre of mass</span>
+
+<span class="sd">        Ne - for the centre of the optimised cavity</span>
+
+<span class="sd">        Ar - for the centres of each found window</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">           The filepath for the dumped file. If :class:`None`, the file is</span>
+<span class="sd">           dumped localy with :attr:`molecule_id` as filename.</span>
+<span class="sd">           (defualt=None)</span>
+
+<span class="sd">        include_coms : :class:`bool`</span>
+<span class="sd">            If True, dump also with an overlay of window centres and COMs.</span>
+<span class="sd">            (default=False)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If no filepath is provided we create one.</span>
+        <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_system</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">molecule_id</span><span class="p">)))</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">filepath</span><span class="p">))</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;pdb&#39;</span><span class="p">))</span>
+        <span class="c1"># Check if there is an &#39;atom_ids&#39; keyword in the self.mol dict.</span>
+        <span class="c1"># Otherwise pass to the dump2file atom_ids=&#39;elements&#39;.</span>
+        <span class="k">if</span> <span class="s1">&#39;atom_ids&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">atom_ids</span> <span class="o">=</span> <span class="s1">&#39;elements&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atom_ids</span> <span class="o">=</span> <span class="s1">&#39;atom_ids&#39;</span>
+        <span class="c1"># Dump molecule into a file.</span>
+        <span class="c1"># If coms are to be included additional steps are required.</span>
+        <span class="c1"># First deepcopy the molecule</span>
+        <span class="k">if</span> <span class="n">include_coms</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">mmol</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mol</span><span class="p">)</span>
+            <span class="c1"># add centre of mass (centre of not optimised pore) as &#39;He&#39;.</span>
+            <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;He&#39;</span><span class="p">])))</span>
+            <span class="k">if</span> <span class="s1">&#39;atom_ids&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;He&#39;</span><span class="p">])))</span>
+            <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">],</span>
+                 <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;centre_of_mass&#39;</span><span class="p">]])))</span>
+            <span class="c1"># add centre of pore optimised as &#39;Ne&#39;.</span>
+            <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;Ne&#39;</span><span class="p">])))</span>
+            <span class="k">if</span> <span class="s1">&#39;atom_ids&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;Ne&#39;</span><span class="p">])))</span>
+            <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;pore_diameter_opt&#39;</span><span class="p">][</span><span class="s1">&#39;centre_of_mass&#39;</span><span class="p">]])))</span>
+            <span class="c1"># add centre of windows as &#39;Ar&#39;.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;windows&#39;</span><span class="p">][</span><span class="s1">&#39;centre_of_mass&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">range_</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;windows&#39;</span><span class="p">][</span><span class="s1">&#39;centre_of_mass&#39;</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">com</span> <span class="ow">in</span> <span class="n">range_</span><span class="p">:</span>
+                    <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;Ar&#39;</span><span class="p">])))</span>
+                    <span class="k">if</span> <span class="s1">&#39;atom_ids&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                            <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">],</span>
+                             <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;Ar</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">com</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])))</span>
+                    <span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">mmol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;windows&#39;</span><span class="p">][</span><span class="s1">&#39;centre_of_mass&#39;</span><span class="p">][</span><span class="n">com</span><span class="p">]</span>
+                        <span class="p">])))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span><span class="o">.</span><span class="n">dump2file</span><span class="p">(</span><span class="n">mmol</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">atom_ids</span><span class="o">=</span><span class="n">atom_ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span><span class="o">.</span><span class="n">dump2file</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mol</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">atom_ids</span><span class="o">=</span><span class="n">atom_ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_centre_of_mass</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_pore_diameter_opt</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_circumcircle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="n">circumcircle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;atom_sets&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;output&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;windows&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;circumcircle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;diameter&#39;</span><span class="p">:</span> <span class="n">windows</span><span class="p">,</span> <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">windows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;circumcircle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;diameter&#39;</span><span class="p">:</span> <span class="n">windows</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="s1">&#39;centre_of_mass&#39;</span><span class="p">:</span> <span class="n">windows</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;circumcircle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;diameter&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s1">&#39;centre_of_mass&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="p">}</span>
+        <span class="k">return</span> <span class="n">windows</span></div>
+
+
+<div class="viewcode-block" id="MolecularSystem"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem">[docs]</a><span class="k">class</span> <span class="nc">MolecularSystem</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for the molecular system.</span>
+
+<span class="sd">    To load input and initialise :class:`MolecularSystem`, one of the</span>
+<span class="sd">    :class:`MolecularSystem` classmethods (:func:`load_file()`,</span>
+<span class="sd">    :func:`load_rdkit_mol()` or :func:`load_system()`) should be used.</span>
+<span class="sd">    :class:`MolecularSystem` **should not be initialised by itself.**</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    1. Using file as an input:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        pywindow.molecular.MolecularSystem.load_file(`filepath`)</span>
+
+<span class="sd">    2. Using RDKit molecule object as an input:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        pywindow.molecular.MolecularSystem.load_rdkit_mol(rdkit.Chem.rdchem.Mol)</span>
+
+<span class="sd">    3. Using a dictionary (or another :attr:`MoleculeSystem.system`) as input:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        pywindow.molecular.MolecularSystem.load_system({...})</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    system_id : :class:`str` or :class:`int`</span>
+<span class="sd">        The input filename or user defined.</span>
+
+<span class="sd">    system : :class:`dict`</span>
+<span class="sd">        A dictionary containing all the information extracted from input.</span>
+
+<span class="sd">    molecules : :class:`list`</span>
+<span class="sd">        A list containing all the returned :class:`Molecule` s after using</span>
+<span class="sd">        :func:`make_modular()`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Input</span> <span class="o">=</span> <span class="n">Input</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span> <span class="o">=</span> <span class="n">Output</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="MolecularSystem.load_file"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.load_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class:`MolecularSystem` from an input file.</span>
+
+<span class="sd">        Recognized input file formats: XYZ, PDB and MOL (V3000).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">           The input&#39;s filepath.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`pywindow.molecular.MolecularSystem`</span>
+<span class="sd">            :class:`MolecularSystem`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_Input</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">system_id</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="MolecularSystem.load_rdkit_mol"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.load_rdkit_mol">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_rdkit_mol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mol</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class:`MolecularSystem` from :class:`rdkit.Chem.rdchem.Mol`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mol : :class:`rdkit.Chem.rdchem.Mol`</span>
+<span class="sd">           An RDKit molecule object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`pywindow.molecular.MolecularSystem`</span>
+<span class="sd">            :class:`MolecularSystem`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_Input</span><span class="o">.</span><span class="n">load_rdkit_mol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="MolecularSystem.load_system"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.load_system">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_system</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">,</span> <span class="n">system_id</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class:`MolecularSystem` from a python :class:`dict`.</span>
+
+<span class="sd">        As the loaded :class:`MolecularSystem` is storred as a :class:`dict` in</span>
+<span class="sd">        the :class:`MolecularSystem.system` it can also be loaded directly from</span>
+<span class="sd">        a :class:`dict` input. This feature is used by :mod:`trajectory` that</span>
+<span class="sd">        extracts trajectory frames as dictionaries and returns them</span>
+<span class="sd">        as :class:`MolecularSystem` objects through this classmethod.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dict_ : :class:`dict`</span>
+<span class="sd">           A python dictionary.</span>
+
+<span class="sd">        system_id : :class:`str` or :class:&#39;int&#39;, optional</span>
+<span class="sd">           Inherited or user defined system id. (default=&#39;system&#39;)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`pywindow.molecular.MolecularSystem`</span>
+<span class="sd">            :class:`MolecularSystem`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="n">dict_</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">system_id</span> <span class="o">=</span> <span class="n">system_id</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="MolecularSystem.rebuild_system"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.rebuild_system">[docs]</a>    <span class="k">def</span> <span class="nf">rebuild_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rebuild molecules in molecular system.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        override : :class:`bool`, optional (default=False)</span>
+<span class="sd">            If False the rebuild molecular system is returned as a new</span>
+<span class="sd">            :class:`MolecularSystem`, if True, the current</span>
+<span class="sd">            :class:`MolecularSystem` is modified.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First we create a 3x3x3 supercell with the initial unit cell in the</span>
+        <span class="c1"># centre and the 26 unit cell translations around to provide all the</span>
+        <span class="c1"># atom positions necessary for the molecules passing through periodic</span>
+        <span class="c1"># boundary reconstruction step.</span>
+        <span class="n">supercell_333</span> <span class="o">=</span> <span class="n">create_supercell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># smolsys = self.load_system(supercell_333, self.system_id + &#39;_311&#39;)</span>
+        <span class="c1"># smolsys.dump_system(override=True)</span>
+        <span class="n">discrete</span> <span class="o">=</span> <span class="n">discrete_molecules</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="n">supercell_333</span><span class="p">)</span>
+        <span class="c1"># This function overrides the initial data for &#39;coordinates&#39;,</span>
+        <span class="c1"># &#39;atom_ids&#39;, and &#39;elements&#39; instances in the &#39;system&#39; dictionary.</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">atom_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">discrete</span><span class="p">:</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+                <span class="p">)</span>
+            <span class="n">atom_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">atom_ids</span><span class="p">,</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">elements</span><span class="p">,</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">rebuild_system</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="n">coordinates</span><span class="p">,</span>
+            <span class="s1">&#39;atom_ids&#39;</span><span class="p">:</span> <span class="n">atom_ids</span><span class="p">,</span>
+            <span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="n">elements</span>
+            <span class="p">}</span>
+        <span class="k">if</span> <span class="n">override</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rebuild_system</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_system</span><span class="p">(</span><span class="n">rebuild_system</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MolecularSystem.swap_atom_keys"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.swap_atom_keys">[docs]</a>    <span class="k">def</span> <span class="nf">swap_atom_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">swap_dict</span><span class="p">,</span> <span class="n">dict_key</span><span class="o">=</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Swap a force field atom id for another user-defined value.</span>
+
+<span class="sd">        This modified all values in :attr:`MolecularSystem.system[&#39;atom_ids&#39;]`</span>
+<span class="sd">        that match criteria.</span>
+
+<span class="sd">        This function can be used to decipher a whole forcefield if an</span>
+<span class="sd">        appropriate dictionary is passed to the function.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        In this example all atom ids &#39;he&#39; will be exchanged to &#39;H&#39;.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            pywindow.molecular.MolecularSystem.swap_atom_keys({&#39;he&#39;: &#39;H&#39;})</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        swap_dict: :class:`dict`</span>
+<span class="sd">            A dictionary containg force field atom ids (keys) to be swapped</span>
+<span class="sd">            with corresponding values (keys&#39; arguments).</span>
+
+<span class="sd">        dict_key: :class:`str`</span>
+<span class="sd">            A key in :attr:`MolecularSystem.system` dictionary to perform the</span>
+<span class="sd">            atom keys swapping operation on. (default=&#39;atom_ids&#39;)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Similar situation to the one from decipher_atom_keys function.</span>
+        <span class="k">if</span> <span class="s1">&#39;atom_ids&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">dict_key</span> <span class="o">=</span> <span class="s1">&#39;elements&#39;</span>
+        <span class="k">for</span> <span class="n">atom_key</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="n">dict_key</span><span class="p">])):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">swap_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="n">dict_key</span><span class="p">][</span><span class="n">atom_key</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="n">dict_key</span><span class="p">][</span><span class="n">atom_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">swap_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="MolecularSystem.decipher_atom_keys"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.decipher_atom_keys">[docs]</a>    <span class="k">def</span> <span class="nf">decipher_atom_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forcefield</span><span class="o">=</span><span class="s1">&#39;DLF&#39;</span><span class="p">,</span> <span class="n">dict_key</span><span class="o">=</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decipher force field atom ids.</span>
+
+<span class="sd">        This takes all values in :attr:`MolecularSystem.system[&#39;atom_ids&#39;]`</span>
+<span class="sd">        that match force field type criteria and creates</span>
+<span class="sd">        :attr:`MolecularSystem.system[&#39;elements&#39;]` with the corresponding</span>
+<span class="sd">        periodic table of elements equivalents.</span>
+
+<span class="sd">        If a forcefield is not supported by this method, the</span>
+<span class="sd">        :func:`MolecularSystem.swap_atom_keys()` can be used instead.</span>
+
+<span class="sd">        DLF stands for DL_F notation.</span>
+
+<span class="sd">        See: C. W. Yong, Descriptions and Implementations of DL_F Notation: A</span>
+<span class="sd">        Natural Chemical Expression System of Atom Types for Molecular</span>
+<span class="sd">        Simulations, J. Chem. Inf. Model., 2016, 56, 1405–1409.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        forcefield : :class:`str`</span>
+<span class="sd">            The forcefield used to decipher atom ids. Allowed (not case</span>
+<span class="sd">            sensitive): &#39;OPLS&#39;, &#39;OPLS2005&#39;, &#39;OPLSAA&#39;, &#39;OPLS3&#39;, &#39;DLF&#39;, &#39;DL_F&#39;.</span>
+<span class="sd">            (default=&#39;DLF&#39;)</span>
+
+<span class="sd">        dict_key : :class:`str`</span>
+<span class="sd">            The :attr:`MolecularSystem.system` dictionary key to the array</span>
+<span class="sd">            containing the force field atom ids. (default=&#39;atom_ids&#39;)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># In case there is no &#39;atom_ids&#39; key we try &#39;elements&#39;. This is for</span>
+        <span class="c1"># XYZ and MOL files mostly. But, we keep the dict_key keyword for</span>
+        <span class="c1"># someone who would want to decipher &#39;elements&#39; even if &#39;atom_ids&#39; key</span>
+        <span class="c1"># is present in the system&#39;s dictionary.</span>
+        <span class="k">if</span> <span class="s1">&#39;atom_ids&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">dict_key</span> <span class="o">=</span> <span class="s1">&#39;elements&#39;</span>
+        <span class="c1"># I do it on temporary object so that it only finishes when successful</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="n">dict_key</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)):</span>
+            <span class="n">temp</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">decipher_atom_key</span><span class="p">(</span>
+                    <span class="n">temp</span><span class="p">[</span><span class="n">element</span><span class="p">],</span> <span class="n">forcefield</span><span class="o">=</span><span class="n">forcefield</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span></div>
+
+<div class="viewcode-block" id="MolecularSystem.make_modular"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.make_modular">[docs]</a>    <span class="k">def</span> <span class="nf">make_modular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find and return all :class:`Molecule` s in :class:`MolecularSystem`.</span>
+
+<span class="sd">        This function populates :attr:`MolecularSystem.molecules` with</span>
+<span class="sd">        :class:`Molecule` s.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rebuild : :class:`bool`</span>
+<span class="sd">            If True, run first the :func:`rebuild_system()`. (default=False)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rebuild</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">supercell_333</span> <span class="o">=</span> <span class="n">create_supercell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">supercell_333</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">dis</span> <span class="o">=</span> <span class="n">discrete_molecules</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">rebuild</span><span class="o">=</span><span class="n">supercell_333</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">no_of_discrete_molecules</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dis</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">dis</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_id</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MolecularSystem.system_to_molecule"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.system_to_molecule">[docs]</a>    <span class="k">def</span> <span class="nf">system_to_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return :class:`MolecularSystem` as a :class:`Molecule` directly.</span>
+
+<span class="sd">        Only to be used conditionally, when the :class:`MolecularSystem` is a</span>
+<span class="sd">        discrete molecule and no input pre-processing is required.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`pywindow.molecular.Molecule`</span>
+<span class="sd">            :class:`Molecule`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Molecule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_pores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampling_points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Under development.&quot;&quot;&quot;</span>
+        <span class="n">pores</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">sampling_points</span><span class="p">:</span>
+            <span class="n">pores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Pore</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">],</span>
+                    <span class="n">com</span><span class="o">=</span><span class="n">point</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pores</span>
+
+<div class="viewcode-block" id="MolecularSystem.dump_system"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.dump_system">[docs]</a>    <span class="k">def</span> <span class="nf">dump_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dump a :class:`MolecularSystem` to a file (PDB or XYZ).</span>
+
+<span class="sd">        Kwargs are passed to :func:`pywindow.io_tools.Output.dump2file()`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">           The filepath for the dumped file. If :class:`None`, the file is</span>
+<span class="sd">           dumped localy with :attr:`system_id` as filename.</span>
+<span class="sd">           (defualt=None)</span>
+
+<span class="sd">        modular : :class:`bool`</span>
+<span class="sd">            If False, dump the :class:`MolecularSystem` as in</span>
+<span class="sd">            :attr:`MolecularSystem.system`, if True, dump the</span>
+<span class="sd">            :class:`MolecularSystem` as catenated :class:Molecule objects</span>
+<span class="sd">            from :attr:`MolecularSystem.molecules`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If no filepath is provided we create one.</span>
+        <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system_id</span><span class="p">)))</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;pdb&#39;</span><span class="p">))</span>
+        <span class="c1"># If modular is True substitute the molecular data for modular one.</span>
+        <span class="n">system_dict</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">modular</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="n">atom_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="n">coor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">mol_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
+                <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">[</span><span class="n">mol_</span><span class="p">]</span>
+                <span class="n">elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">elements</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">mol</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]))</span>
+                <span class="n">atom_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">atom_ids</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">mol</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">]))</span>
+                <span class="n">coor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">coor</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">mol</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">system_dict</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elements</span>
+            <span class="n">system_dict</span><span class="p">[</span><span class="s1">&#39;atom_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom_ids</span>
+            <span class="n">system_dict</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coor</span>
+        <span class="c1"># Check if there is an &#39;atom_ids&#39; keyword in the self.mol dict.</span>
+        <span class="c1"># Otherwise pass to the dump2file atom_ids=&#39;elements&#39;.</span>
+        <span class="c1"># This is mostly for XYZ files and not deciphered trajectories.</span>
+        <span class="k">if</span> <span class="s1">&#39;atom_ids&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">system_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">atom_ids</span> <span class="o">=</span> <span class="s1">&#39;elements&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atom_ids</span> <span class="o">=</span> <span class="s1">&#39;atom_ids&#39;</span>
+        <span class="c1"># Dump system into a file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span><span class="o">.</span><span class="n">dump2file</span><span class="p">(</span>
+            <span class="n">system_dict</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">atom_ids</span><span class="o">=</span><span class="n">atom_ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MolecularSystem.dump_system_json"><a class="viewcode-back" href="../../pywindow.html#pywindow.molecular.MolecularSystem.dump_system_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_system_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modular</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dump a :class:`MolecularSystem` to a JSON dictionary.</span>
+
+<span class="sd">        The dumped JSON dictionary, with :class:`MolecularSystem`, can then be</span>
+<span class="sd">        loaded through a JSON loader and then through :func:`load_system()`</span>
+<span class="sd">        to retrieve a :class:`MolecularSystem`.</span>
+
+<span class="sd">        Kwargs are passed to :func:`pywindow.io_tools.Output.dump2json()`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : :class:`str`</span>
+<span class="sd">           The filepath for the dumped file. If :class:`None`, the file is</span>
+<span class="sd">           dumped localy with :attr:`system_id` as filename.</span>
+<span class="sd">           (defualt=None)</span>
+
+<span class="sd">        modular : :class:`bool`</span>
+<span class="sd">            If False, dump the :class:`MolecularSystem` as in</span>
+<span class="sd">            :attr:`MolecularSystem.system`, if True, dump the</span>
+<span class="sd">            :class:`MolecularSystem` as catenated :class:Molecule objects</span>
+<span class="sd">            from :attr:`MolecularSystem.molecules`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None : :class:`NoneType`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We pass a copy of the properties dictionary.</span>
+        <span class="n">dict_obj</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+        <span class="c1"># In case we want a modular system.</span>
+        <span class="k">if</span> <span class="n">modular</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">_NotAModularSystem</span><span class="p">(</span>
+                    <span class="s2">&quot;This system is not modular. Please, run first the &quot;</span>
+                    <span class="s2">&quot;make_modular() function of this class.&quot;</span><span class="p">)</span>
+            <span class="n">dict_obj</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">molecule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
+                <span class="n">mol_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">[</span><span class="n">molecule</span><span class="p">]</span>
+                <span class="n">dict_obj</span><span class="p">[</span><span class="n">molecule</span><span class="p">]</span> <span class="o">=</span> <span class="n">mol_</span><span class="o">.</span><span class="n">mol</span>
+        <span class="c1"># If no filepath is provided we create one.</span>
+        <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system_id</span><span class="p">)))</span>
+        <span class="c1"># Dump the dictionary to json file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Output</span><span class="o">.</span><span class="n">dump2json</span><span class="p">(</span><span class="n">dict_obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">to_list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Marcin Miklitz, Jelfs Materials Group.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

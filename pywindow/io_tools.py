@@ -1,11 +1,4 @@
-#!/usr/bin/env python3
-"""
-Module defining classes and functions for input/output processing.
-
-TO-DO-LIST:
------------
--Add appropriate comments and descriptions to all functions
-"""
+"""Module contains classes for input/output processing."""
 
 import os
 import json
@@ -40,7 +33,7 @@ class _FileTypeError(Exception):
 
 
 class Input(object):
-    """ Class for loading and processing input files. """
+    """Class used to load and process input files."""
 
     def __init__(self):
         self._load_funcs = {
@@ -57,12 +50,12 @@ class Input(object):
 
         Parameters
         ----------
-        filepath : str
+        filepath : :class:`str`
             The full path or a relative path to any type of file.
 
         Returns
         -------
-        dict()
+        :class:`dict`
             Returns a dictionary containing the molecular information
             extracted from the input files. This information will
             vary with file type and information stored in it.
@@ -81,18 +74,19 @@ class Input(object):
 
     def load_rdkit_mol(self, mol):
         """
-        Return molecular data from mol object.
+        Return molecular data from :class:`rdkit.Chem.rdchem.Mol` object.
 
         Parameters
         ----------
-        mol : Mol
+        mol : :class:`rdkit.Chem.rdchem.Mol`
             A molecule object from RDKit.
 
         Returns
         -------
-        dictionary
+        :class:`dict`
             A dictionary with ``elements`` and ``coordinates`` as keys
-            containing molecular data extracted from RDKit Mol object.
+            containing molecular data extracted from
+            :class:`rdkit.Chem.rdchem.Mol` object.
 
         """
         self.system = {
@@ -121,16 +115,17 @@ class Input(object):
             return self.system
         except IndexError:
             raise _CorruptedXYZFile(
-                "The XYZ input file is either corrupted in some way"
-                " empty line at the end etc.) or if it is an XYZ trajectory"
-                " file, please use Trajectory class.")
+                "The XYZ file is corrupted in some way. For example, an empty "
+                "line at the end etc. or it is a trajectory. If the latter is "
+                "the case, please use `trajectory` module, otherwise fix it.")
 
     def _read_pdb(self):
         """"""
         if sum([i.count('END ') for i in self.file_content]) > 1:
             raise _CorruptedPDBFile(
-                "Multiple 'END' keywords were found in the PDB file."
-                "If this is a trajectory, use Trajectory class, or fix it.")
+                "Multiple 'END' statements were found in this PDB file."
+                "If this is a trajectory, use a trajectory module, "
+                "Otherwise, fix it.")
         self.system = dict()
         self.system['remarks'] = [
             i for i in self.file_content if i[:6] == 'REMARK'
@@ -186,7 +181,7 @@ class Input(object):
 
 
 class Output(object):
-    """ Class for saving molecular structures and/or properties to files. """
+    """Class used to process and save output files."""
 
     def __init__(self):
         self.cwd = os.getcwd()
@@ -197,17 +192,27 @@ class Output(object):
 
     def dump2json(self, obj, filepath, override=False, **kwargs):
         """
-        This function dumps a dictionary into a json file.
+        Dump a dictionary into a JSON dictionary.
 
-        It uses the json.dump() function. All kwargs will also be passed to
-        this function.
+        Uses the json.dump() function.
+
+        Parameters
+        ----------
+        obj : :class:`dict`
+            A dictionary to be dumpped as JSON file.
+
+        filepath : :class:`str`
+           The filepath for the dumped file.
+
+        override : :class:`bool`
+           If True, any file in the filepath will be override. (default=False)
         """
         # We make sure that the object passed by the user is a dictionary.
         if isinstance(obj, dict):
             pass
         else:
             raise _NotADictionary(
-                "The function only accepts object of type: dictionary.")
+                "This function only accepts dictionaries as input")
         # We check if the filepath has a json extenstion, if not we add it.
         if str(filepath[-4:]) == 'json':
             pass
@@ -219,26 +224,40 @@ class Output(object):
         if override is False:
             if os.path.isfile(filepath):
                 raise _FileAlreadyExists(
-                    "The file you want to dump the json into alreasy exists."
-                    " Change the filepath, or set 'override' to True.")
+                    "The file {0} already exists. Use a different filepath, "
+                    "or set the 'override' kwarg to True.".format(filepath))
         # We dump the object to the json file. Additional kwargs can be passed.
         with open(filepath, 'w+') as json_file:
             json.dump(obj, json_file, **kwargs)
 
     def dump2file(self, obj, filepath, override=False, **kwargs):
+        """
+        Dump a dictionary into a file. (Extensions: XYZ or PDB)
+
+        Parameters
+        ----------
+        obj : :class:`dict`
+            A dictionary containing molecular information.
+
+        filepath : :class:`str`
+           The filepath for the dumped file.
+
+        override : :class:`bool`
+           If True, any file in the filepath will be override. (default=False)
+        """
         # First we check if the file already exists. If yes and the override
         # keyword is False (default), we will raise an exception. Otherwise
         # the file will be overwritten.
         if override is False:
             if os.path.isfile(filepath):
                 raise _FileAlreadyExists(
-                    "The file {0} alreasy exists. Change the filepath, "
-                    "or set 'override' to True.".format(filepath))
+                    "The file {0} already exists. Use a different filepath, "
+                    "or set the 'override' kwarg to True.".format(filepath))
         if str(filepath[-3:]) not in self._save_funcs.keys():
             raise _FileTypeError(
-                "This file type is not supported for saving molecular systems"
-                " and molecules. Please use XYZ or PDB."
-                " Offending file type: {0}".format(str(filepath[-3:])))
+                "The {0} file extension is "
+                "not supported for dumping a MolecularSystem or a Molecule. "
+                "Please use XYZ or PDB.".format(str(filepath[-3:])))
         self._save_funcs[str(filepath[-3:])](obj, filepath, **kwargs)
 
     def _save_xyz(self, system, filepath, **kwargs):
