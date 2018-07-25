@@ -6,3 +6,5 @@ from .molecular import *
 from .trajectory import *
 # from .postprocess import *
 # from .shape import *
+
+name = 'pywindow'
