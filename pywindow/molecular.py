@@ -315,7 +315,7 @@ class Molecule(_Shape):
         self._windows = None
 
     @classmethod
-    def _load_rdkit_mol(cls, mol, system_name='rdkit', mol_id=0):
+    def load_rdkit_mol(cls, mol, system_name='rdkit', mol_id=0):
         """
         Create a :class:`Molecule` from :class:`rdkit.Chem.rdchem.Mol`.
 
