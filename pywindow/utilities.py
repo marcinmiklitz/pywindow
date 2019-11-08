@@ -960,6 +960,7 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     max_dist = 2 * max_r_cov + tol
     # We continue untill all items in the list have been analysed and popped.
     while atom_list:
+        # print('al', len(atom_list))
         inside_atoms_heavy = [
             i for i in atom_list if i[0].upper() not in exceptions
         ]
@@ -974,6 +975,7 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                 1 + adj]
             dist_matrix = euclidean_distances(inside_atoms_coord_heavy,
                                               pseudo_origin.reshape(1, -1))
+            # print(len(dist_matrix), min(dist_matrix), dist_matrix[dist_matrix == 0])
             atom_index_x, _ = np.unravel_index(dist_matrix.argmin(),
                                                dist_matrix.shape)
             # Added this so that lone atoms (even if heavy) close to the
@@ -1024,6 +1026,8 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                     if rebuild is not None:
                         sdist_matrix = euclidean_distances(
                             satom_coor, i_arr.reshape(1, -1))
+                        # print('min', min(sdist_matrix), len(sdist_matrix))
+                        # print(len(i_arr))
                         sidx = (sdist_matrix > 0.1) * (sdist_matrix < max_dist)
                         sneighbours_indexes = np.where(sidx)[0]
                         for j in sneighbours_indexes:
@@ -1050,7 +1054,10 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
             # and moved to the final_molecule list.
             working_list = []
             # We make sure there are no duplicates in the working_list_temp.
+            # print(working_list_temp[:4])
+            # print(len(working_list_temp))
             working_list_temp = unique(working_list_temp)
+            # print(len(working_list_temp))
             # Now we move the entries from the temporary working list
             # to the working list for looping analysys.
             for i in working_list_temp:
@@ -1058,6 +1065,11 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                 # being transfered.
                 if i not in final_molecule:
                     working_list.append(i)
+
+        # print('fm', len(final_molecule))
+        # import sys
+        # sys.exit()
+
         final_molecule_dict = {}
         final_molecule_dict['elements'] = np.array(
             [x[0] for x in final_molecule], dtype='str')
