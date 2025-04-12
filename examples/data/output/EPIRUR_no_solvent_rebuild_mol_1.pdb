@@ -134,7 +134,7 @@ ATOM    132  H5  MOL A   1       9.553  -0.112   6.440                       H
 ATOM    133  He  MOL A   1       8.104   4.679   7.825                      He  
 ATOM    134  Ne  MOL A   1       8.104   4.679   7.826                      Ne  
 ATOM    135 Ar1  MOL A   1       4.528   1.909   9.404                      Ar  
-ATOM    136 Ar2  MOL A   1       7.454  10.544  10.646                      Ar  
+ATOM    136 Ar2  MOL A   1       7.455  10.544  10.646                      Ar  
 ATOM    137 Ar3  MOL A   1      12.354   2.935   9.460                      Ar  
 ATOM    138 Ar4  MOL A   1      13.531   7.058   4.977                      Ar  
 ATOM    139 Ar5  MOL A   1       7.834   1.266   6.865                      Ar  

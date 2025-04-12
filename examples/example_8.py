@@ -1,6 +1,7 @@
 """Example 8."""
 
 import logging
+import pathlib
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,22 +9,37 @@ from scipy import stats
 
 import pywindow as pw
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+)
+
 
 def main() -> None:
     """Run script."""
-    raise SystemExit("add asserts compared to all notebook output.")
-    traj = pw.trajectory.DLPOLY("./data/input/HISTORY_periodic")
-    logging.info(traj.no_of_frames)
+    script_directory = pathlib.Path(__file__).parent.resolve()
+
+    data_directory = script_directory / "data"
+    input_directory = data_directory / "input"
+    output_directory = data_directory / "output"
+
+    traj = pw.trajectory.DLPOLY(str(input_directory / "HISTORY_periodic"))
+
+    logging.info("there are %s frames", traj.no_of_frames)
+
+    frame_0 = traj.get_frames(0)
+    frame_0.swap_atom_keys({"he": "H"})
+    frame_0.decipher_atom_keys("opls")
 
     traj.analysis(
         forcefield="opls",
         swap_atoms={"he": "H"},
-        ncpus=8,
+        ncpus=4,
         rebuild=True,
         modular=True,
     )
 
-    logging.info(traj.analysis_output)
+    traj.save_analysis(str(output_directory / "HISTORY_periodic_out.json"))
 
     windows = []
     pore_diam_opt = []
@@ -32,7 +48,7 @@ def main() -> None:
     for key in traj.analysis_output:
         for mol in traj.analysis_output[key]:
             for i in traj.analysis_output[key][mol]["windows"]["diameters"]:
-                windows.append(i)
+                windows.append(i)  # noqa: PERF402
             pore_diam_opt.append(
                 traj.analysis_output[key][mol]["pore_diameter_opt"]["diameter"]
             )
@@ -44,47 +60,33 @@ def main() -> None:
 
     kde_windows = stats.gaussian_kde(windows)
     dist_windows = kde_windows(x_range_windows)
-
     x_range_pore = np.linspace(
         min(pore_diam_opt) - 1, max(pore_diam_opt) + 1, 1000
     )
-
     kde_pore = stats.gaussian_kde(pore_diam_opt)
     dist_pore = kde_pore(x_range_pore)
-
     x_range_max = np.linspace(min(max_diam) - 1, max(max_diam) + 1, 1000)
-
     kde_max = stats.gaussian_kde(max_diam)
     dist_max = kde_max(x_range_max)
 
-    fig, ax = plt.subplots(figsize=(7, 2.5))
-
-    plt.plot(
-        x_range_windows, dist_windows, label="windows diameter", linewidth=2
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.plot(
+        x_range_windows,
+        dist_windows,
+        label="windows diameter",
+        linewidth=2,
     )
-
-    ax.axes.get_yaxis().set_visible(False)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.spines["bottom"].set_visible(True)
-    ax.spines["bottom"].set_color("k")
-    ax.spines["left"].set_visible(False)
-    ax.grid(b=False)
-    ax.set_facecolor("white")
     ax.tick_params(axis="both", which="major", labelsize=12, top="off")
-    [t.set_color("k") for t in ax.xaxis.get_ticklabels()]
-    [
-        text.set_color("k")
-        for text in ax.legend(frameon=False, fontsize=10, loc=2).get_texts()
-    ]
     ax.set_xlabel(r"Diameter ($\mathregular{\AA)}$", fontsize=12)
+    fig.tight_layout()
+    fig.savefig(
+        output_directory / "trajectory_windows.pdf",
+        dpi=360,
+        bbox_inches="tight",
+    )
+    plt.close("all")
 
-    plt.tight_layout()
-    # plt.savefig("trajectory_windows.pdf", dpi=300)
-    plt.show()
-
-    fig, ax = plt.subplots(figsize=(7, 2.5))
-
+    fig, ax = plt.subplots(figsize=(8, 5))
     plt.plot(
         x_range_pore,
         dist_pore,
@@ -92,28 +94,17 @@ def main() -> None:
         linewidth=2,
         color="green",
     )
-
-    ax.axes.get_yaxis().set_visible(False)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.spines["bottom"].set_visible(True)
-    ax.spines["bottom"].set_color("k")
-    ax.spines["left"].set_visible(False)
-    ax.grid(b=False)
     ax.tick_params(axis="both", which="major", labelsize=12, top="off")
-    [t.set_color("k") for t in ax.xaxis.get_ticklabels()]
-    [
-        text.set_color("k")
-        for text in ax.legend(frameon=False, fontsize=10, loc=2).get_texts()
-    ]
     ax.set_xlabel(r"Diameter ($\mathregular{\AA)}$", fontsize=12)
+    fig.tight_layout()
+    fig.savefig(
+        output_directory / "trajectory_pores.pdf",
+        dpi=360,
+        bbox_inches="tight",
+    )
+    plt.close("all")
 
-    plt.tight_layout()
-    # plt.savefig("trajectory_pores.pdf", dpi=300)
-    plt.show()
-
-    fig, ax = plt.subplots(figsize=(7, 2.5))
-
+    fig, ax = plt.subplots(figsize=(8, 5))
     plt.plot(
         x_range_max,
         dist_max,
@@ -121,26 +112,15 @@ def main() -> None:
         linewidth=2,
         color="darkorange",
     )
-
-    ax.axes.get_yaxis().set_visible(False)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.spines["bottom"].set_visible(True)
-    ax.spines["bottom"].set_color("k")
-    ax.spines["left"].set_visible(False)
-    ax.grid(b=False)
-    ax.set_facecolor("white")
     ax.tick_params(axis="both", which="major", labelsize=12, top="off")
-    [t.set_color("k") for t in ax.xaxis.get_ticklabels()]
-    [
-        text.set_color("k")
-        for text in ax.legend(frameon=False, fontsize=10, loc=2).get_texts()
-    ]
     ax.set_xlabel(r"Diameter ($\mathregular{\AA)}$", fontsize=12)
-
-    plt.tight_layout()
-    # plt.savefig("trajectory_maxdim.pdf", dpi=300)
-    plt.show()
+    fig.tight_layout()
+    fig.savefig(
+        output_directory / "trajectory_maxdim.pdf",
+        dpi=360,
+        bbox_inches="tight",
+    )
+    plt.close("all")
 
 
 if __name__ == "__main__":
