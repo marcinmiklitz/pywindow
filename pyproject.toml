@@ -9,11 +9,11 @@ maintainers = [
     { name = "Andrew Tarzia", email = "andrew.tarzia@gmail.com" },
 ]
 
-dependencies = ["numpy", "scipy", "scikit-learn"]
-requires-python = ">=3.11"
+dependencies = ["numpy", "scipy", "scikit-learn", "rdkit", "matplotlib"]
+requires-python = ">=3.7"
 dynamic = ["version"]
 readme = "README.rst"
-description = "A SQLite chemical database."
+description = " A Python package for structural analysis of porous molecules."
 
 [project.optional-dependencies]
 dev = [
