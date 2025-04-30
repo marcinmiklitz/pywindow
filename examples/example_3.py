@@ -43,7 +43,7 @@ def main() -> None:
         if not same_dict:
             msg = (
                 f"mol.properties not the same as known for "
-                f"{input_file.name} in {failed_prop}"
+                f"{input_file.name} in property: {failed_prop}"
                 f"\n {mol.properties}"
             )
             raise RuntimeError(msg)

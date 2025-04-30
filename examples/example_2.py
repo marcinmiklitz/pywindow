@@ -30,6 +30,7 @@ known_properties = {
         },
         "pore_volume": 82.311543851543604,
         "pore_volume_opt": 82.311543851543604,
+        "average_diameter": 13.599974908590866,
         "windows": {
             "centre_of_mass": np.array(
                 [
@@ -72,7 +73,7 @@ def main() -> None:
         if not same_dict:
             msg = (
                 f"mol.properties not the same as known for "
-                f"{input_file.name} in {failed_prop}"
+                f"{input_file.name} in property: {failed_prop}"
                 f"\n {mol.properties}"
             )
             raise RuntimeError(msg)

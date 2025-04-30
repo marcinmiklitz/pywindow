@@ -42,6 +42,7 @@ known_properties = {
                 [3.63778746, 3.63562103, 3.62896512, 3.63707237]
             ),
         },
+        "average_diameter": 13.83201751425547,
     },
     "YAQHOQ": {
         "centre_of_mass": np.array(
@@ -62,6 +63,7 @@ known_properties = {
         "pore_volume": 24.636224433953796,
         "pore_volume_opt": 25.023835308827408,
         "windows": {"centre_of_mass": None, "diameters": None},
+        "average_diameter": 10.016651194000373,
     },
     "BATVUP": {
         "centre_of_mass": np.array([9.78711345, 4.8907307, 10.42542589]),
@@ -88,6 +90,7 @@ known_properties = {
             ),
             "diameters": np.array([3.72937988, 3.34146021]),
         },
+        "average_diameter": 12.323749433141906,
     },
     "NUXHIZ": {
         "centre_of_mass": np.array([8.54082679, 11.35269286, 19.7892421]),
@@ -104,7 +107,7 @@ known_properties = {
             "diameter": 8.968163467457108,
         },
         "pore_volume": 350.35292555652876,
-        "pore_volume_opt": 377.05807616806027,
+        "pore_volume_opt": 377.6671140718386,
         "windows": {
             "centre_of_mass": np.array(
                 [
@@ -115,6 +118,7 @@ known_properties = {
             ),
             "diameters": np.array([6.5036498, 7.90390212, 7.26955977]),
         },
+        "average_diameter": 16.65433095190861,
     },
     "REYMAL": {
         "centre_of_mass": np.array(
@@ -130,7 +134,7 @@ known_properties = {
         "pore_diameter_opt": {
             "atom_1": 397,
             "centre_of_mass": np.array(
-                [1.28908948e01, 1.28912367e01, -5.68438037e-09]
+                [1.28908997e01, 1.28912452e01, 5.00595384e-06]
             ),
             "diameter": 13.756740717062886,
         },
@@ -139,25 +143,26 @@ known_properties = {
         "windows": {
             "centre_of_mass": np.array(
                 [
-                    [13.00075871, 12.76532658, 6.3942579],
-                    [18.1416144, 16.36599292, 0.13591969],
-                    [16.38473116, 7.61300697, -0.13630532],
-                    [7.75762191, 9.49381837, 0.13394668],
-                    [9.30996408, 18.29858222, -0.13816557],
-                    [13.01413956, 12.99784252, -6.30126427],
+                    [13.00073477, 12.76534416, 6.39425694],
+                    [18.14169824, 16.36587283, 0.13593832],
+                    [16.38477402, 7.61303639, -0.13629682],
+                    [7.75757301, 9.49388882, 0.13395727],
+                    [9.31073034, 18.29908143, -0.13827555],
+                    [13.01407718, 12.99765472, -6.30127025],
                 ]
             ),
             "diameters": np.array(
                 [
-                    9.05946332,
-                    9.17248458,
-                    9.17507493,
-                    9.16546452,
-                    9.19218971,
-                    9.05390927,
+                    9.05947034,
+                    9.17248674,
+                    9.17507083,
+                    9.16546626,
+                    9.1922052,
+                    9.05410173,
                 ]
             ),
         },
+        "average_diameter": 25.261360227143175,
     },
 }
 
@@ -205,7 +210,7 @@ def main() -> None:
         if not same_dict:
             msg = (
                 f"mol.properties not the same as known for "
-                f"{input_file.name} in {failed_prop}"
+                f"{input_file.name} in property: {failed_prop}"
                 f"\n {mol.properties}"
             )
             raise RuntimeError(msg)

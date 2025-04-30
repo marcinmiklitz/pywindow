@@ -2095,7 +2095,7 @@ def circumcircle(coordinates, atom_sets):
     return pld_diameter_list, pld_com_list
 
 
-def compare_properties_dict(
+def compare_properties_dict(  # noqa: C901
     dict1: dict[str : int | float | dict],
     dict2: dict[str : int | float | dict],
 ) -> tuple[bool, str]:
@@ -2130,6 +2130,7 @@ def compare_properties_dict(
 
             item1 = dict1[path[0]]
             item2 = dict2[path[0]]
+
         elif len(path) == 2:  # noqa: PLR2004
             if path[0] not in dict1 and path[0] not in dict2:
                 continue
@@ -2141,9 +2142,17 @@ def compare_properties_dict(
             item1 = dict1[path[0]][path[1]]
             item2 = dict2[path[0]][path[1]]
 
-        if method == ("array", "float") and not np.allclose(item1, item2):
+        if (item1 is None and item2 is not None) or (
+            item1 is not None and item2 is None
+        ):
             return (False, prop)
-        if method in "int" and item1 != item2:
-            return (False, prop)
+
+        if item1 is not None and item2 is not None:
+            if method == "array" and not np.allclose(item1, item2):
+                return (False, prop)
+            if method == "float" and not np.isclose(item1, item2):
+                return (False, prop)
+            if method in "int" and item1 != item2:
+                return (False, prop)
 
     return (True, "none")
