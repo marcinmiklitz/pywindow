@@ -244,8 +244,8 @@ ATOM    242 H36  MOL A   1      28.157   3.042  -6.596                       H
 ATOM    243 H37  MOL A   1      26.910   2.302  -7.271                       H  
 ATOM    244 H38  MOL A   1      28.043   1.447  -6.535                       H  
 ATOM    245  He  MOL A   1      19.095   5.754   3.245                      He  
-ATOM    246  Ne  MOL A   1      19.171   5.684   3.246                      Ne  
-ATOM    247 Ar1  MOL A   1      20.576   6.791   7.258                      Ar  
+ATOM    246  Ne  MOL A   1      19.100   5.705   3.239                      Ne  
+ATOM    247 Ar1  MOL A   1      20.578   6.789   7.258                      Ar  
 ATOM    248 Ar2  MOL A   1      15.642   6.587   3.268                      Ar  
 ATOM    249 Ar3  MOL A   1      20.398   3.048   3.260                      Ar  
 ATOM    250 Ar4  MOL A   1      20.265   6.989   0.780                      Ar  

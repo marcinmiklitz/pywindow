@@ -1,4 +1,4 @@
-This directory contains various Jupyter notebooks with examples:
+This directory contains various Jupyter notebooks and python scripts with examples:
 
 1. Example_1: Structural analysis of a single molecule loaded from a file type. (multiple examples)
 2. Example_2: Structural analysis of a single molecule loaded from an RDKit Molecule object. (required RDKit)

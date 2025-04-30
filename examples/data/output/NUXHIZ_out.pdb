@@ -138,8 +138,8 @@ ATOM    136  C   MOL A   1      13.424  13.240  15.329                       C
 ATOM    137  C   MOL A   1      14.035  11.930  15.316                       C  
 ATOM    138  H   MOL A   1      14.816  11.758  15.829                       H  
 ATOM    139  He  MOL A   1       8.541  11.353  19.789                      He  
-ATOM    140  Ne  MOL A   1       8.328  11.521  19.622                      Ne  
+ATOM    140  Ne  MOL A   1       8.328  11.517  19.626                      Ne  
 ATOM    141  Ar  MOL A   1      11.838  11.264  22.413                      Ar  
 ATOM    142  Ar  MOL A   1       6.145  15.404  19.516                      Ar  
-ATOM    143  Ar  MOL A   1       6.804   6.738  17.722                      Ar  
+ATOM    143  Ar  MOL A   1       6.804   6.738  17.721                      Ar  
 END

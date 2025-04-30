@@ -468,11 +468,11 @@ ATOM    466  H   MOL A   1       4.520  14.108  -1.588                       H
 ATOM    467  O   MOL A   1      10.067  18.403   5.930                       O  
 ATOM    468  H   MOL A   1      10.759  18.875   5.878                       H  
 ATOM    469  He  MOL A   1      12.891  12.891   0.000                      He  
-ATOM    470  Ne  MOL A   1      12.891  12.891  -0.000                      Ne  
+ATOM    470  Ne  MOL A   1      12.891  12.891   0.000                      Ne  
 ATOM    471  Ar  MOL A   1      13.001  12.765   6.394                      Ar  
 ATOM    472  Ar  MOL A   1      18.142  16.366   0.136                      Ar  
 ATOM    473  Ar  MOL A   1      16.385   7.613  -0.136                      Ar  
 ATOM    474  Ar  MOL A   1       7.758   9.494   0.134                      Ar  
-ATOM    475  Ar  MOL A   1       9.310  18.299  -0.138                      Ar  
+ATOM    475  Ar  MOL A   1       9.311  18.299  -0.138                      Ar  
 ATOM    476  Ar  MOL A   1      13.014  12.998  -6.301                      Ar  
 END

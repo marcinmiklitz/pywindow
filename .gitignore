@@ -1,6 +1,5 @@
 # Marcin add-ons
 TEST.ipynb
-tests/
 pywindow/shape.py
 pywindow/graph.py
 pywindow/postprocess.py
