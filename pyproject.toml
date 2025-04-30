@@ -10,7 +10,7 @@ maintainers = [
 ]
 
 dependencies = ["numpy", "scipy", "scikit-learn", "rdkit", "matplotlib"]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 dynamic = ["version"]
 readme = "README.rst"
 description = " A Python package for structural analysis of porous molecules."
