@@ -181,7 +181,7 @@ centre of pore and its window centroids):
 
     (same_dict, failed_prop) = pw.compare_properties_dict(
         dict1=mol.properties,
-        dict2=known_properties[name],
+        dict2=known_properties["PUDXES"],
     )
 
     assert same_dict
