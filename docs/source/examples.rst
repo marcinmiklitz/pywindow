@@ -143,6 +143,8 @@ centre of pore and its window centroids):
 .. testcode:: analysing-cage
     :hide:
 
+    import numpy as np
+
     known_properties = {
         "PUDXES": {
             "centre_of_mass": np.array([12.4, 12.4, 12.4]),

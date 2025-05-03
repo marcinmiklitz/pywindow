@@ -149,7 +149,7 @@ Now we iterate through the molecules, analyse and save:
 .. testcode:: analysing-multi
     :hide:
 
-    import numpy as
+    import numpy as np
 
     known_diameters = [5.2999265295219633, 5.2993422655565112, 5.3002853308997366]
     for i,j in zip(pore_diameters, known_diameters):
