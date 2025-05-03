@@ -8,7 +8,10 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .utilities import decipher_atom_key, unit_cell_to_lattice_array
+from pywindow._internal.utilities import (
+    decipher_atom_key,
+    unit_cell_to_lattice_array,
+)
 
 if TYPE_CHECKING:
     import rdkit

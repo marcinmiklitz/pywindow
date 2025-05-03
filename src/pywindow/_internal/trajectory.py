@@ -41,9 +41,9 @@ from multiprocessing import Pool
 
 import numpy as np
 
-from .io_tools import Output
-from .molecular import MolecularSystem
-from .utilities import (
+from pywindow._internal.io_tools import Output
+from pywindow._internal.molecular import MolecularSystem
+from pywindow._internal.utilities import (
     create_supercell,
     is_number,
     lattice_array_to_unit_cell,
@@ -386,11 +386,15 @@ class DLPOLY:
             frame_data["forces"] = np.array(forces, dtype=float)
         return frame_data
 
-    def analysis(  # noqa: C901, PLR0912
+    def analysis(  # noqa: C901, PLR0912, PLR0913
         self,
         frames: int | list | tuple | str = "all",
         ncpus: int = 1,
         override: bool = False,  # noqa: FBT001, FBT002
+        swap_atoms: dict | None = None,  # noqa: ARG002
+        forcefield: str | None = None,  # noqa: ARG002
+        modular: bool | None = None,  # noqa: ARG002
+        rebuild: bool | None = None,  # noqa: ARG002
     ) -> None:
         """Perform structural analysis on a frame/ set of frames.
 
@@ -615,7 +619,7 @@ class DLPOLY:
             pool = Pool(processes=ncpus)
             parallel = [
                 pool.apply_async(
-                    self._analysis_parallel_execute, args=(frame,), kwds=kwargs
+                    self._analysis_parallel_execute, args=(frame,)
                 )
                 for frame in frames
             ]
@@ -698,16 +702,9 @@ class DLPOLY:
     def save_analysis(
         self,
         filepath: str | pathlib.Path | None = None,
+        override: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
-        """Dump the content of :attr:`analysis_output` as JSON dictionary.
-
-        Parameters:
-            filepath:
-                The filepath for the JSON file.
-
-        Returns:
-            :class:`NoneType`
-        """
+        """Dump the content of :attr:`analysis_output` as JSON dictionary."""
         filepath = pathlib.Path(filepath)
         # We pass a copy of the analysis attribute dictionary.
         dict_obj = deepcopy(self.analysis_output)
@@ -716,7 +713,12 @@ class DLPOLY:
             filepath = f"{self.system_id}_pywindow_analysis"
             filepath = f"{pathlib.Path.cwd()}/{filepath}"
         # Dump the dictionary to json file.
-        Output().dump2json(dict_obj, filepath, default=to_list)
+        Output().dump2json(
+            dict_obj,
+            filepath,
+            default=to_list,
+            override=override,
+        )
 
     def save_frames(  # noqa: C901, PLR0912
         self,

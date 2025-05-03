@@ -36,7 +36,7 @@ def main() -> None:  # noqa: PLR0915
     traj.analysis(forcefield="opls", swap_atoms={"he": "H"}, ncpus=4)
 
     traj.save_analysis(
-        str(output_directory / "HISTORY_out.json"),
+        output_directory / "HISTORY_out.json",
         override=True,
     )
 

@@ -13,7 +13,7 @@ from sklearn.cluster import DBSCAN
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.neighbors import KDTree
 
-from .tables import (
+from pywindow._internal.tables import (
     atomic_covalent_radius,
     atomic_mass,
     atomic_vdw_radius,

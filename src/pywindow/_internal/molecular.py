@@ -25,8 +25,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .io_tools import Input, Output
-from .utilities import (
+from pywindow._internal.io_tools import Input, Output
+from pywindow._internal.utilities import (
     align_principal_ax,
     center_of_mass,
     create_supercell,
