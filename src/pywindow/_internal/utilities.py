@@ -757,7 +757,7 @@ def frac2cart_all(frac_coordinates, lattice_array):
 
 def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
     """Create a supercell."""
-    if "lattice" not in system.keys():
+    if "lattice" not in system:
         matrix = unit_cell_to_lattice_array(system["unit_cell"])
     else:
         matrix = system["lattice"]
@@ -782,18 +782,17 @@ def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
     # elements array so that it maches
     new_elements = deepcopy(system["elements"])
     new_ids = deepcopy(system["atom_ids"])
-    for i in range(len(updated_coordinates) - 1):
+    for _i in range(len(updated_coordinates) - 1):
         new_elements = np.concatenate((new_elements, system["elements"]))
         new_ids = np.concatenate((new_ids, system["atom_ids"]))
     cryst = lattice_array_to_unit_cell(matrix)
-    supercell_system = {
+    return {
         "elements": new_elements,
         "atom_ids": new_ids,
         "coordinates": supercell_coordinates,
         "unit_cell": cryst,
         "lattice": matrix,
     }
-    return supercell_system
 
 
 def is_inside_polyhedron(point, polyhedron):

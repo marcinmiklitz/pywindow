@@ -44,21 +44,19 @@ class Input:
         It decomposes the file object into a list, for each line, of lists
         containing splitted line strings using space as a spacer.
 
-        Parameters
-        ----------
-        filepath : :class:`str`
-            The full path or a relative path to any type of file.
+        Parameters:
+            filepath: :class:`str`
+                The full path or a relative path to any type of file.
 
         Returns:
-        -------
-        :class:`dict`
-            Returns a dictionary containing the molecular information
-            extracted from the input files. This information will
-            vary with file type and information stored in it.
-            The data is sorted into lists that contain one feature
-            for example key atom_id: [atom_id_1, atom_id_2]
-            Over the process of analysis this dictionary will be updated
-            with new data.
+            :class:`dict`
+                Returns a dictionary containing the molecular information
+                extracted from the input files. This information will
+                vary with file type and information stored in it.
+                The data is sorted into lists that contain one feature
+                for example key atom_id: [atom_id_1, atom_id_2]
+                Over the process of analysis this dictionary will be updated
+                with new data.
         """
         self.file_path = filepath
         _, self.file_type = os.path.splitext(filepath)
@@ -71,17 +69,15 @@ class Input:
     def load_rdkit_mol(self, mol):
         """Return molecular data from :class:`rdkit.Chem.rdchem.Mol` object.
 
-        Parameters
-        ----------
-        mol : :class:`rdkit.Chem.rdchem.Mol`
-            A molecule object from RDKit.
+        Parameters:
+            mol: :class:`rdkit.Chem.rdchem.Mol`
+                A molecule object from RDKit.
 
         Returns:
-        -------
-        :class:`dict`
-            A dictionary with ``elements`` and ``coordinates`` as keys
-            containing molecular data extracted from
-            :class:`rdkit.Chem.rdchem.Mol` object.
+            :class:`dict`
+                A dictionary with ``elements`` and ``coordinates`` as keys
+                containing molecular data extracted from
+                :class:`rdkit.Chem.rdchem.Mol` object.
 
         """
         self.system = {
