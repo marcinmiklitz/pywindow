@@ -3,7 +3,7 @@
   `andrewtarzia <https://github.com/andrewtarzia/>`_
 :documentation: https://pywindow.readthedocs.io/en/latest/
 
-.. figure:: docs/source/_static/pyWINDOW_logo.png
+.. figure:: docs/_static/pyWINDOW_logo.png
 
 Overview
 ========
@@ -13,6 +13,7 @@ molecular pores (*porous organic cages*, but also *MOFs* and
 *metal-organic cages* - see examples directory).
 
 .. important::
+
   This package is currently under development and differs
   from the published [pywindow](https://github.com/andrewtarzia/pywindow) but
   should work with Python >= 3.9.
