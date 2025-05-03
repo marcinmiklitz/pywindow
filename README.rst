@@ -14,8 +14,14 @@ molecular pores (*porous organic cages*, but also *MOFs* and
 
 .. important::
 
+  **Warning**: This package is still very much underdevelopment and many changes
+  are expected.
+
+.. important::
+
   This package is currently under development and differs
-  from the published [pywindow](https://github.com/andrewtarzia/pywindow) but
+  from the published
+  `pywindow <https://github.com/andrewtarzia/pywindow>`_ but
   should work with Python >= 3.9.
 
 Installation
