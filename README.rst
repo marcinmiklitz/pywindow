@@ -12,12 +12,8 @@ Overview
 molecular pores (*porous organic cages*, but also *MOFs* and
 *metal-organic cages* - see examples directory).
 
-.. important::
 
-  **Warning**: This package is still very much underdevelopment and many changes
-  are expected.
-
-.. important::
+.. note::
 
   This package is currently under development and differs
   from the published
