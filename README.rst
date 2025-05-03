@@ -1,9 +1,9 @@
 :maintainers:
   `marcinmiklitz <https://github.com/marcinmiklitz/>`_
   `andrewtarzia <https://github.com/andrewtarzia/>`_
-:documentation: https://pywindow.readthedocs.io/en/latest/
+:documentation: https://pywindowx.readthedocs.io/en/latest/
 
-.. figure:: docs/_static/pyWINDOW_logo.png
+.. figure:: docs/source/_static/pyWINDOW_logo.png
 
 Overview
 ========
@@ -35,7 +35,7 @@ To develop with ``pywindow``, you can clone the repo and use
 
 .. code-block:: bash
 
-  just dev
+  just setup
 
 How To Cite
 ===========

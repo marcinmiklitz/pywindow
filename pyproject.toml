@@ -19,19 +19,23 @@ description = " A Python package for structural analysis of porous molecules."
 dev = [
     "ruff",
     "mypy",
-    "numpy",
-    "pytest",
+    "pip-tools",
+    # TODO: Remove pin when https://github.com/TvoroG/pytest-lazy-fixture/issues/65 is resolved.
+    # pytest-lazy-fixture 0.6.0 is incompatible with pytest 8.0.0
+    "pytest<8",
+    "pytest-datadir",
+    "pytest-lazy-fixture",
     "pytest-cov",
     "sphinx",
     "sphinx-copybutton",
-    "build",
     "twine",
+    "sphinx_rtd_theme",
     "furo",
 ]
 
 [project.urls]
 github = "https://github.com/marcinmiklitz/pywindow"
-documentation = "https://pywindow.readthedocs.io"
+documentation = "https://pywindowx.readthedocs.io"
 
 
 [tool.setuptools_scm]
