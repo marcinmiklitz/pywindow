@@ -13,8 +13,7 @@ molecular pores (*porous organic cages*, but also *MOFs* and
 *metal-organic cages* - see examples directory).
 
 
-.. note::
-
+.. warning::
   This package is currently under development and differs
   from the published
   `pywindow <https://github.com/andrewtarzia/pywindow>`_ but
