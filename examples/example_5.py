@@ -59,7 +59,7 @@ def main() -> None:
         mol.calculate_windows()
 
         logging.info("properties for %s: %s", input_file.name, mol.properties)
-        (same_dict, failed_prop) = pw.utilities.compare_properties_dict(
+        (same_dict, failed_prop) = pw.compare_properties_dict(
             dict1=mol.properties,
             dict2=known_properties[name],
         )

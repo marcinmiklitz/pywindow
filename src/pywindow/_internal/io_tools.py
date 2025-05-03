@@ -39,9 +39,10 @@ class Input:
         }
 
     def load_file(self, filepath):
-        """This function opens any type of a readable file and decompose
-        the file object into a list, for each line, of lists containing
-        splitted line strings using space as a spacer.
+        """This function opens any type of a readable file.
+
+        It decomposes the file object into a list, for each line, of lists
+        containing splitted line strings using space as a spacer.
 
         Parameters
         ----------
@@ -96,9 +97,8 @@ class Input:
         return self.system
 
     def _read_xyz(self):
-        """"""
         try:
-            self.system = dict()
+            self.system = {}
             self.file_remarks = self.file_content[1]
             self.system["elements"] = np.array(
                 [i.split()[0] for i in self.file_content[2:]]
@@ -111,21 +111,22 @@ class Input:
             )
             return self.system
         except IndexError:
-            raise _CorruptedXYZFile(
+            msg = (
                 "The XYZ file is corrupted in some way. For example, an empty "
                 "line at the end etc. or it is a trajectory. If the latter is "
                 "the case, please use `trajectory` module, otherwise fix it."
             )
+            raise _CorruptedXYZFileError(msg) from None
 
     def _read_pdb(self):
-        """"""
         if sum([i.count("END ") for i in self.file_content]) > 1:
-            raise _CorruptedPDBFile(
+            msg = (
                 "Multiple 'END' statements were found in this PDB file."
                 "If this is a trajectory, use a trajectory module, "
                 "Otherwise, fix it."
             )
-        self.system = dict()
+            raise _CorruptedPDBFileError(msg)
+        self.system = {}
         self.system["remarks"] = [
             i for i in self.file_content if i[:6] == "REMARK"
         ]
@@ -174,8 +175,8 @@ class Input:
         return self.system
 
     def _read_mol(self):
-        """-V3000"""
-        self.system = dict()
+        """Read V3000 mol file."""
+        self.system = {}
         if self.file_content[2] != "\n":
             self.system["remarks"] = self.file_content[2]
         file_body = [i.split() for i in self.file_content]
@@ -226,9 +227,8 @@ class Output:
         if isinstance(obj, dict):
             pass
         else:
-            raise _NotADictionary(
-                "This function only accepts dictionaries as input"
-            )
+            msg = "This function only accepts dictionaries as input"
+            raise _NotADictionaryError(msg)
         # We check if the filepath has a json extenstion, if not we add it.
         if str(filepath[-4:]) == "json":
             pass
@@ -237,45 +237,47 @@ class Output:
         # First we check if the file already exists. If yes and the override
         # keyword is False (default), we will raise an exception. Otherwise
         # the file will be overwritten.
-        if override is False:
+        if override is False:  # noqa: SIM102
             if os.path.isfile(filepath):
-                raise _FileAlreadyExists(
-                    f"The file {filepath} already exists. Use a different filepath, "
-                    "or set the 'override' kwarg to True."
+                msg = (
+                    f"The file {filepath} already exists. Use a different "
+                    "filepath, or set the 'override' kwarg to True."
                 )
+                raise FileExistsError(msg)
         # We dump the object to the json file. Additional kwargs can be passed.
         with open(filepath, "w+") as json_file:
             json.dump(obj, json_file, **kwargs)
 
     def dump2file(self, obj, filepath, override=False, **kwargs):
-        """Dump a dictionary into a file. (Extensions: XYZ or PDB)
+        """Dump a dictionary into a file. (Extensions: XYZ or PDB).
 
-        Parameters
-        ----------
-        obj : :class:`dict`
-            A dictionary containing molecular information.
+        Parameters:
+            obj : :class:`dict`
+                A dictionary containing molecular information.
 
-        filepath : :class:`str`
-           The filepath for the dumped file.
+            filepath : :class:`str`
+            The filepath for the dumped file.
 
-        override : :class:`bool`
-           If True, any file in the filepath will be override. (default=False)
+            override : :class:`bool`
+            If True, any file in the filepath will be override. (default=False)
         """
         # First we check if the file already exists. If yes and the override
         # keyword is False (default), we will raise an exception. Otherwise
         # the file will be overwritten.
-        if override is False:
-            if os.path.isfile(filepath):
-                raise _FileAlreadyExists(
-                    f"The file {filepath} already exists. Use a different filepath, "
-                    "or set the 'override' kwarg to True."
-                )
-        if str(filepath[-3:]) not in self._save_funcs.keys():
-            raise _FileTypeError(
+        if override is False and os.path.isfile(filepath):
+            msg = (
+                f"The file {filepath} already exists. "
+                "Use a different filepath, "
+                "or set the 'override' kwarg to True."
+            )
+            raise FileExistsError(msg)
+        if str(filepath[-3:]) not in self._save_funcs:
+            msg = (
                 f"The {filepath[-3:]!s} file extension is "
                 "not supported for dumping a MolecularSystem or a Molecule. "
                 "Please use XYZ or PDB."
             )
+            raise _FileTypeError(msg)
         self._save_funcs[str(filepath[-3:])](obj, filepath, **kwargs)
 
     def _save_xyz(self, system, filepath, **kwargs):
@@ -299,14 +301,13 @@ class Output:
                     for key in elements
                 ]
             )
-        string = "{0:0d}\n{1}\n".format(len(elements), str(settings["remark"]))
+        string = "{:0d}\n{}\n".format(len(elements), str(settings["remark"]))
         for i, j in zip(elements, coordinates):
-            string += "{0} {1:.2f} {2:.2f} {3:.2f}\n".format(i, *j)
+            string += "{} {:.2f} {:.2f} {:.2f}\n".format(i, *j)
         with open(filepath, "w+") as file_:
             file_.write(string)
 
     def _save_pdb(self, system, filepath, **kwargs):
-        """"""
         settings = {
             "atom_ids": "atom_ids",
             "elements": "elements",

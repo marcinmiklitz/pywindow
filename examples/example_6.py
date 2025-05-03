@@ -490,7 +490,7 @@ def main() -> None:
                 "pore size: %s", mol.properties["pore_diameter"]["diameter"]
             )
 
-            (same_dict, failed_prop) = pw.utilities.compare_properties_dict(
+            (same_dict, failed_prop) = pw.compare_properties_dict(
                 dict1=mol.properties,
                 dict2=known_properties[f"{name}_rebuild_mol_{molecule + 1}"],
             )

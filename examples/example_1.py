@@ -190,6 +190,7 @@ def main() -> None:
         # directly to the Molecule class using
         # MolecularSystem.system_to_molecule method.
         mol = molsys.system_to_molecule()
+
         # Individual analysis.
         mol.calculate_centre_of_mass()
         mol.calculate_maximum_diameter()
@@ -202,7 +203,7 @@ def main() -> None:
 
         mol.full_analysis()
         logging.info("properties for %s: %s", input_file.name, mol.properties)
-        (same_dict, failed_prop) = pw.utilities.compare_properties_dict(
+        (same_dict, failed_prop) = pw.compare_properties_dict(
             dict1=mol.properties,
             dict2=known_properties[name],
         )

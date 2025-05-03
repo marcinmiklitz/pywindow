@@ -5,6 +5,8 @@
 
    Molecule <_autosummary/pywindow.Molecule>
    MolecularSystem <_autosummary/pywindow.MolecularSystem>
+   Single molecule examples <examples>
+   Multiple molecules examples <multi_examples>
 
 .. toctree::
   :hidden:
