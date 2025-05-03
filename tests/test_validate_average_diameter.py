@@ -1,5 +1,3 @@
-import unittest
-
 import numpy as np
 
 import pywindow as pw
@@ -2372,47 +2370,46 @@ case_5 = {
 }
 
 
-class TestAverageDiameter(unittest.TestCase):
-    def test_case_1(self):
-        molsys = pw.MolecularSystem.load_system(case_1, "case_1")
-        mol = molsys.system_to_molecule()
+def test_case_1() -> None:
+    molsys = pw.MolecularSystem.load_system(case_1, "case_1")
+    mol = molsys.system_to_molecule()
 
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 12.38895620, decimal=3
-        )
-
-    def test_case_2(self):
-        molsys = pw.MolecularSystem.load_system(case_2, "case_2")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 13.36606775, decimal=3
-        )
-
-    def test_case_3(self):
-        molsys = pw.MolecularSystem.load_system(case_3, "case_3")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 18.10740925, decimal=3
-        )
-
-    def test_case_4(self):
-        molsys = pw.MolecularSystem.load_system(case_4, "case_4")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 19.23547068, decimal=3
-        )
-
-    def test_case_5(self):
-        molsys = pw.MolecularSystem.load_system(case_5, "case_5")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 24.03139233, decimal=3
-        )
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 12.38895620, decimal=3
+    )
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_case_2() -> None:
+    molsys = pw.MolecularSystem.load_system(case_2, "case_2")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 13.36606775, decimal=3
+    )
+
+
+def test_case_3() -> None:
+    molsys = pw.MolecularSystem.load_system(case_3, "case_3")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 18.10740925, decimal=3
+    )
+
+
+def test_case_4() -> None:
+    molsys = pw.MolecularSystem.load_system(case_4, "case_4")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 19.23547068, decimal=3
+    )
+
+
+def test_case_5() -> None:
+    molsys = pw.MolecularSystem.load_system(case_5, "case_5")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 24.03139233, decimal=3
+    )

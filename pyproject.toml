@@ -53,6 +53,7 @@ convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
     "D100",
+    "E501",
     "D101",
     "D102",
     "D103",
