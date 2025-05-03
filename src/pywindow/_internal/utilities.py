@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import contextlib
 from copy import deepcopy
 from multiprocessing import Pool
 
 import numpy as np
+from rdkit.Chem.inchi import logger
 from scipy.optimize import brute, fmin, minimize
 from sklearn.cluster import DBSCAN
 from sklearn.metrics.pairwise import euclidean_distances
@@ -39,24 +41,13 @@ class _FunctionError(Exception):
         self.message = message
 
 
-def is_number(number):
-    """Return True if an object is a number - can be converted into a float.
-
-    Parameters
-    ----------
-    number : any
-
-    Returns:
-    -------
-    bool
-        True if input is a float convertable (a number), False otherwise.
-
-    """
+def is_number(number: float) -> bool:
+    """Return True if an object is a number - can be converted into a float."""
     try:
         float(number)
-        return True
     except ValueError:
         return False
+    return True
 
 
 def unique(input_list):
@@ -80,11 +71,12 @@ def unique(input_list):
     return output
 
 
-def to_list(obj):
-    """ """
+def to_list(obj: np.ndarray) -> list[float]:
+    """Serialize np.array."""
     if isinstance(obj, np.ndarray):
         return obj.tolist()
-    raise TypeError("Not serializable")
+    msg = "Not serializable"
+    raise TypeError(msg)
 
 
 def distance(a, b):
@@ -232,9 +224,8 @@ def compose_atom_list(*args):
             )
         ]
     else:
-        raise _FunctionError(
-            "The compose_atom_list() function accepts only 2 or 3 arguments."
-        )
+        msg = "The compose_atom_list() function accepts only 2 or 3 arguments."
+        raise _FunctionError(msg)
     return atom_list
 
 
@@ -278,10 +269,11 @@ def decompose_atom_list(atom_list):
         array_ab = np.concatenate((array_a, array_b), axis=1)
         coordinates = np.concatenate((array_ab, array_c), axis=1)
         return elements, atom_ids, coordinates
-    raise _FunctionError(
+    msg = (
         "The decompose_atom_list() function accepts only list of lists "
         " with only 4 or 5 items per sublist."
     )
+    raise _FunctionError(msg)
 
 
 def dlf_notation(atom_key):
@@ -302,8 +294,7 @@ def dlf_notation(atom_key):
     # will not affect the functionality towards it.
     # EDIT2: also the '?' atoms, you can delete them manually or somewhere else
     element = "".join(i for i in element if not is_number(i))
-    element = "".join(i for i in element if i != "?")
-    return element
+    return "".join(i for i in element if i != "?")
 
 
 def opls_notation(atom_key):
@@ -321,9 +312,8 @@ def opls_notation(atom_key):
         if atom_key in opls_atom_keys[element]:
             return element
     # In case if atom_key was not found in the OPLS keys dictionary
-    raise _AtomKeyError(
-        f"OPLS atom key {atom_key} was not found in OPLS keys dictionary."
-    )
+    msg = f"OPLS atom key {atom_key} was not found in OPLS keys dictionary."
+    raise _AtomKeyError(msg)
 
 
 def decipher_atom_key(atom_key, forcefield):
@@ -357,11 +347,12 @@ def decipher_atom_key(atom_key, forcefield):
     }
     if forcefield.upper() in load_funcs:
         return load_funcs[forcefield.upper()](atom_key)
-    raise _ForceFieldError(
+    msg = (
         f"Unfortunetely, '{forcefield}' forcefield is not supported by pyWINDOW."
         " For list of supported forcefields see User's Manual or "
         "MolecularSystem._decipher_atom_keys() function doc string."
     )
+    raise _ForceFieldError(msg)
 
 
 def shift_com(elements, coordinates, com_adjust=np.zeros(3)):
@@ -813,13 +804,11 @@ def is_inside_polyhedron(point, polyhedron):
 
     frac_coord = fractional_from_cartesian(point, matrix)[0]
 
-    if (
-        0 <= frac_coord[0] <= 1.000
-        and 0 <= frac_coord[1] <= 1.000
-        and 0 <= frac_coord[2] <= 1.000
-    ):
-        return True
-    return False
+    return bool(
+        0 <= frac_coord[0] <= 1.0
+        and 0 <= frac_coord[1] <= 1.0
+        and 0 <= frac_coord[2] <= 1.0
+    )
 
 
 def normal_vector(origin, vectors):
@@ -849,16 +838,10 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     #    3) Periodic Molecular system with rebuilding (supercell provided).
     if rebuild is not None:
         mode = 3
-    elif "unit_cell" in system.keys():
-        if system["unit_cell"].shape == (6,):
-            mode = 2
-        else:
-            mode = 1
-    elif "lattice" in system.keys():
-        if system["lattice"].shape == (3, 3):
-            mode = 2
-        else:
-            mode = 1
+    elif "unit_cell" in system:
+        mode = 2 if system["unit_cell"].shape == (6,) else 1
+    elif "lattice" in system:
+        mode = 2 if system["lattice"].shape == (3, 3) else 1
     else:
         mode = 1
     # We create a list containing all atoms, theirs periodic elements and
@@ -868,16 +851,17 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
         elements = system["elements"]
         coordinates = system["coordinates"]
     except KeyError:
-        raise _FunctionError(
+        msg = (
             "The 'elements' key is missing in the 'system' dictionary "
             "attribute of the MolecularSystem object. Which means, you need to"
             " decipher the forcefield based atom keys first (see manual)."
         )
+        raise _FunctionError(msg) from None
     coordinates = system["coordinates"]
     args = (elements, coordinates)
     adj = 0
     # If there are forcefield 'atom ids' as well we will retain them.
-    if "atom_ids" in system.keys():
+    if "atom_ids" in system:
         atom_ids = system["atom_ids"]
         args = (elements, atom_ids, coordinates)
         adj = 1
@@ -899,10 +883,10 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     # be random from a set of equally far choices - bug found in the testing
     # this way rebuild system should always look the same from the same input
     # and on different machines.
-    if mode == 2 or mode == 3:
+    if mode in (2, 3):
         # Scenarios 2 or 3.
         origin = np.array([0.01, 0.0, 0.0])
-        if "lattice" not in system.keys():
+        if "lattice" not in system:
             matrix = unit_cell_to_lattice_array(system["unit_cell"])
         else:
             matrix = system["lattice"]
@@ -953,7 +937,6 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     max_dist = 2 * max_r_cov + tol
     # We continue untill all items in the list have been analysed and popped.
     while atom_list:
-        # print('al', len(atom_list))
         inside_atoms_heavy = [
             i for i in atom_list if i[0].upper() not in exceptions
         ]
@@ -970,7 +953,7 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
             dist_matrix = euclidean_distances(
                 inside_atoms_coord_heavy, pseudo_origin.reshape(1, -1)
             )
-            # print(len(dist_matrix), min(dist_matrix), dist_matrix[dist_matrix == 0])
+
             atom_index_x, _ = np.unravel_index(
                 dist_matrix.argmin(), dist_matrix.shape
             )
@@ -983,7 +966,7 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
             dist_matrix = euclidean_distances(
                 atom_coor, pot_arr.reshape(1, -1)
             )
-            idx = (dist_matrix > 0.1) * (dist_matrix < max_dist)
+            idx = (dist_matrix > 0.1) * (dist_matrix < max_dist)  # noqa: PLR2004
             if len(idx) < 1:
                 pass
             else:
@@ -1009,7 +992,7 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                         dist_matrix = euclidean_distances(
                             atom_coor, i_arr.reshape(1, -1)
                         )
-                        idx = (dist_matrix > 0.1) * (dist_matrix < max_dist)
+                        idx = (dist_matrix > 0.1) * (dist_matrix < max_dist)  # noqa: PLR2004
                         neighbours_indexes = np.where(idx)[0]
                         for j in neighbours_indexes:
                             j_arr = np.array(atom_coor[j])
@@ -1026,9 +1009,8 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                         sdist_matrix = euclidean_distances(
                             satom_coor, i_arr.reshape(1, -1)
                         )
-                        # print('min', min(sdist_matrix), len(sdist_matrix))
-                        # print(len(i_arr))
-                        sidx = (sdist_matrix > 0.1) * (sdist_matrix < max_dist)
+
+                        sidx = (sdist_matrix > 0.1) * (sdist_matrix < max_dist)  # noqa: PLR2004
                         sneighbours_indexes = np.where(sidx)[0]
                         for j in sneighbours_indexes:
                             if satom_list[j] in atom_list:
@@ -1048,18 +1030,15 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                 else:
                     final_molecule.append(i)
             for i in working_list:
-                try:
+                with contextlib.suppress(ValueError):
                     atom_list.remove(i)
-                except ValueError:
-                    pass
             # We empty the working list as all the items were analysed
             # and moved to the final_molecule list.
             working_list = []
             # We make sure there are no duplicates in the working_list_temp.
-            # print(working_list_temp[:4])
-            # print(len(working_list_temp))
+
             working_list_temp = unique(working_list_temp)
-            # print(len(working_list_temp))
+
             # Now we move the entries from the temporary working list
             # to the working list for looping analysys.
             for i in working_list_temp:
@@ -1067,10 +1046,6 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
                 # being transfered.
                 if i not in final_molecule:
                     working_list.append(i)
-
-        # print('fm', len(final_molecule))
-        # import sys
-        # sys.exit()
 
         final_molecule_dict = {}
         final_molecule_dict["elements"] = np.array(
@@ -1111,8 +1086,7 @@ def angle_between_vectors(x, y):
         np.sqrt(x[0] ** 2 + x[1] ** 2 + x[2] ** 2)
         * np.sqrt(y[0] ** 2 + y[1] ** 2 + y[2] ** 2)
     )
-    second_step = np.arccos(first_step)
-    return second_step
+    return np.arccos(first_step)
 
 
 def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
@@ -1139,6 +1113,7 @@ def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
         return np.array(
             [dist, analysed_vector[pos] * 2, *chunk * pos, *vector]
         )
+    return None
 
 
 def vector_preanalysis(vector, coordinates, elements_vdw, increment=1.0):
@@ -1156,15 +1131,16 @@ def vector_preanalysis(vector, coordinates, elements_vdw, increment=1.0):
         t_0 = t_ca[pos][0] - t_hc
         t_1 = t_ca[pos][0] + t_hc
 
-        P_0 = origin + np.dot(t_0, norm_vec)
-        P_1 = origin + np.dot(t_1, norm_vec)
-        # print(np.linalg.norm(P_0), np.linalg.norm(P_1))
-        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
+        p_0 = origin + np.dot(t_0, norm_vec)
+        p_1 = origin + np.dot(t_1, norm_vec)
+
+        if np.linalg.norm(p_0) < np.linalg.norm(p_1):
             intersections.append(1)
         else:
             intersections.append(0)
     if sum(intersections) == 0:
         return vector_analysis(vector, coordinates, elements_vdw, increment)
+    return None
 
 
 def optimise_xy(xy, *args):
@@ -1224,7 +1200,7 @@ def window_analysis(
     vector = vector_analysed[5:8]
     # Unit vectors.
     vec_a = [1, 0, 0]
-    vec_b = [0, 1, 0]
+
     vec_c = [0, 0, 1]
     # Angles needed for rotation (in radians) to rotate and translate the
     # molecule for the vector to become the Z-axis.
@@ -1237,9 +1213,9 @@ def window_analysis(
         angle_2 = -angle_2
     if vector[0] < 0 and vector[1] >= 0 and vector[2] >= 0:
         angle_1 = np.pi * 2 + angle_1
-        angle_2 = angle_2
+        angle_2 = angle_2  # noqa: PLW0127
     if vector[0] >= 0 and vector[1] < 0 and vector[2] >= 0:
-        angle_1 = angle_1
+        angle_1 = angle_1  # noqa: PLW0127
         angle_2 = -angle_2
     if vector[0] < 0 and vector[1] < 0 and vector[2] >= 0:
         angle_1 = np.pi * 2 - angle_1
@@ -1534,21 +1510,19 @@ def find_windows(
     # should be raised.
     for result in window_results:
         if result is None:
-            msg_ = " ".join(
-                [
-                    "Warning. One of the analysed windows has",
-                    "returned as None. See manual.",
-                ]
+            msg_ = (
+                "Warning. One of the analysed windows has returned as None. "
+                "See manual."
             )
-            # print(msg_)
+            logger.warning(msg_)
+
         elif result[0] < 0:
-            msg_ = " ".join(
-                [
-                    "Warning. One of the analysed windows has a vdW",
-                    "corrected diameter smaller than 0. See manual.",
-                ]
+            msg_ = (
+                "Warning. One of the analysed windows has a vdW corrected "
+                "diameter smaller than 0. See manual."
             )
-            # print(msg_)
+            logger.warning(msg_)
+
     return (windows, windows_coms)
 
 
@@ -1594,7 +1568,7 @@ def window_shape(
     vector = vector_analysed[5:8]
     # Unit vectors.
     vec_a = [1, 0, 0]
-    vec_b = [0, 1, 0]
+    vec_b = [0, 1, 0]  # noqa: F841
     vec_c = [0, 0, 1]
     # Angles needed for rotation (in radians) to rotate and translate the
     # molecule for the vector to become the Z-axis.
@@ -1607,9 +1581,9 @@ def window_shape(
         angle_2 = -angle_2
     if vector[0] < 0 and vector[1] >= 0 and vector[2] >= 0:
         angle_1 = np.pi * 2 + angle_1
-        angle_2 = angle_2
+        angle_2 = angle_2  # noqa: PLW0127
     if vector[0] >= 0 and vector[1] < 0 and vector[2] >= 0:
-        angle_1 = angle_1
+        angle_1 = angle_1  # noqa: PLW0127
         angle_2 = -angle_2
     if vector[0] < 0 and vector[1] < 0 and vector[2] >= 0:
         angle_1 = np.pi * 2 - angle_1
@@ -1719,13 +1693,12 @@ def window_shape(
     ]
     ref_distance = (new_z - window_com[2]) / np.linalg.norm(vector)
     # Cutting the XY plane.
-    XY_plane = np.array(
+    return np.array(
         [
             [i[0] * ref_distance, i[1] * ref_distance]
             for i in vectors_translated
         ]
     )
-    return XY_plane
 
 
 def find_windows_new(
@@ -1742,7 +1715,7 @@ def find_windows_new(
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
     # Center of our cartesian system is always at origin
-    origin = np.array([0, 0, 0])
+    origin = np.array([0, 0, 0])  # noqa: F841
     # Initial center of mass to reverse translation at the end
     initial_com = center_of_mass(elements, coordinates)
     # Shift the cage to the origin using either the standard center of mass
@@ -1841,7 +1814,7 @@ def find_windows_new(
         return None
     # Perfomr DBSCAN to cluster the sampling points vectors.
     # the n_jobs will be developed later.
-    # db = DBSCAN(eps=eps, n_jobs=_ncpus).fit(dataset)
+
     db = DBSCAN(eps=eps).fit(dataset)
     core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
     core_samples_mask[db.core_sample_indices_] = True
@@ -1894,14 +1867,15 @@ def vector_analysis_reversed(vector, coordinates, elements_vdw):
         t_0 = t_ca[pos][0] - t_hc
         t_1 = t_ca[pos][0] + t_hc
 
-        P_0 = origin + np.dot(t_0, norm_vec)
-        P_1 = origin + np.dot(t_1, norm_vec)
-        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
-            intersections.append([np.linalg.norm(P_1), P_1])
+        p_0 = origin + np.dot(t_0, norm_vec)
+        p_1 = origin + np.dot(t_1, norm_vec)
+        if np.linalg.norm(p_0) < np.linalg.norm(p_1):
+            intersections.append([np.linalg.norm(p_1), p_1])
     if intersections:
         intersection = sorted(intersections, reverse=True)[0][1]
         dist_origin = np.linalg.norm(intersection)
         return [dist_origin, intersection]
+    return None
 
 
 def find_average_diameter(
@@ -1911,9 +1885,9 @@ def find_average_diameter(
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
     # Center of our cartesian system is always at origin
-    origin = np.array([0, 0, 0])
+    origin = np.array([0, 0, 0])  # noqa: F841
     # Initial center of mass to reverse translation at the end
-    initial_com = center_of_mass(elements, coordinates)
+    initial_com = center_of_mass(elements, coordinates)  # noqa: F841
     # We just shift the cage to the origin.
     coordinates = shift_com(elements, coordinates)
     # We create an array of vdw radii of elements.
@@ -1972,9 +1946,9 @@ def vector_analysis_pore_shape(vector, coordinates, elements_vdw):
     norm_vec = vector / np.linalg.norm(vector)
     intersections = []
     origin = center_of_coor(coordinates)
-    L = coordinates - origin
-    t_ca = np.dot(L, norm_vec)
-    d = np.sqrt(np.einsum("ij,ij->i", L, L) - t_ca**2)
+    length = coordinates - origin
+    t_ca = np.dot(length, norm_vec)
+    d = np.sqrt(np.einsum("ij,ij->i", length, length) - t_ca**2)
     under_sqrt = elements_vdw**2 - d**2
     diag = under_sqrt.diagonal()
     positions = np.argwhere(diag > 0)
@@ -1983,13 +1957,14 @@ def vector_analysis_pore_shape(vector, coordinates, elements_vdw):
         t_0 = t_ca[pos][0] - t_hc
         t_1 = t_ca[pos][0] + t_hc
 
-        P_0 = origin + np.dot(t_0, norm_vec)
-        P_1 = origin + np.dot(t_1, norm_vec)
-        # print(np.linalg.norm(P_0), np.linalg.norm(P_1))
-        if np.linalg.norm(P_0) < np.linalg.norm(P_1):
-            intersections.append([np.linalg.norm(P_0), P_0])
+        p_0 = origin + np.dot(t_0, norm_vec)
+        p_1 = origin + np.dot(t_1, norm_vec)
+
+        if np.linalg.norm(p_0) < np.linalg.norm(p_1):
+            intersections.append([np.linalg.norm(p_0), p_0])
     if intersections:
         return sorted(intersections)[0][1]
+    return None
 
 
 def calculate_pore_shape(
@@ -1999,9 +1974,9 @@ def calculate_pore_shape(
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
     # Center of our cartesian system is always at origin
-    origin = np.array([0, 0, 0])
+    origin = np.array([0, 0, 0])  # noqa: F841
     # Initial center of mass to reverse translation at the end
-    initial_com = center_of_mass(elements, coordinates)
+    initial_com = center_of_mass(elements, coordinates)  # noqa: F841
     # We just shift the cage to the origin.
     coordinates = shift_com(elements, coordinates)
     # We create an array of vdw radii of elements.
@@ -2044,7 +2019,7 @@ def calculate_pore_shape(
         values.extend(dist)
     mean_distance = np.mean(values)
     # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_distance + mean_distance**0.5
+    eps = mean_distance + mean_distance**0.5  # noqa: F841
     # Here we either run the sampling points vectors analysis in serial
     # or parallel. The vectors that go through molecular voids return
     # as analysed list with the increment at vector's path with largest
@@ -2055,32 +2030,31 @@ def calculate_pore_shape(
         for point in points
     ]
     results_cleaned = [x for x in results if x is not None]
-    ele = np.array(["X"] * len(results_cleaned))
-    coor = np.array(results_cleaned)
-    return coor
+    ele = np.array(["X"] * len(results_cleaned))  # noqa: F841
+    return np.array(results_cleaned)
 
 
 def circumcircle_window(coordinates, atom_set):
     # Calculating circumcircle
-    A = np.array(coordinates[int(atom_set[0])])
-    B = np.array(coordinates[int(atom_set[1])])
-    C = np.array(coordinates[int(atom_set[2])])
-    a = np.linalg.norm(C - B)
-    b = np.linalg.norm(C - A)
-    c = np.linalg.norm(B - A)
+    cap_a = np.array(coordinates[int(atom_set[0])])
+    cap_b = np.array(coordinates[int(atom_set[1])])
+    cap_c = np.array(coordinates[int(atom_set[2])])
+    a = np.linalg.norm(cap_c - cap_b)
+    b = np.linalg.norm(cap_c - cap_a)
+    c = np.linalg.norm(cap_b - cap_a)
     s = (a + b + c) / 2
     # Holden et al. method is intended to only work with triads of carbons,
     # therefore I substract the vdW radii for a carbon.
     # These equation calculaties the window's radius.
-    R = a * b * c / 4 / np.sqrt(s * (s - a) * (s - b) * (s - c)) - 1.70
+    r = a * b * c / 4 / np.sqrt(s * (s - a) * (s - b) * (s - c)) - 1.70
     # This steps are used to calculate the window's COM.
     b1 = a * a * (b * b + c * c - a * a)
     b2 = b * b * (a * a + c * c - b * b)
     b3 = c * c * (a * a + b * b - c * c)
-    COM = np.column_stack((A, B, C)).dot(np.hstack((b1, b2, b3)))
+    com = np.column_stack((cap_a, cap_b, cap_c)).dot(np.hstack((b1, b2, b3)))
     # The window's COM.
-    COM /= b1 + b2 + b3
-    return R, COM
+    com /= b1 + b2 + b3
+    return r, com
 
 
 def circumcircle(coordinates, atom_sets):
@@ -2088,14 +2062,14 @@ def circumcircle(coordinates, atom_sets):
     pld_com_list = []
     iter_ = 0
     while iter_ < len(atom_sets):
-        R, COM = circumcircle_window(coordinates, atom_sets[iter_])
-        pld_diameter_list.append(R * 2)
-        pld_com_list.append(COM)
+        r, com = circumcircle_window(coordinates, atom_sets[iter_])
+        pld_diameter_list.append(r * 2)
+        pld_com_list.append(com)
         iter_ += 1
     return pld_diameter_list, pld_com_list
 
 
-def compare_properties_dict(  # noqa: C901
+def compare_properties_dict(  # noqa: C901, PLR0911
     dict1: dict[str : int | float | dict],
     dict2: dict[str : int | float | dict],
 ) -> tuple[bool, str]:

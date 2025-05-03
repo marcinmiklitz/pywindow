@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """This module containes general-purpose chemical data (aka tables).
 
 Sources:

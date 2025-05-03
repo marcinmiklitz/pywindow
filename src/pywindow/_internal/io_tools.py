@@ -8,35 +8,30 @@ import numpy as np
 from .utilities import decipher_atom_key, unit_cell_to_lattice_array
 
 
-class _CorruptedPDBFile(Exception):
-    def __init__(self, message):
+class _CorruptedPDBFileError(Exception):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
-class _CorruptedXYZFile(Exception):
-    def __init__(self, message):
+class _CorruptedXYZFileError(Exception):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
-class _FileAlreadyExists(Exception):
-    def __init__(self, message):
-        self.message = message
-
-
-class _NotADictionary(Exception):
-    def __init__(self, message):
+class _NotADictionaryError(Exception):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
 class _FileTypeError(Exception):
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
 class Input:
     """Class used to load and process input files."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._load_funcs = {
             ".xyz": self._read_xyz,
             ".pdb": self._read_pdb,

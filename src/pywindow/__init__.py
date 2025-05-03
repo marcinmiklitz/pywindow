@@ -1,12 +1,15 @@
 """pywindow module."""
 
-from .io_tools import *
-from .molecular import *
-from .tables import *
-from .trajectory import *
-from .utilities import *
+from pywindow._internal.molecular import MolecularSystem, Molecule
+from pywindow._internal.trajectory import DLPOLY, PDB, XYZ, make_supercell
+from pywindow._internal.utilities import compare_properties_dict
 
-name = "pywindow"
-
-
-__all__ = []
+__all__ = [
+    "DLPOLY",
+    "PDB",
+    "XYZ",
+    "MolecularSystem",
+    "Molecule",
+    "compare_properties_dict",
+    "make_supercell",
+]
