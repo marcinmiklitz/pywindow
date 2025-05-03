@@ -13,13 +13,6 @@ molecular pores (*porous organic cages*, but also *MOFs* and
 *metal-organic cages* - see examples directory).
 
 .. warning::
-    This is warning text. Use a warning for information the user must
-    understand to avoid negative consequences.
-
-    Warnings are formatted in the same way as notes. In the same way,
-    lines must be broken and indented under the warning tag.
-
-.. warning::
   This package is currently under development and differs
   from the published
   `pywindow <https://github.com/andrewtarzia/pywindow>`_ but
