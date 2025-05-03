@@ -13,6 +13,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
 )
+logger = logging.getLogger(__name__)
 
 
 def main() -> None:
@@ -23,9 +24,9 @@ def main() -> None:
     input_directory = data_directory / "input"
     output_directory = data_directory / "output"
 
-    traj = pw.trajectory.DLPOLY(str(input_directory / "HISTORY_periodic"))
+    traj = pw.DLPOLY(str(input_directory / "HISTORY_periodic"))
 
-    logging.info("there are %s frames", traj.no_of_frames)
+    logger.info("there are %s frames", traj.no_of_frames)
 
     frame_0 = traj.get_frames(0)
     frame_0.swap_atom_keys({"he": "H"})
@@ -48,7 +49,7 @@ def main() -> None:
     for key in traj.analysis_output:
         for mol in traj.analysis_output[key]:
             for i in traj.analysis_output[key][mol]["windows"]["diameters"]:
-                windows.append(i)  # noqa: PERF402
+                windows.append(i)
             pore_diam_opt.append(
                 traj.analysis_output[key][mol]["pore_diameter_opt"]["diameter"]
             )

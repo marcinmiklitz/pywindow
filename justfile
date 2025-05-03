@@ -26,7 +26,7 @@ check:
   ( set -x; uv run ruff format --check . )
 
   echo
-  ( set -x; uv run mypy . )
+  ( set -x; uv run mypy src/ tests/ examples/ )
 
   echo
   ( set -x; uv run pytest --cov=src --cov-report term-missing )

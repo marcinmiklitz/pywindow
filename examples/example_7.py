@@ -14,6 +14,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
 )
+logger = logging.getLogger(__name__)
 
 
 def main() -> None:  # noqa: PLR0915
@@ -24,9 +25,9 @@ def main() -> None:  # noqa: PLR0915
     input_directory = data_directory / "input"
     output_directory = data_directory / "output"
 
-    traj = pw.trajectory.DLPOLY(str(input_directory / "HISTORY_singlemol"))
+    traj = pw.DLPOLY(str(input_directory / "HISTORY_singlemol"))
 
-    logging.info("there are %s frames", traj.no_of_frames)
+    logger.info("there are %s frames", traj.no_of_frames)
 
     frame_0 = traj.get_frames(0)
     frame_0.swap_atom_keys({"he": "H"})
@@ -47,9 +48,9 @@ def main() -> None:  # noqa: PLR0915
     max_diam = []
 
     for key in saved_analysis:
-        if int(key) >= 200:  # noqa: PLR2004
+        if int(key) >= 200:
             for i in saved_analysis[key]["0"]["windows"]["diameters"]:
-                windows.append(i)  # noqa: PERF402
+                windows.append(i)
             pore_diam_opt.append(
                 saved_analysis[key]["0"]["pore_diameter_opt"]["diameter"]
             )

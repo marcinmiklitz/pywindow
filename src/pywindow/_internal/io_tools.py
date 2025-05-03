@@ -1,11 +1,17 @@
 """Module contains classes for input/output processing."""
 
+from __future__ import annotations
+
 import json
-import os
+import pathlib
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 from .utilities import decipher_atom_key, unit_cell_to_lattice_array
+
+if TYPE_CHECKING:
+    import rdkit
 
 
 class _CorruptedPDBFileError(Exception):
@@ -38,14 +44,14 @@ class Input:
             ".mol": self._read_mol,
         }
 
-    def load_file(self, filepath):
+    def load_file(self, filepath: pathlib.Path | str) -> dict:
         """This function opens any type of a readable file.
 
         It decomposes the file object into a list, for each line, of lists
         containing splitted line strings using space as a spacer.
 
         Parameters:
-            filepath: :class:`str`
+            filepath:
                 The full path or a relative path to any type of file.
 
         Returns:
@@ -58,26 +64,26 @@ class Input:
                 Over the process of analysis this dictionary will be updated
                 with new data.
         """
-        self.file_path = filepath
-        _, self.file_type = os.path.splitext(filepath)
-        _, self.file_name = os.path.split(filepath)
-        with open(filepath) as ffile:
+        self.file_path = pathlib.Path(filepath)
+        _, self.file_type = filepath.suffix()
+        _, self.file_name = filepath.name()
+        with filepath.open("r") as ffile:
             self.file_content = ffile.readlines()
 
         return self._load_funcs[self.file_type]()
 
-    def load_rdkit_mol(self, mol):
-        """Return molecular data from :class:`rdkit.Chem.rdchem.Mol` object.
+    def load_rdkit_mol(self, mol: rdkit.Chem.Mol) -> dict:
+        """Return molecular data from :class:`rdkit.Chem.Mol` object.
 
         Parameters:
-            mol: :class:`rdkit.Chem.rdchem.Mol`
+            mol:
                 A molecule object from RDKit.
 
         Returns:
             :class:`dict`
                 A dictionary with ``elements`` and ``coordinates`` as keys
                 containing molecular data extracted from
-                :class:`rdkit.Chem.rdchem.Mol` object.
+                :class:`rdkit.Chem.Mol` object.
 
         """
         self.system = {
@@ -92,7 +98,7 @@ class Input:
             self.system["coordinates"][atom_id] = x, y, z
         return self.system
 
-    def _read_xyz(self):
+    def _read_xyz(self) -> dict:
         try:
             self.system = {}
             self.file_remarks = self.file_content[1]
@@ -105,7 +111,7 @@ class Input:
                     for j in [i.split()[1:] for i in self.file_content[2:]]
                 ]
             )
-            return self.system
+
         except IndexError:
             msg = (
                 "The XYZ file is corrupted in some way. For example, an empty "
@@ -113,8 +119,9 @@ class Input:
                 "the case, please use `trajectory` module, otherwise fix it."
             )
             raise _CorruptedXYZFileError(msg) from None
+        return self.system
 
-    def _read_pdb(self):
+    def _read_pdb(self) -> dict:
         if sum([i.count("END ") for i in self.file_content]) > 1:
             msg = (
                 "Multiple 'END' statements were found in this PDB file."
@@ -170,7 +177,7 @@ class Input:
         )
         return self.system
 
-    def _read_mol(self):
+    def _read_mol(self) -> dict:
         """Read V3000 mol file."""
         self.system = {}
         if self.file_content[2] != "\n":
@@ -180,7 +187,7 @@ class Input:
         coordinates = []
         atom_data = False
         for line in file_body:
-            if len(line) > 2:
+            if len(line) > 2:  # noqa: PLR2004
                 if line[2] == "END" and line[3] == "ATOM":
                     atom_data = False
                 if atom_data is True:
@@ -196,29 +203,35 @@ class Input:
 class Output:
     """Class used to process and save output files."""
 
-    def __init__(self):
-        self.cwd = os.getcwd()
+    def __init__(self) -> None:
+        self.cwd = pathlib.Path.cwd()
         self._save_funcs = {
             "xyz": self._save_xyz,
             "pdb": self._save_pdb,
         }
 
-    def dump2json(self, obj, filepath, override=False, **kwargs):
+    def dump2json(
+        self,
+        obj: dict,
+        filepath: str | pathlib.Path,
+        override: bool = False,  # noqa: FBT001, FBT002
+    ) -> None:
         """Dump a dictionary into a JSON dictionary.
 
         Uses the json.dump() function.
 
-        Parameters
-        ----------
-        obj : :class:`dict`
-            A dictionary to be dumpped as JSON file.
+        Parameters:
+            obj:
+                A dictionary to be dumpped as JSON file.
 
-        filepath : :class:`str`
-           The filepath for the dumped file.
+            filepath:
+                The filepath for the dumped file.
 
-        override : :class:`bool`
-           If True, any file in the filepath will be override. (default=False)
+            override:
+                If True, any file in the filepath will be override.
+                (default=False)
         """
+        filepath = pathlib.Path(filepath)
         # We make sure that the object passed by the user is a dictionary.
         if isinstance(obj, dict):
             pass
@@ -234,33 +247,40 @@ class Output:
         # keyword is False (default), we will raise an exception. Otherwise
         # the file will be overwritten.
         if override is False:  # noqa: SIM102
-            if os.path.isfile(filepath):
+            if filepath.isfile():
                 msg = (
                     f"The file {filepath} already exists. Use a different "
                     "filepath, or set the 'override' kwarg to True."
                 )
                 raise FileExistsError(msg)
         # We dump the object to the json file. Additional kwargs can be passed.
-        with open(filepath, "w+") as json_file:
-            json.dump(obj, json_file, **kwargs)
+        with filepath.open("w+") as json_file:
+            json.dump(obj, json_file)
 
-    def dump2file(self, obj, filepath, override=False, **kwargs):
+    def dump2file(
+        self,
+        obj: dict,
+        filepath: str | pathlib.Path,
+        override: bool = False,  # noqa: FBT001, FBT002
+    ) -> None:
         """Dump a dictionary into a file. (Extensions: XYZ or PDB).
 
         Parameters:
-            obj : :class:`dict`
+            obj:
                 A dictionary containing molecular information.
 
-            filepath : :class:`str`
-            The filepath for the dumped file.
+            filepath:
+                The filepath for the dumped file.
 
-            override : :class:`bool`
-            If True, any file in the filepath will be override. (default=False)
+            override:
+                If True, any file in the filepath will be override.
+                (default=False)
         """
+        filepath = pathlib.Path(filepath)
         # First we check if the file already exists. If yes and the override
         # keyword is False (default), we will raise an exception. Otherwise
         # the file will be overwritten.
-        if override is False and os.path.isfile(filepath):
+        if override is False and filepath.isfile():
             msg = (
                 f"The file {filepath} already exists. "
                 "Use a different filepath, "
@@ -274,10 +294,11 @@ class Output:
                 "Please use XYZ or PDB."
             )
             raise _FileTypeError(msg)
-        self._save_funcs[str(filepath[-3:])](obj, filepath, **kwargs)
+        self._save_funcs[str(filepath[-3:])](obj, filepath)
 
-    def _save_xyz(self, system, filepath, **kwargs):
-        """"""
+    def _save_xyz(self, system: dict, filepath: str | pathlib.Path) -> None:
+        filepath = pathlib.Path(filepath)
+
         # Initial settings.
         settings = {
             "elements": "elements",
@@ -286,7 +307,7 @@ class Output:
             "decipher": False,
             "forcefield": None,
         }
-        settings.update(kwargs)
+
         # Extract neccessary data.
         elements = system["elements"]
         coordinates = system["coordinates"]
@@ -300,10 +321,11 @@ class Output:
         string = "{:0d}\n{}\n".format(len(elements), str(settings["remark"]))
         for i, j in zip(elements, coordinates):
             string += "{} {:.2f} {:.2f} {:.2f}\n".format(i, *j)
-        with open(filepath, "w+") as file_:
+        with filepath.open("w+") as file_:
             file_.write(string)
 
-    def _save_pdb(self, system, filepath, **kwargs):
+    def _save_pdb(self, system: dict, filepath: str | pathlib.Path) -> None:  # noqa: C901
+        filepath = pathlib.Path(filepath)
         settings = {
             "atom_ids": "atom_ids",
             "elements": "elements",
@@ -318,7 +340,7 @@ class Output:
             "decipher": False,
             "forcefield": None,
         }
-        settings.update(kwargs)
+
         # We create initial string that we will gradually extend while we
         # process the data and in the end it will be written into a pdb file.
         string = "REMARK File generated using pyWINDOW."
@@ -336,30 +358,29 @@ class Output:
             remark = settings["remarks"]
             string = "\n".join([string, f"REMARK {remark}"])
         # If there is a unit cell (crystal data) provided we need to add it.
-        if settings["cryst"] in system.keys():
-            if system[settings["cryst"]].any():
-                cryst_line = "CRYST1"
-                cryst = system[settings["cryst"]]
-                # The user have to provide the crystal data as a list/array
-                # of six items containing unit cell edges lengths a, b and c
-                # in x, y and z directions and three angles, or it can be.
-                # Other options are not allowed for simplicity. It can convert
-                # from the lattice array using function from utilities.
-                for i in cryst[:3]:
-                    cryst_line = "".join([cryst_line, f"{i:9.3f}"])
-                for i in cryst[3:]:
-                    cryst_line = "".join([cryst_line, f"{i:7.2f}"])
-                # This is kind of messy, by default the data written in PDB
-                # file should be P1 symmetry group therefore containing all
-                # atom coordinates and not considering symmetry operations.
-                # But, user can still define a space group if he wishes to.
-                if settings["space_group"] is not None:
-                    space_group = settings["space_group"]
-                else:
-                    space_group = "{0}".format("P1")
-                cryst_line = " ".join([cryst_line, space_group])
-                # We add the unit cell parameters to the main string.
-                string = "\n".join([string, cryst_line])
+        if settings["cryst"] in system and system[settings["cryst"]].any():
+            cryst_line = "CRYST1"
+            cryst = system[settings["cryst"]]
+            # The user have to provide the crystal data as a list/array
+            # of six items containing unit cell edges lengths a, b and c
+            # in x, y and z directions and three angles, or it can be.
+            # Other options are not allowed for simplicity. It can convert
+            # from the lattice array using function from utilities.
+            for i in cryst[:3]:
+                cryst_line = "".join([cryst_line, f"{i:9.3f}"])
+            for i in cryst[3:]:
+                cryst_line = "".join([cryst_line, f"{i:7.2f}"])
+            # This is kind of messy, by default the data written in PDB
+            # file should be P1 symmetry group therefore containing all
+            # atom coordinates and not considering symmetry operations.
+            # But, user can still define a space group if he wishes to.
+            if settings["space_group"] is not None:
+                space_group = settings["space_group"]
+            else:
+                space_group = "{}".format("P1")
+            cryst_line = f"{cryst_line} {space_group}"
+            # We add the unit cell parameters to the main string.
+            string = f"{string}\n{cryst_line}"
         # For the sake of code readability we extract interesting data from the
         # system. Atom_ids are the atom ids written at the third column of a
         # PDB file and the user has here the freedom to use the forcefield
@@ -386,24 +407,27 @@ class Output:
         for i in range(len_):
             atom_line = f"ATOM  {i + 1:5d}"
             atom_id = f"{atom_ids[i].center(4):4}"
-            resName = "{0:3}".format(settings["resName"])
-            chainID = settings["chainID"]
-            atom_line = " ".join([atom_line, atom_id, resName, chainID])
-            resSeq = str(settings["resSeq"]).rjust(4)
-            atom_line = "".join([atom_line, resSeq])
-            coor = f"{coordinates[i][0]:8.3f}{coordinates[i][1]:8.3f}{coordinates[i][2]:8.3f}"
-            atom_line = "    ".join([atom_line, coor])
-            big_space = "{0}".format(" ".center(22))
+            resname = "{:3}".format(settings["resName"])
+            chainid = settings["chainID"]
+            atom_line = f"{atom_line} {atom_id} {resname} {chainid}"
+            resseq = str(settings["resSeq"]).rjust(4)
+            atom_line = f"{atom_line}{resseq}"
+            coor = (
+                f"{coordinates[i][0]:8.3f}{coordinates[i][1]:8.3f}"
+                f"{coordinates[i][2]:8.3f}"
+            )
+            atom_line = f"{atom_line}    {coor}"
+            big_space = "{}".format(" ".center(22))
             element = f"{elements[i].rjust(2):2}  "
-            atom_line = "".join([atom_line, big_space, element])
-            string = "\n".join([string, atom_line])
+            atom_line = f"{atom_line}{big_space}{element}"
+            string = f"{string}\n{atom_line}"
         # The connectivity part is to be written after a function calculating
         # connectivity is finished
         # "Everything that has a beginning has an end" by Neo. :)
-        string = "\n".join([string, "END"])
+        string = f"{string}\nEND"
         # Check if .pdb extension is missing from filepath.
         if filepath[-4:].lower() != ".pdb":
-            filepath = ".".join((filepath, "pdb"))
+            filepath = f"{filepath}.pdb"
         # Write the string to a a PDB file.
-        with open(filepath, "w+") as file:
+        with filepath.open("w+") as file:
             file.write(string)

@@ -11,6 +11,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
 )
+logger = logging.getLogger(__name__)
 
 known_properties = {
     "SAYGOR": {
@@ -58,7 +59,7 @@ def main() -> None:
         mol.calculate_pore_volume_opt()
         mol.calculate_windows()
 
-        logging.info("properties for %s: %s", input_file.name, mol.properties)
+        logger.info("properties for %s: %s", input_file.name, mol.properties)
         (same_dict, failed_prop) = pw.compare_properties_dict(
             dict1=mol.properties,
             dict2=known_properties[name],

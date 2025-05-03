@@ -1,4 +1,4 @@
-pywindow.Molecule
+﻿pywindow.Molecule
 =================
 
 .. currentmodule:: pywindow
@@ -35,12 +35,5 @@ pywindow.Molecule
    
 
    
-   
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Molecule.gyration_tensor
-      ~Molecule.inertia_tensor
    
    

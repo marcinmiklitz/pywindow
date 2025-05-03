@@ -17,30 +17,23 @@ To get started with the analysis of Molecular Dynamic trajectories go to
 
 """
 
-import os
+from __future__ import annotations
+
+import pathlib
 from copy import deepcopy
+from typing import TYPE_CHECKING
 
 import numpy as np
-from scipy.spatial import ConvexHull
 
 from .io_tools import Input, Output
 from .utilities import (
     align_principal_ax,
-    calc_acylidricity,
-    calc_asphericity,
-    calc_relative_shape_anisotropy,
-    calculate_pore_shape,
-    calculate_window_diameter,
     center_of_mass,
-    circumcircle,
     create_supercell,
     decipher_atom_key,
     discrete_molecules,
     find_average_diameter,
     find_windows,
-    get_gyration_tensor,
-    get_inertia_tensor,
-    get_window_com,
     max_dim,
     molecular_weight,
     opt_pore_diameter,
@@ -48,8 +41,10 @@ from .utilities import (
     shift_com,
     sphere_volume,
     to_list,
-    window_shape,
 )
+
+if TYPE_CHECKING:
+    import rdkit
 
 
 class _MolecularSystemError(Exception):
@@ -62,177 +57,7 @@ class _NotAModularSystemError(Exception):
         self.message = message
 
 
-class _Shape:
-    """Class containing shape descriptors.
-
-    This class allows other classes, such as :class:`Pore` and
-    :class:`Molecule`, inherit shape descriptors (applicable to any set of
-    points in a 3D Cartesian space, let it be a shape of an intrinsic pore or
-    shape of a molecule) such as asphericity, acylidricity and relative shape
-    anisotropy. This class should not be used by itself.
-
-    """
-
-    @property
-    def _asphericity(self):
-        """Return asphericity of a shape.
-
-        The asphericity of a shape is weighted by the mass assigned to each
-        coordinate (associated with the element). In case if `elements` is
-        `None`, mass of each element = 1 and this returns a non-weighted value.
-
-        Returns:
-        -------
-        :class:`float`
-           The asphericity of a shape.
-
-        """
-        return calc_asphericity(self.elements, self.coordinates)
-
-    @property
-    def _acylidricity(self):
-        """Return acylidricity of a shape.
-
-        The acylidricity of a shape is weighted by the mass assigned to each
-        coordinate (associated with the element). In case if `elements` is
-        `None`, mass of each element = 1 and this returns a non-weighted value.
-
-        Returns:
-        -------
-        :class:`float`
-           The acylidricity of a shape.
-
-        """
-        return calc_acylidricity(self.elements, self.coordinates)
-
-    @property
-    def _relative_shape_anisotropy(self):
-        """Return relative shape anisotropy of a shape.
-
-        The relative shape anisotropy of a shape is weighted by the mass
-        assigned to each coordinate (associated with the element). In case if
-        `elements` is `None`, mass of each element = 1 and this returns a
-        non-weighted value.
-
-        Returns:
-            :class:`float`
-                The relative shape anisotropy of a shape.
-
-        """
-        return calc_relative_shape_anisotropy(self.elements, self.coordinates)
-
-    @property
-    def inertia_tensor(self):
-        """Return inertia tensor of a shape.
-
-        The inertia tensor of a shape is weighted by the mass assigned to each
-        coordinate (associated with the element). In case if `elements` is
-        `None`, mass of each element = 1 and this returns a non-weighted value.
-
-        Returns:
-            :class:`numpy.array`
-                The inertia tensor of a shape.
-
-        """
-        return get_inertia_tensor(self.elements, self.coordinates)
-
-    @property
-    def gyration_tensor(self):
-        """Return gyration tensor of a shape.
-
-        The gyration tensor of a shape is weighted by the mass assigned to each
-        coordinate (associated with the element). In case if `elements` is
-        `None`, mass of each element = 1 and this returns a non-weighted value.
-
-        Returns:
-            :class:`numpy.array`
-                The gyration tensor of a shape.
-
-        """
-        return get_gyration_tensor(self.elements, self.coordinates)
-
-
-class _Pore(_Shape):
-    """Under development."""
-
-    def __init__(self, elements, coordinates, shape=False, **kwargs):
-        self._elements, self._coordinates = elements, coordinates
-        self.diameter, self.closest_atom = pore_diameter(
-            elements, coordinates, **kwargs
-        )
-        self.spherical_volume = sphere_volume(self.diameter / 2)
-        if "com" in kwargs:
-            self.centre_coordinates = kwargs["com"]
-        else:
-            self.centre_coordinates = center_of_mass(elements, coordinates)
-        self.optimised = False
-
-    def optimise(self, **kwargs):
-        (self.diameter, self.closest_atom, self.centre_coordinates) = (
-            opt_pore_diameter(
-                self._elements,
-                self._coordinates,
-                com=self.centre_coordinates,
-                **kwargs,
-            )
-        )
-        self.spherical_volume = sphere_volume(self.diameter / 2)
-        self.optimised = True
-
-    def get_shape(self):
-        super().__init__(calculate_pore_shape(self._coordinates))
-
-    def reset(self):
-        self.__init__(self._elements, self._coordinates)
-
-
-class _Window:
-    """Under development."""
-
-    def __init__(self, window, key, elements, coordinates, com_adjust):
-        self.raw_data = window
-        self.index = key
-        self.mol_coordinates = coordinates
-        self.mol_elements = elements
-        self.com_correction = com_adjust
-        self.shape = None
-        self.convexhull = None
-
-    def calculate_diameter(self, **kwargs):
-        diameter = calculate_window_diameter(
-            self.raw_data, self.mol_elements, self.mol_coordinates, **kwargs
-        )
-        return diameter
-
-    def calculate_centre_of_mass(self, **kwargs):
-        com = get_window_com(
-            self.raw_data,
-            self.mol_elements,
-            self.mol_coordinates,
-            self.com_correction,
-            **kwargs,
-        )
-        return com
-
-    def get_shape(self, **kwargs):
-        self.shape = window_shape(
-            self.raw_data, self.mol_elements, self.mol_coordinates
-        )
-        return self.shape
-
-    def get_convexhull(self):
-        hull = ConvexHull(self.shape)
-        verticesx = np.append(
-            self.shape[hull.vertices, 0], self.shape[hull.vertices, 0][0]
-        )
-        verticesy = np.append(
-            self.shape[hull.vertices, 1], self.shape[hull.vertices, 1][0]
-        )
-        self.convexhull = verticesx, verticesy
-        return self.convexhull
-
-
-class Molecule(_Shape):
+class Molecule:
     """Container for a single molecule.
 
     This class is meant for the analysis of single molecules, molecular pores
@@ -293,7 +118,7 @@ class Molecule(_Shape):
 
     """
 
-    def __init__(self, mol, system_name, mol_id):
+    def __init__(self, mol: dict, system_name: str, mol_id: int) -> None:
         self._Output = Output()
         self.mol = mol
         self.no_of_atoms = len(mol["elements"])
@@ -307,7 +132,12 @@ class Molecule(_Shape):
         self._windows = None
 
     @classmethod
-    def load_rdkit_mol(cls, mol, system_name="rdkit", mol_id=0):
+    def load_rdkit_mol(
+        cls,
+        mol: rdkit.Chem.rdchem.Mol,
+        system_name: str = "rdkit",
+        mol_id: int = 0,
+    ) -> Molecule:
         """Create a :class:`Molecule` from :class:`rdkit.Chem.rdchem.Mol`.
 
         To be used only by expert users.
@@ -323,7 +153,7 @@ class Molecule(_Shape):
         """
         return cls(Input().load_rdkit_mol(mol), system_name, mol_id)
 
-    def full_analysis(self, ncpus=1, **kwargs):
+    def full_analysis(self, ncpus: int = 1) -> dict:
         """Perform a full structural analysis of a molecule.
 
         This invokes other methods:
@@ -365,13 +195,13 @@ class Molecule(_Shape):
         self.calculate_average_diameter()
         self.calculate_pore_diameter()
         self.calculate_pore_volume()
-        self.calculate_pore_diameter_opt(**kwargs)
-        self.calculate_pore_volume_opt(**kwargs)
-        self.calculate_windows(ncpus=ncpus, **kwargs)
+        self.calculate_pore_diameter_opt()
+        self.calculate_pore_volume_opt()
+        self.calculate_windows(ncpus=ncpus)
 
         return self.properties
 
-    def _align_to_principal_axes(self, align_molsys=False):
+    def _align_to_principal_axes(self, align_molsys: bool = False) -> None:  # noqa: FBT001, FBT002
         if align_molsys:
             raise NotImplementedError
             # self.coordinates[0] = align_principal_ax_all(
@@ -382,10 +212,7 @@ class Molecule(_Shape):
         )
         self.aligned_to_principal_axes = True
 
-    def _get_shape(self, **kwargs):
-        super().__init__(self.coordinates, elements=self.elements)
-
-    def calculate_centre_of_mass(self):
+    def calculate_centre_of_mass(self) -> np.ndarray:
         """Return the xyz coordinates of the centre of mass of a molecule.
 
         Returns:
@@ -397,7 +224,7 @@ class Molecule(_Shape):
         self.properties["centre_of_mass"] = self.centre_of_mass
         return self.centre_of_mass
 
-    def calculate_maximum_diameter(self):
+    def calculate_maximum_diameter(self) -> float:
         """Return the maximum diamension of a molecule.
 
         Returns:
@@ -415,7 +242,7 @@ class Molecule(_Shape):
         }
         return self.maximum_diameter
 
-    def calculate_average_diameter(self, **kwargs):
+    def calculate_average_diameter(self) -> float:
         """Return the average diamension of a molecule.
 
         Returns:
@@ -424,12 +251,12 @@ class Molecule(_Shape):
 
         """
         self.average_diameter = find_average_diameter(
-            self.elements, self.coordinates, **kwargs
+            self.elements, self.coordinates
         )
         self.properties["average_diameter"] = self.average_diameter
         return self.average_diameter
 
-    def calculate_pore_diameter(self):
+    def calculate_pore_diameter(self) -> float:
         """Return the intrinsic pore diameter.
 
         Returns:
@@ -446,7 +273,7 @@ class Molecule(_Shape):
         }
         return self.pore_diameter
 
-    def calculate_pore_volume(self):
+    def calculate_pore_volume(self) -> float:
         """Return the intrinsic pore volume.
 
         Returns:
@@ -458,7 +285,7 @@ class Molecule(_Shape):
         self.properties["pore_volume"] = self.pore_volume
         return self.pore_volume
 
-    def calculate_pore_diameter_opt(self, **kwargs):
+    def calculate_pore_diameter_opt(self) -> float:
         """Return the intrinsic pore diameter (for the optimised pore centre).
 
         Similarly to :func:`calculate_pore_diameter` this method returns the
@@ -474,7 +301,7 @@ class Molecule(_Shape):
             self.pore_diameter_opt,
             self.pore_opt_closest_atom,
             self.pore_opt_COM,
-        ) = opt_pore_diameter(self.elements, self.coordinates, **kwargs)
+        ) = opt_pore_diameter(self.elements, self.coordinates)
         self.properties["pore_diameter_opt"] = {
             "diameter": self.pore_diameter_opt,
             "atom_1": int(self.pore_opt_closest_atom),
@@ -482,7 +309,7 @@ class Molecule(_Shape):
         }
         return self.pore_diameter_opt
 
-    def calculate_pore_volume_opt(self, **kwargs):
+    def calculate_pore_volume_opt(self) -> float:
         """Return the intrinsic pore volume (for the optimised pore centre).
 
         Similarly to :func:`calculate_pore_volume` this method returns the
@@ -495,18 +322,12 @@ class Molecule(_Shape):
 
         """
         self.pore_volume_opt = sphere_volume(
-            self.calculate_pore_diameter_opt(**kwargs) / 2
+            self.calculate_pore_diameter_opt() / 2
         )
         self.properties["pore_volume_opt"] = self.pore_volume_opt
         return self.pore_volume_opt
 
-    def _calculate_pore_shape(self, filepath="shape.xyz", **kwargs):
-        shape = calculate_pore_shape(self.elements, self.coordinates, **kwargs)
-        shape_obj = {"elements": shape[0], "coordinates": shape[1]}
-        Output()._save_xyz(shape_obj, filepath)
-        return 1
-
-    def calculate_windows(self, **kwargs):
+    def calculate_windows(self) -> np.ndarray | None:
         """Return the diameters of all windows in a molecule.
 
         This function first finds and then measures the diameters of all the
@@ -520,7 +341,7 @@ class Molecule(_Shape):
                 If no windows were found.
 
         """
-        windows = find_windows(self.elements, self.coordinates, **kwargs)
+        windows = find_windows(self.elements, self.coordinates)
         if windows:
             self.properties.update(
                 {
@@ -537,7 +358,7 @@ class Molecule(_Shape):
         )
         return None
 
-    def shift_to_origin(self, **kwargs):
+    def shift_to_origin(self) -> None:
         """Shift a molecule to Origin.
 
         This function takes the molecule's coordinates and adjust them so that
@@ -548,10 +369,10 @@ class Molecule(_Shape):
             None : :class:`NoneType`
 
         """
-        self.coordinates = shift_com(self.elements, self.coordinates, **kwargs)
+        self.coordinates = shift_com(self.elements, self.coordinates)
         self._update()
 
-    def molecular_weight(self):
+    def molecular_weight(self) -> float:
         """Return the molecular weight of a molecule.
 
         Returns:
@@ -562,16 +383,20 @@ class Molecule(_Shape):
         self.MW = molecular_weight(self.elements)
         return float(self.MW)
 
-    def dump_properties_json(self, filepath=None, molecular=False, **kwargs):
+    def dump_properties_json(
+        self,
+        filepath: pathlib.Path | str | None = None,
+        molecular: bool = False,  # noqa: FBT001, FBT002
+    ) -> None:
         """Dump content of :attr:`Molecule.properties` to a JSON dictionary.
 
         Parameters:
-            filepath : :class:`str`
+            filepath:
                 The filepath for the dumped file. If :class:`None`, the file is
                 dumped localy with :attr:`molecule_id` as filename.
                 (defualt=None)
 
-            molecular : :class:`bool`
+            molecular:
                 If False, dump only the content of :attr:`Molecule.properties`,
                 if True, dump all the information about :class:`Molecule`.
 
@@ -586,14 +411,17 @@ class Molecule(_Shape):
             dict_obj.update(self.mol)
         # If no filepath is provided we create one.
         if filepath is None:
-            filepath = "_".join(
-                (str(self.parent_system), str(self.molecule_id))
-            )
-            filepath = f"{os.getcwd()}/{filepath}"
+            filepath = pathlib.Path(f"{self.parent_system}_{self.molecule_id}")
+            filepath = pathlib.Path.cwd() / filepath
+        filepath = pathlib.Path(filepath)
         # Dump the dictionary to json file.
-        self._Output.dump2json(dict_obj, filepath, default=to_list, **kwargs)
+        self._Output.dump2json(dict_obj, filepath, default=to_list)
 
-    def dump_molecule(self, filepath=None, include_coms=False, **kwargs):
+    def dump_molecule(
+        self,
+        filepath: pathlib.Path | str | None = None,
+        include_coms: bool = False,  # noqa: FBT001, FBT002
+    ) -> None:
         """Dump a :class:`Molecule` to a file (PDB or XYZ).
 
         Kwargs are passed to :func:`pywindow.io_tools.Output.dump2file()`.
@@ -608,12 +436,12 @@ class Molecule(_Shape):
         Ar - for the centres of each found window
 
         Parameters:
-            filepath : :class:`str`
+            filepath:
                 The filepath for the dumped file. If :class:`None`, the file is
                 dumped locally with :attr:`molecule_id` as filename.
                 (default=None)
 
-            include_coms : :class:`bool`
+            include_coms:
                 If True, dump also with an overlay of window centres and COMs.
                 (default=False)
 
@@ -623,11 +451,13 @@ class Molecule(_Shape):
         """
         # If no filepath is provided we create one.
         if filepath is None:
-            filepath = "_".join(
-                (str(self.parent_system), str(self.molecule_id))
+            filepath = pathlib.Path(
+                f"{self.parent_system}_{self.molecule_id}.pdb"
             )
-            filepath = f"{os.getcwd()}/{filepath}"
+            filepath = pathlib.Path.cwd() / filepath
             filepath = f"{filepath}.pdb"
+
+        filepath = pathlib.Path(filepath)
         # Check if there is an 'atom_ids' keyword in the self.mol dict.
         # Otherwise pass to the dump2file atom_ids='elements'.
         atom_ids = "elements" if "atom_ids" not in self.mol else "atom_ids"
@@ -701,34 +531,15 @@ class Molecule(_Shape):
                             ),
                         )
                     )
-            self._Output.dump2file(mmol, filepath, atom_ids=atom_ids, **kwargs)
+            self._Output.dump2file(mmol, filepath, atom_ids=atom_ids)
 
         else:
-            self._Output.dump2file(
-                self.mol, filepath, atom_ids=atom_ids, **kwargs
-            )
+            self._Output.dump2file(self.mol, filepath, atom_ids=atom_ids)
 
-    def _update(self):
+    def _update(self) -> None:
         self.mol["coordinates"] = self.coordinates
         self.calculate_centre_of_mass()
         self.calculate_pore_diameter_opt()
-
-    def _circumcircle(self, **kwargs):
-        windows = circumcircle(self.coordinates, kwargs["atom_sets"])
-        if "output" in kwargs:
-            if kwargs["output"] == "windows":
-                self.properties["circumcircle"] = {"diameter": windows}
-        elif windows is not None:
-            self.properties["circumcircle"] = {
-                "diameter": windows[0],
-                "centre_of_mass": windows[1],
-            }
-        else:
-            self.properties["circumcircle"] = {
-                "diameter": None,
-                "centre_of_mass": None,
-            }
-        return windows
 
 
 class MolecularSystem:
@@ -772,39 +583,40 @@ class MolecularSystem:
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._Input = Input()
         self._Output = Output()
         self.system_id = 0
 
     @classmethod
-    def load_file(cls, filepath):
+    def load_file(cls, filepath: pathlib.Path | str) -> MolecularSystem:
         """Create a :class:`MolecularSystem` from an input file.
 
         Recognized input file formats: XYZ, PDB and MOL (V3000).
 
         Parameters:
-            filepath : :class:`str`
-            The input's filepath.
+            filepath:
+                The input's filepath.
 
         Returns:
             :class:`pywindow.MolecularSystem`
 
 
         """
+        filepath = pathlib.Path(filepath)
         obj = cls()
         obj.system = obj._Input.load_file(filepath)
-        obj.filename = os.path.basename(filepath)
+        obj.filename = filepath.name()
         obj.system_id = obj.filename.split(".")[0]
-        obj.name, ext = os.path.splitext(obj.filename)
+        obj.name, ext = obj.filename.split(".")
         return obj
 
     @classmethod
-    def load_rdkit_mol(cls, mol):
-        """Create a :class:`MolecularSystem` from :class:`rdkit.Chem.rdchem.Mol`.
+    def load_rdkit_mol(cls, mol: rdkit.Chem.Mol) -> MolecularSystem:
+        """Create a :class:`MolecularSystem` from :class:`rdkit.Chem.Mol`.
 
         Parameters:
-            mol : :class:`rdkit.Chem.rdchem.Mol`
+            mol:
                 An RDKit molecule object.
 
         Returns:
@@ -816,7 +628,11 @@ class MolecularSystem:
         return obj
 
     @classmethod
-    def load_system(cls, dict_, system_id="system"):
+    def load_system(
+        cls,
+        dict_: dict,
+        system_id: str | int = "system",
+    ) -> MolecularSystem:
         """Create a :class:`MolecularSystem` from a python :class:`dict`.
 
         As the loaded :class:`MolecularSystem` is storred as a :class:`dict` in
@@ -826,10 +642,10 @@ class MolecularSystem:
         as :class:`MolecularSystem` objects through this classmethod.
 
         Parameters:
-            dict_ : :class:`dict`
+            dict_:
                 A python dictionary.
 
-            system_id : :class:`str` or :class:'int', optional
+            system_id:
                 Inherited or user defined system id. (default='system')
 
         Returns:
@@ -842,7 +658,7 @@ class MolecularSystem:
         obj.system_id = system_id
         return obj
 
-    def rebuild_system(self, override=False, **kwargs):
+    def rebuild_system(self, override: bool = False) -> MolecularSystem:  # noqa: FBT001, FBT002
         """Rebuild molecules in molecular system.
 
         Parameters:
@@ -856,7 +672,7 @@ class MolecularSystem:
         # centre and the 26 unit cell translations around to provide all the
         # atom positions necessary for the molecules passing through periodic
         # boundary reconstruction step.
-        supercell_333 = create_supercell(self.system, **kwargs)
+        supercell_333 = create_supercell(self.system)
 
         discrete = discrete_molecules(self.system, rebuild=supercell_333)
         # This function overrides the initial data for 'coordinates',
@@ -880,7 +696,11 @@ class MolecularSystem:
             return None
         return self.load_system(rebuild_system)
 
-    def swap_atom_keys(self, swap_dict, dict_key="atom_ids"):
+    def swap_atom_keys(
+        self,
+        swap_dict: dict,
+        dict_key: str = "atom_ids",
+    ) -> None:
         """Swap a force field atom id for another user-defined value.
 
         This modified all values in :attr:`MolecularSystem.system['atom_ids']`
@@ -897,13 +717,13 @@ class MolecularSystem:
                 pywindow.MolecularSystem.swap_atom_keys({'he': 'H'})
 
         Parameters:
-            swap_dict: :class:`dict`
+            swap_dict:
                 A dictionary containg force field atom ids (keys) to be swapped
                 with corresponding values (keys' arguments).
 
-            dict_key: :class:`str`
-                A key in :attr:`MolecularSystem.system` dictionary to perform the
-                atom keys swapping operation on. (default='atom_ids')
+            dict_key:
+                A key in :attr:`MolecularSystem.system` dictionary to perform
+                the atom keys swapping operation on. (default='atom_ids')
 
         Returns:
             None : :class:`NoneType`
@@ -913,11 +733,13 @@ class MolecularSystem:
         if "atom_ids" not in self.system:
             dict_key = "elements"
         for atom_key in range(len(self.system[dict_key])):
-            for key in swap_dict:
+            for key, value in swap_dict.items():
                 if self.system[dict_key][atom_key] == key:
-                    self.system[dict_key][atom_key] = swap_dict[key]
+                    self.system[dict_key][atom_key] = value
 
-    def decipher_atom_keys(self, forcefield="DLF", dict_key="atom_ids"):
+    def decipher_atom_keys(
+        self, forcefield: str = "DLF", dict_key: str = "atom_ids"
+    ) -> None:
         """Decipher force field atom ids.
 
         This takes all values in :attr:`MolecularSystem.system['atom_ids']`
@@ -932,15 +754,15 @@ class MolecularSystem:
 
         See: C. W. Yong, Descriptions and Implementations of DL_F Notation: A
         Natural Chemical Expression System of Atom Types for Molecular
-        Simulations, J. Chem. Inf. Model., 2016, 56, 1405–1409.
+        Simulations, J. Chem. Inf. Model., 2016, 56, 1405-1409.
 
         Parameters:
-            forcefield : :class:`str`
+            forcefield:
                 The forcefield used to decipher atom ids. Allowed (not case
-                sensitive): 'OPLS', 'OPLS2005', 'OPLSAA', 'OPLS3', 'DLF', 'DL_F'.
-                (default='DLF')
+                sensitive): 'OPLS', 'OPLS2005', 'OPLSAA', 'OPLS3', 'DLF',
+                'DL_F'. (default='DLF')
 
-            dict_key : :class:`str`
+            dict_key:
                 The :attr:`MolecularSystem.system` dictionary key to the array
                 containing the force field atom ids. (default='atom_ids')
 
@@ -962,15 +784,15 @@ class MolecularSystem:
             )
         self.system["elements"] = temp
 
-    def make_modular(self, rebuild=False):
+    def make_modular(self, rebuild: bool = False) -> None:  # noqa: FBT001, FBT002
         """Find and return all :class:`Molecule` s in :class:`MolecularSystem`.
 
         This function populates :attr:`MolecularSystem.molecules` with
         :class:`Molecule` s.
 
         Parameters:
-            rebuild : :class:`bool`
-                If True, run first the :func:`rebuild_system()`. (default=False)
+            rebuild:
+                If True, run first the :func:`rebuild_system()`.
 
         Returns:
             None : :class:`NoneType`
@@ -986,7 +808,7 @@ class MolecularSystem:
         for i in range(len(dis)):
             self.molecules[i] = Molecule(dis[i], self.system_id, i)
 
-    def system_to_molecule(self):
+    def system_to_molecule(self) -> Molecule:
         """Return :class:`MolecularSystem` as a :class:`Molecule` directly.
 
         Only to be used conditionally, when the :class:`MolecularSystem` is a
@@ -998,18 +820,22 @@ class MolecularSystem:
         """
         return Molecule(self.system, self.system_id, 0)
 
-    def dump_system(self, filepath=None, modular=False, **kwargs):
+    def dump_system(
+        self,
+        filepath: pathlib.Path | str | None = None,
+        modular: bool = False,  # noqa: FBT001, FBT002
+    ) -> None:
         """Dump a :class:`MolecularSystem` to a file (PDB or XYZ).
 
         Kwargs are passed to :func:`pywindow.io_tools.Output.dump2file()`.
 
         Parameters:
-            filepath : :class:`str`
+            filepath:
                 The filepath for the dumped file. If :class:`None`, the file is
                 dumped localy with :attr:`system_id` as filename.
                 (defualt=None)
 
-            modular : :class:`bool`
+            modular:
                 If False, dump the :class:`MolecularSystem` as in
                 :attr:`MolecularSystem.system`, if True, dump the
                 :class:`MolecularSystem` as catenated :class:Molecule objects
@@ -1021,8 +847,9 @@ class MolecularSystem:
         """
         # If no filepath is provided we create one.
         if filepath is None:
-            filepath = "/".join((os.getcwd(), str(self.system_id)))
-            filepath = f"{filepath}.pdb"
+            filepath = pathlib.Path.cwd() / f"{self.system_id}.pdb"
+
+        filepath = pathlib.Path(filepath)
         # If modular is True substitute the molecular data for modular one.
         system_dict = deepcopy(self.system)
         if modular is True:
@@ -1043,10 +870,16 @@ class MolecularSystem:
         atom_ids = "elements" if "atom_ids" not in system_dict else "atom_ids"
         # Dump system into a file.
         self._Output.dump2file(
-            system_dict, filepath, atom_ids=atom_ids, **kwargs
+            system_dict,
+            filepath,
+            atom_ids=atom_ids,
         )
 
-    def dump_system_json(self, filepath=None, modular=False, **kwargs):
+    def dump_system_json(
+        self,
+        filepath: pathlib.Path | str | None = None,
+        modular: bool = False,  # noqa: FBT001, FBT002
+    ) -> None:
         """Dump a :class:`MolecularSystem` to a JSON dictionary.
 
         The dumped JSON dictionary, with :class:`MolecularSystem`, can then be
@@ -1056,12 +889,12 @@ class MolecularSystem:
         Kwargs are passed to :func:`pywindow.io_tools.Output.dump2json()`.
 
         Parameters:
-            filepath : :class:`str`
+            filepath:
                 The filepath for the dumped file. If :class:`None`, the file is
                 dumped localy with :attr:`system_id` as filename.
                 (defualt=None)
 
-            modular : :class:`bool`
+            modular:
                 If False, dump the :class:`MolecularSystem` as in
                 :attr:`MolecularSystem.system`, if True, dump the
                 :class:`MolecularSystem` as catenated :class:Molecule objects
@@ -1083,13 +916,15 @@ class MolecularSystem:
                     "This system is not modular. Please, run first the "
                     "make_modular() function of this class."
                 )
-                raise _NotAModularSystem(msg) from None
+                raise _NotAModularSystemError(msg) from None
             dict_obj = {}
             for molecule in self.molecules:
                 mol_ = self.molecules[molecule]
                 dict_obj[molecule] = mol_.mol
         # If no filepath is provided we create one.
         if filepath is None:
-            filepath = "/".join((os.getcwd(), str(self.system_id)))
+            filepath = pathlib.Path.cwd() / f"{self.system_id}"
+        filepath = pathlib.Path(filepath)
+
         # Dump the dictionary to json file.
-        self._Output.dump2json(dict_obj, filepath, default=to_list, **kwargs)
+        self._Output.dump2json(dict_obj, filepath, default=to_list)

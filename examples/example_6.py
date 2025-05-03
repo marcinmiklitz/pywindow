@@ -11,6 +11,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
 )
+logger = logging.getLogger(__name__)
 
 known_properties = {
     "PUDXES_no_solvent_rebuild_mol_1": {
@@ -478,7 +479,7 @@ def main() -> None:
         rebuild_molsys.make_modular()
 
         for molecule in rebuild_molsys.molecules:
-            logging.info(
+            logger.info(
                 "Analysing molecule %s out of %s of %s",
                 molecule + 1,
                 len(rebuild_molsys.molecules),
@@ -486,7 +487,7 @@ def main() -> None:
             )
             mol = rebuild_molsys.molecules[molecule]
             mol.full_analysis()
-            logging.info(
+            logger.info(
                 "pore size: %s", mol.properties["pore_diameter"]["diameter"]
             )
 

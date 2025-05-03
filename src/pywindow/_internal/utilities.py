@@ -22,22 +22,22 @@ from .tables import (
 
 
 class _AtomKeyError(Exception):
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
-class _AtomKeyConflict(Exception):
-    def __init__(self, message):
+class _AtomKeyConflictError(Exception):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
 class _ForceFieldError(Exception):
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
 class _FunctionError(Exception):
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
@@ -50,17 +50,14 @@ def is_number(number: float) -> bool:
     return True
 
 
-def unique(input_list):
+def unique(input_list: list) -> list:
     """Return a list of unique items (similar to set functionality).
 
-    Parameters
-    ----------
-    input_list : list
-        A list containg some items that can occur more than once.
+    Parameters:
+        input_list : list
+            A list containg some items that can occur more than once.
 
     Returns:
-    -------
-    list
         A list with only unique occurances of an item.
 
     """
@@ -79,53 +76,44 @@ def to_list(obj: np.ndarray) -> list[float]:
     raise TypeError(msg)
 
 
-def distance(a, b):
+def distance(a: np.ndarray, b: np.ndarray) -> float:
     """Return the distance between two vectors (points) a and b.
 
-    Parameters
-    ----------
-    a : numpy.ndarray
-        First vector.
-    b : numpy.ndarray
-        Second vector.
+    Parameters:
+        a:
+            First vector.
+        b:
+            Second vector.
 
     Returns:
-    -------
-    numpy.float64
         A distance between two vectors (points).
 
     """
-    return (np.sum((a - b) ** 2)) ** 0.5
+    return float((np.sum((a - b) ** 2)) ** 0.5)
 
 
-def molecular_weight(elements):
+def molecular_weight(elements: list[str]) -> float:
     """Return molecular weight of a molecule.
 
-    Parameters
-    ----------
-    elements : numpy.ndarray
-        An array of all elements (type: str) in a molecule.
+    Parameters:
+        elements:
+            An array of all elements (type: str) in a molecule.
 
     Returns:
-    -------
-    numpy.float64
         A molecular weight of a molecule.
 
     """
-    return np.array([atomic_mass[i.upper()] for i in elements]).sum()
+    return float(np.array([atomic_mass[i.upper()] for i in elements]).sum())
 
 
-def center_of_coor(coordinates):
+def center_of_coor(coordinates: list[np.ndarray]) -> np.ndarray:
     """Return the centre of coordinates.
 
-    Parameters
-    ----------
-    coordinates : numpy.ndarray
-        An array containing molecule's coordinates.
+    Parameters:
+        coordinates:
+            An array containing molecule's coordinates.
 
     Returns:
-    -------
-    numpy.ndarray
         An 1d array with coordinates of the centre of coordinates excluding
         elements' masses.
 
@@ -133,20 +121,20 @@ def center_of_coor(coordinates):
     return np.sum(coordinates, axis=0) / coordinates.shape[0]
 
 
-def center_of_mass(elements, coordinates):
+def center_of_mass(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> np.ndarray:
     """Return the centre of mass (COM).
 
-    Parameters
-    ----------
-    elements : numpy.ndarray
-        An array of all elements (type: str) in a molecule.
+    Parameters:
+        elements:
+            An array of all elements (type: str) in a molecule.
 
-    coordinates : numpy.ndarray
-        An array containing molecule's coordinates.
+        coordinates:
+            An array containing molecule's coordinates.
 
     Returns:
-    -------
-    numpy.ndarray
         An 1d array with coordinates of the centre of mass including elements'
         masses.
 
@@ -157,7 +145,10 @@ def center_of_mass(elements, coordinates):
     return np.sum(mass_coordinates, axis=0) / np.array([mass, mass, mass])
 
 
-def compose_atom_list(*args):
+def compose_atom_list(
+    *args: tuple[list[str], list[np.ndarray]]
+    | tuple[list[str], list[np.ndarray], list[int]],
+) -> list:
     """Return an `atom list` from elements and/or atom ids and coordinates.
 
     An `atom list` is a special object that some pywindowfunctions uses.
@@ -170,30 +161,27 @@ def compose_atom_list(*args):
     They work better for molecular re-building than two separate arrays for
     elements and coordinates do.
 
-    Parameters
-    ----------
-    elements : :class:`numpy.ndarray`
-        An array of all elements (type: str) in a molecule.
+    Parameters:
+        elements : :class:`numpy.ndarray`
+            An array of all elements (type: str) in a molecule.
 
-    coordinates : :class:`numpy.ndarray`
-        An array containing molecule's coordinates.
+        coordinates : :class:`numpy.ndarray`
+            An array containing molecule's coordinates.
 
-    atom_ids : :class:`numpy.ndarray`, optional
-        An array of all forcfield dependent atom keys (type:str) in a molecule.
+        atom_ids : :class:`numpy.ndarray`, optional
+            An array of all forcfield dependent atom keys (type:str) in a
+            molecule.
 
 
     Returns:
-    -------
-    list
         Version 1 or version 2 atom list depending on input parameters.
 
     Raises:
-    ------
-    _FunctionError : :class:`Exception`
-        Raised when wrong number of parameters is passed to the function.
+        _FunctionError : :class:`Exception`
+            Raised when wrong number of parameters is passed to the function.
 
     """
-    if len(args) == 2:
+    if len(args) == 2:  # noqa: PLR2004
         atom_list = [
             [
                 i[0],
@@ -203,7 +191,7 @@ def compose_atom_list(*args):
             ]
             for i in np.concatenate((args[0].reshape(-1, 1), args[1]), axis=1)
         ]
-    elif len(args) == 3:
+    elif len(args) == 3:  # noqa: PLR2004
         atom_list = [
             [
                 i[0],
@@ -229,7 +217,7 @@ def compose_atom_list(*args):
     return atom_list
 
 
-def decompose_atom_list(atom_list):
+def decompose_atom_list(atom_list: list) -> tuple:
     """Return elements and/or atom ids and coordinates from an `atom list`.
 
     Depending on input type of an atom list (version 1 or 2)
@@ -239,20 +227,17 @@ def decompose_atom_list(atom_list):
 
     the function reverses what pywindow.utilities.compose_atom_list() do.
 
-    Parameters
-    ----------
-    atom_list : list
-        A nested list of lists (version 1 or 2)
+    Parameters:
+        atom_list:
+            A nested list of lists (version 1 or 2)
 
     Returns:
-    -------
-    touple
-        A touple of elements and coordinates arrays, or if input contained
+        A tuple of elements and coordinates arrays, or if input contained
         atom ideas, also atom ids array.
 
     """
     transpose = list(zip(*atom_list, strict=False))
-    if len(transpose) == 4:
+    if len(transpose) == 4:  # noqa: PLR2004
         elements = np.array(transpose[0])
         array_a = np.array(transpose[1]).reshape(-1, 1)
         array_b = np.array(transpose[2]).reshape(-1, 1)
@@ -260,7 +245,7 @@ def decompose_atom_list(atom_list):
         array_ab = np.concatenate((array_a, array_b), axis=1)
         coordinates = np.concatenate((array_ab, array_c), axis=1)
         return elements, coordinates
-    if len(transpose) == 5:
+    if len(transpose) == 5:  # noqa: PLR2004
         elements = np.array(transpose[0])
         atom_ids = np.array(transpose[1])
         array_a = np.array(transpose[2]).reshape(-1, 1)
@@ -276,7 +261,7 @@ def decompose_atom_list(atom_list):
     raise _FunctionError(msg)
 
 
-def dlf_notation(atom_key):
+def dlf_notation(atom_key: str) -> str:
     """Return element for atom key using DL_F notation."""
     split = list(atom_key)
     element = ""
@@ -297,17 +282,18 @@ def dlf_notation(atom_key):
     return "".join(i for i in element if i != "?")
 
 
-def opls_notation(atom_key):
+def opls_notation(atom_key: str) -> str:
     """Return element for OPLS forcefield atom key."""
     # warning for Ne, He, Na types overlap
-    conflicts = ["ne", "he", "na"]
+    conflicts = ("ne", "he", "na")
     if atom_key in conflicts:
-        raise _AtomKeyConflict(
+        msg = (
             "One of the OPLS conflicting "
             f"atom_keys has occured '{atom_key}'. "
             "For how to solve this issue see the manual or "
             "MolecularSystem._atom_key_swap() doc string."
         )
+        raise _AtomKeyConflictError(msg)
     for element in opls_atom_keys:
         if atom_key in opls_atom_keys[element]:
             return element
@@ -316,23 +302,20 @@ def opls_notation(atom_key):
     raise _AtomKeyError(msg)
 
 
-def decipher_atom_key(atom_key, forcefield):
+def decipher_atom_key(atom_key: str, forcefield: str) -> str:
     """Return element for deciphered atom key.
 
     This functions checks if the forcfield specified by user is supported
     and passes the atom key to the appropriate function for deciphering.
 
-    Parameters
-    ----------
-    atom_key : str
-        The atom key which is to be deciphered.
+    Parameters:
+        atom_key:
+            The atom key which is to be deciphered.
 
-    forcefield : str
-        The forcefield to which the atom key belongs to.
+        forcefield:
+            The forcefield to which the atom key belongs to.
 
     Returns:
-    -------
-    str
         A string that is the periodic table element equvalent of forcefield
         atom key.
 
@@ -348,52 +331,29 @@ def decipher_atom_key(atom_key, forcefield):
     if forcefield.upper() in load_funcs:
         return load_funcs[forcefield.upper()](atom_key)
     msg = (
-        f"Unfortunetely, '{forcefield}' forcefield is not supported by pyWINDOW."
-        " For list of supported forcefields see User's Manual or "
+        f"Unfortunetely, '{forcefield}' forcefield is not supported by"
+        " pyWINDOW. For list of supported forcefields see User's Manual or "
         "MolecularSystem._decipher_atom_keys() function doc string."
     )
     raise _ForceFieldError(msg)
 
 
-def shift_com(elements, coordinates, com_adjust=np.zeros(3)):
-    """Return coordinates translated by some vector.
-
-    Parameters
-    ----------
-    elements : numpy.ndarray
-        An array of all elements (type: str) in a molecule.
-
-    coordinates : numpy.ndarray
-        An array containing molecule's coordinates.
-
-    com_adjust : numpy.ndarray (default = [0, 0, 0])
-
-    Returns:
-    -------
-    numpy.ndarray
-        Translated array of molecule's coordinates.
-
-    """
+def shift_com(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+    com_adjust: np.ndarray = np.zeros(3),  # noqa: B008
+) -> np.ndarray:
+    """Return coordinates translated by some vector."""
     com = center_of_mass(elements, coordinates)
     com = np.array([com - com_adjust] * coordinates.shape[0])
     return coordinates - com
 
 
-def max_dim(elements, coordinates):
-    """Return the maximum diameter of a molecule.
-
-    Parameters
-    ----------
-    elements : numpy.ndarray
-        An array of all elements (type: str) in a molecule.
-
-    coordinates : numpy.ndarray
-        An array containing molecule's coordinates.
-
-    Returns:
-    -------
-
-    """
+def max_dim(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> tuple[int, int, float]:
+    """Return the maximum diameter of a molecule."""
     atom_vdw_vertical = np.matrix(
         [[atomic_vdw_radius[i.upper()]] for i in elements]
     )
@@ -409,7 +369,11 @@ def max_dim(elements, coordinates):
     return i1, i2, maxdim
 
 
-def pore_diameter(elements, coordinates, com=None):
+def pore_diameter(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+    com: np.ndarray | None = None,
+) -> tuple[float, int]:
     """Return pore diameter of a molecule."""
     if com is None:
         com = center_of_mass(elements, coordinates)
@@ -421,13 +385,24 @@ def pore_diameter(elements, coordinates, com=None):
     return (pored, index)
 
 
-def correct_pore_diameter(com, *params):
+def correct_pore_diameter(
+    com: np.ndarray,
+    *params: tuple[list[str], list[np.ndarray]],
+) -> tuple[float, int]:
     """Return negative of a pore diameter. (optimisation function)."""
     elements, coordinates = params
     return -pore_diameter(elements, coordinates, com)[0]
 
 
-def opt_pore_diameter(elements, coordinates, bounds=None, com=None, **kwargs):
+def opt_pore_diameter(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+    bounds: None
+    | tuple[
+        tuple[float, float], tuple[float, float], tuple[float, float]
+    ] = None,
+    com: np.ndarray | None = None,
+) -> tuple[float, int, np.ndarray]:
     """Return optimised pore diameter and it's COM."""
     args = elements, coordinates
     if com is not None:
@@ -453,27 +428,31 @@ def sphere_volume(sphere_radius: float) -> float:
     return float(4 / 3 * np.pi * sphere_radius**3)
 
 
-def asphericity(S):
-    return S[0] - (S[1] + S[2]) / 2
+def asphericity(shap: np.ndarray) -> float:
+    return shap[0] - (shap[1] + shap[2]) / 2
 
 
-def acylidricity(S):
-    return S[1] - S[2]
+def acylidricity(shap: np.ndarray) -> float:
+    return shap[1] - shap[2]
 
 
-def relative_shape_anisotropy(S):
+def relative_shape_anisotropy(shap: np.ndarray) -> float:
     return 1 - 3 * (
-        (S[0] * S[1] + S[0] * S[2] + S[1] * S[2]) / (np.sum(S)) ** 2
+        (shap[0] * shap[1] + shap[0] * shap[2] + shap[1] * shap[2])
+        / (np.sum(shap)) ** 2
     )
 
 
-def get_tensor_eigenvalues(T, sort=False):
+def get_tensor_eigenvalues(arr: np.ndarray, sort: bool = False) -> np.ndarray:  # noqa: FBT001, FBT002
     if sort:
-        return sorted(np.linalg.eigvals(T), reverse=True)
-    return np.linalg.eigvals(T)
+        return sorted(np.linalg.eigvals(arr), reverse=True)
+    return np.linalg.eigvals(arr)
 
 
-def get_gyration_tensor(elements, coordinates):
+def get_gyration_tensor(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> np.ndarray:
     """Return the gyration tensor of a molecule.
 
     The gyration tensor should be invariant to the molecule's position.
@@ -481,17 +460,14 @@ def get_gyration_tensor(elements, coordinates):
     centre of mass of the molecule, therefore, the coordinates are first
     corrected for the centre of mass and essentially shifted to the origin.
 
-    Parameters
-    ----------
-    elements : numpy.ndarray
-        The array containing the molecule's elemental data.
+    Parameters:
+        elements:
+            The array containing the molecule's elemental data.
 
-    coordinates :  numpy.ndarray
-        The array containing the Cartesian coordinates of the molecule.
+        coordinates:
+            The array containing the Cartesian coordinates of the molecule.
 
     Returns:
-    -------
-    numpy.ndarray
         The gyration tensor of a molecule invariant to the molecule's position.
 
     """
@@ -504,27 +480,26 @@ def get_gyration_tensor(elements, coordinates):
     xy = np.sum(coordinates[:, 0] * coordinates[:, 1])
     xz = np.sum(coordinates[:, 0] * coordinates[:, 2])
     yz = np.sum(coordinates[:, 1] * coordinates[:, 2])
-    S = (
+    return (
         np.array([[diag[0], xy, xz], [xy, diag[1], yz], [xz, yz, diag[2]]])
         / coordinates.shape[0]
     )
-    return S
 
 
-def get_inertia_tensor(elements, coordinates):
+def get_inertia_tensor(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> np.ndarray:
     """Return the tensor of inertia a molecule.
 
-    Parameters
-    ----------
-    elements : numpy.ndarray
-        The array containing the molecule's elemental data.
+    Parameters:
+        elements:
+            The array containing the molecule's elemental data.
 
-    coordinates :  numpy.ndarray
-        The array containing the Cartesian coordinates of the molecule.
+        coordinates:
+            The array containing the Cartesian coordinates of the molecule.
 
     Returns:
-    -------
-    numpy.ndarray
         The tensor of inertia of a molecule.
 
     """
@@ -539,30 +514,29 @@ def get_inertia_tensor(elements, coordinates):
     mxz = np.sum(-molecular_weight * coordinates[:, 0] * coordinates[:, 2])
     myz = np.sum(-molecular_weight * coordinates[:, 1] * coordinates[:, 2])
 
-    inertia_tensor = (
+    return (
         np.array([[diag_1, mxy, mxz], [mxy, diag_2, myz], [mxz, myz, diag_3]])
         / coordinates.shape[0]
     )
-    return inertia_tensor
 
 
-def principal_axes(elements, coordinates):
+def principal_axes(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> np.ndarray:
     return np.linalg.eig(get_inertia_tensor(elements, coordinates))[1].T
 
 
-def normalize_vector(vector):
+def normalize_vector(vector: np.ndarray) -> np.ndarray:
     """Normalize a vector.
 
     A new vector is returned, the original vector is not modified.
 
-    Parameters
-    ----------
-    vector : np.array
-        The vector to be normalized.
+    Parameters:
+        vector:
+            The vector to be normalized.
 
     Returns:
-    -------
-    np.array
         The normalized vector.
 
     """
@@ -570,21 +544,21 @@ def normalize_vector(vector):
     return np.round(v, decimals=4)
 
 
-def rotation_matrix_arbitrary_axis(angle, axis):
+def rotation_matrix_arbitrary_axis(
+    angle: float,
+    axis: np.ndarray,
+) -> np.ndarray:
     """Return a rotation matrix of `angle` radians about `axis`.
 
-    Parameters
-    ----------
-    angle : int or float
-        The size of the rotation in radians.
+    Parameters:
+        angle:
+            The size of the rotation in radians.
 
-    axis : numpy.array
-        A 3 element aray which represents a vector. The vector is the
-        axis about which the rotation is carried out.
+        axis:
+            A 3 element aray which represents a vector. The vector is the
+            axis about which the rotation is carried out.
 
     Returns:
-    -------
-    numpy.array
         A 3x3 array representing a rotation matrix.
 
     """
@@ -608,8 +582,10 @@ def rotation_matrix_arbitrary_axis(angle, axis):
     return np.array([[e11, e12, e13], [e21, e22, e23], [e31, e32, e33]])
 
 
-def align_principal_ax(elements, coordinates):
-    """ """
+def align_principal_ax(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> tuple[np.ndarray, list[np.ndarray]]:
     coor = deepcopy(coordinates)
     new_coor = []
     rot = []
@@ -623,11 +599,11 @@ def align_principal_ax(elements, coordinates):
         cos = np.dot(p_axes[i], np.array(j))
         ang = np.arctan2(sin, cos)
 
-        R_mat = np.matrix(rotation_matrix_arbitrary_axis(ang, r_vec))
-        rot.append(R_mat)
+        r_mat = np.matrix(rotation_matrix_arbitrary_axis(ang, r_vec))
+        rot.append(r_mat)
 
-        for i in coor:
-            new_coord = R_mat * i.reshape(-1, 1)
+        for i in coor:  # noqa: PLW2901
+            new_coord = r_mat * i.reshape(-1, 1)
             new_coor.append(np.array(new_coord.reshape(1, -1))[0])
         new_coor = np.array(new_coor)
         coor = new_coor
@@ -635,25 +611,34 @@ def align_principal_ax(elements, coordinates):
     return (coor, rot)
 
 
-def calc_asphericity(elements, coordinates):
+def calc_asphericity(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> float:
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
     return asphericity(tensor_eigenvalues)
 
 
-def calc_acylidricity(elements, coordinates):
+def calc_acylidricity(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> float:
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
     return acylidricity(tensor_eigenvalues)
 
 
-def calc_relative_shape_anisotropy(elements, coordinates):
+def calc_relative_shape_anisotropy(
+    elements: list[str],
+    coordinates: list[np.ndarray],
+) -> float:
     inertia_tensor = get_inertia_tensor(elements, coordinates)
     tensor_eigenvalues = get_tensor_eigenvalues(inertia_tensor, sort=True)
     return relative_shape_anisotropy(tensor_eigenvalues)
 
 
-def unit_cell_to_lattice_array(cryst):
+def unit_cell_to_lattice_array(cryst: list[float]) -> np.ndarray:
     """Return parallelpiped unit cell lattice matrix."""
     a_, b_, c_, alpha, beta, gamma = cryst
     # Convert angles from degrees to radians.
@@ -688,13 +673,10 @@ def unit_cell_to_lattice_array(cryst):
     c_x = 0
     c_y = 0
     c_z = volume / (a_ * b_ * np.sin(r_gamma))
-    lattice_array = np.array(
-        [[a_x, a_y, a_z], [b_x, b_y, b_z], [c_x, c_y, c_z]]
-    )
-    return lattice_array
+    return np.array([[a_x, a_y, a_z], [b_x, b_y, b_z], [c_x, c_y, c_z]])
 
 
-def lattice_array_to_unit_cell(lattice_array):
+def lattice_array_to_unit_cell(lattice_array: np.ndarray) -> np.ndarray:
     """Return crystallographic param. from unit cell lattice matrix."""
     cell_lengths = np.sqrt(np.sum(lattice_array**2, axis=0))
     gamma_r = np.arccos(lattice_array[0][1] / cell_lengths[1])
@@ -711,31 +693,40 @@ def lattice_array_to_unit_cell(lattice_array):
     return np.append(cell_lengths, cell_angles)
 
 
-def volume_from_lattice_array(lattice_array):
+def volume_from_lattice_array(lattice_array: np.ndarray) -> float:
     """Return unit cell's volume from lattice matrix."""
     return np.linalg.det(lattice_array)
 
 
-def volume_from_cell_parameters(cryst):
+def volume_from_cell_parameters(cryst: list[list[float]]) -> float:
     """Return unit cell's volume from crystallographic parameters."""
     return volume_from_lattice_array(unit_cell_to_lattice_array(cryst))
 
 
-def fractional_from_cartesian(coordinate, lattice_array):
+def fractional_from_cartesian(
+    coordinate: np.ndarray,
+    lattice_array: np.ndarray,
+) -> np.ndarray:
     """Return a fractional coordinate from a cartesian one."""
-    deorthogonalisation_M = np.matrix(np.linalg.inv(lattice_array))
-    fractional = deorthogonalisation_M * coordinate.reshape(-1, 1)
+    deorthogonalisation_m = np.matrix(np.linalg.inv(lattice_array))
+    fractional = deorthogonalisation_m * coordinate.reshape(-1, 1)
     return np.array(fractional.reshape(1, -1))
 
 
-def cartisian_from_fractional(coordinate, lattice_array):
+def cartisian_from_fractional(
+    coordinate: np.ndarray,
+    lattice_array: np.ndarray,
+) -> np.ndarray:
     """Return cartesian coordinate from a fractional one."""
-    orthogonalisation_M = np.matrix(lattice_array)
-    orthogonal = orthogonalisation_M * coordinate.reshape(-1, 1)
+    orthogonalisation_m = np.matrix(lattice_array)
+    orthogonal = orthogonalisation_m * coordinate.reshape(-1, 1)
     return np.array(orthogonal.reshape(1, -1))
 
 
-def cart2frac_all(coordinates, lattice_array):
+def cart2frac_all(
+    coordinates: np.ndarray,
+    lattice_array: np.ndarray,
+) -> np.ndarray:
     """Convert all cartesian coordinates to fractional."""
     frac_coordinates = deepcopy(coordinates)
     for coord in range(frac_coordinates.shape[0]):
@@ -745,7 +736,10 @@ def cart2frac_all(coordinates, lattice_array):
     return frac_coordinates
 
 
-def frac2cart_all(frac_coordinates, lattice_array):
+def frac2cart_all(
+    frac_coordinates: np.ndarray,
+    lattice_array: np.ndarray,
+) -> np.ndarray:
     """Convert all fractional coordinates to cartesian."""
     coordinates = deepcopy(frac_coordinates)
     for coord in range(coordinates.shape[0]):
@@ -755,8 +749,13 @@ def frac2cart_all(frac_coordinates, lattice_array):
     return coordinates
 
 
-def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
+def create_supercell(
+    system: dict,
+    supercell: list[list[float]] | None = None,
+) -> dict:
     """Create a supercell."""
+    if supercell is None:
+        supercell = [[-1, 1], [-1, 1], [-1, 1]]
     if "lattice" not in system:
         matrix = unit_cell_to_lattice_array(system["unit_cell"])
     else:
@@ -795,27 +794,16 @@ def create_supercell(system, supercell=[[-1, 1], [-1, 1], [-1, 1]]):
     }
 
 
-def is_inside_polyhedron(point, polyhedron):
-    if polyhedron.shape == (1, 6):
-        matrix = unit_cell_to_lattice_array(polyhedron)
-    if polyhedron.shape == (3, 3):
-        matrix = polyhedron
-
-    frac_coord = fractional_from_cartesian(point, matrix)[0]
-
-    return bool(
-        0 <= frac_coord[0] <= 1.0
-        and 0 <= frac_coord[1] <= 1.0
-        and 0 <= frac_coord[2] <= 1.0
-    )
-
-
-def normal_vector(origin, vectors):
+def normal_vector(origin: np.ndarray, vectors: np.ndarray) -> np.ndarray:
     """Return normal vector for two vectors with same origin."""
     return np.cross(vectors[0] - origin, vectors[1] - origin)
 
 
-def discrete_molecules(system, rebuild=None, tol=0.4):
+def discrete_molecules(  # noqa: C901, PLR0912, PLR0915
+    system: dict,
+    rebuild: None | bool = None,
+    tol: float = 0.4,
+) -> list[dict]:
     """Decompose molecular system into individual discreet molecules.
 
     Note:
@@ -1079,7 +1067,7 @@ def discrete_molecules(system, rebuild=None, tol=0.4):
     return molecules
 
 
-def angle_between_vectors(x, y):
+def angle_between_vectors(x: list[float], y: list[float]) -> float:
     """Calculate the angle between two vectors x and y."""
     first_step = abs(x[0] * y[0] + x[1] * y[1] + x[2] * y[2]) / (
         np.sqrt(x[0] ** 2 + x[1] ** 2 + x[2] ** 2)
@@ -1088,7 +1076,12 @@ def angle_between_vectors(x, y):
     return np.arccos(first_step)
 
 
-def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
+def vector_analysis(
+    vector: np.ndarray,
+    coordinates: list[np.ndarray],
+    elements_vdw: list[float],
+    increment: float = 1.0,
+) -> np.ndarray | None:
     """Analyse a sampling vector's path for window analysis purpose."""
     # Calculate number of chunks if vector length is divided by increment.
     chunks = int(np.linalg.norm(vector) // increment)
@@ -1115,13 +1108,18 @@ def vector_analysis(vector, coordinates, elements_vdw, increment=1.0):
     return None
 
 
-def vector_preanalysis(vector, coordinates, elements_vdw, increment=1.0):
+def vector_preanalysis(
+    vector: np.ndarray,
+    coordinates: list[np.ndarray],
+    elements_vdw: list[float],
+    increment: float = 1.0,
+) -> np.ndarray | None:
     norm_vec = vector / np.linalg.norm(vector)
     intersections = []
     origin = center_of_coor(coordinates)
-    L = coordinates - origin
-    t_ca = np.dot(L, norm_vec)
-    d = np.sqrt(np.einsum("ij,ij->i", L, L) - t_ca**2)
+    length = coordinates - origin
+    t_ca = np.dot(length, norm_vec)
+    d = np.sqrt(np.einsum("ij,ij->i", length, length) - t_ca**2)
     under_sqrt = elements_vdw**2 - d**2
     diag = under_sqrt.diagonal()
     positions = np.argwhere(diag > 0)
@@ -1142,14 +1140,20 @@ def vector_preanalysis(vector, coordinates, elements_vdw, increment=1.0):
     return None
 
 
-def optimise_xy(xy, *args):
+def optimise_xy(
+    xy: np.ndarray,
+    *args: tuple[np.ndarray, list[str], list[np.ndarray]],
+) -> tuple[float, int]:
     """Return negative pore diameter for x and y coordinates optimisation."""
     z, elements, coordinates = args
     window_com = np.array([xy[0], xy[1], z])
     return -pore_diameter(elements, coordinates, com=window_com)[0]
 
 
-def optimise_z(z, *args):
+def optimise_z(
+    z: np.ndarray,
+    *args: tuple[np.ndarray, np.ndarray, list[str], list[np.ndarray]],
+) -> tuple[float, int]:
     """Return pore diameter for coordinates optimisation in z direction."""
     x, y, elements, coordinates = args
 
@@ -1158,17 +1162,16 @@ def optimise_z(z, *args):
     return pore_diameter(elements, coordinates, com=window_com)[0]
 
 
-def window_analysis(
-    window,
-    elements,
-    coordinates,
-    elements_vdw,
-    increment2=0.1,
-    z_bounds=[None, None],
-    lb_z=True,
-    z_second_mini=False,
-    **kwargs,
-):
+def window_analysis(  # noqa: C901, PLR0912, PLR0913, PLR0915
+    window: list,
+    elements: list[str],
+    coordinates: list[np.ndarray],
+    elements_vdw: list[float],
+    increment2: float = 0.1,
+    z_bounds: None | list = None,
+    lb_z: bool = True,  # noqa: FBT001, FBT002
+    z_second_mini: bool = False,  # noqa: FBT001, FBT002
+) -> tuple[float, np.ndarray]:
     """Return window diameter and window's centre.
 
     Parameters
@@ -1185,6 +1188,8 @@ def window_analysis(
 
     """
     # Copy the coordinates as we will manipulate them.
+    if z_bounds is None:
+        z_bounds = [None, None]
     coordinates = deepcopy(coordinates)
     # Find the vector with the largest window sampling diameter from the pool.
     vector_ = window[window.argmax(axis=0)[1]][5:8]
@@ -1332,16 +1337,14 @@ def window_analysis(
     return (window_diameter, window_com)
 
 
-def find_windows(
-    elements,
-    coordinates,
-    processes=None,
-    mol_size=None,
-    adjust=1,
-    pore_opt=True,
-    increment=1.0,
-    **kwargs,
-):
+def find_windows(  # noqa: PLR0913, PLR0915
+    elements: list[str],
+    coordinates: list[np.ndarray],
+    processes: int | None = None,
+    adjust: float = 1,
+    pore_opt: bool = True,  # noqa: FBT001, FBT002
+    increment: float = 1.0,
+) -> tuple[list[float], list[np.ndarray]]:
     """Return windows diameters and center of masses for a molecule."""
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
@@ -1358,9 +1361,7 @@ def find_windows(
         # is at the origin of the system and not the center of the not
         # optimised one, we need to adjust the shift. We also have to update
         # the initial com.
-        com_adjust = (
-            initial_com - opt_pore_diameter(elements, coordinates, **kwargs)[2]
-        )
+        com_adjust = initial_com - opt_pore_diameter(elements, coordinates)[2]
         initial_com = initial_com - com_adjust
         coordinates = shift_com(elements, coordinates, com_adjust=com_adjust)
     else:
@@ -1473,7 +1474,6 @@ def find_windows(
                     coordinates,
                     elements_vdw,
                 ),
-                kwds=kwargs,
             )
             for cluster in clustered_results
             if cluster != -1
@@ -1488,7 +1488,6 @@ def find_windows(
                 elements,
                 coordinates,
                 elements_vdw,
-                **kwargs,
             )
             for cluster in clustered_results
             if cluster != -1
@@ -1525,339 +1524,17 @@ def find_windows(
     return (windows, windows_coms)
 
 
-def window_shape(
-    window,
-    elements,
-    coordinates,
-    increment2=0.1,
-    z_bounds=[None, None],
-    lb_z=True,
-    z_second_mini=False,
-    **kwargs,
-):
-    """Return window diameter and window's centre.
-
-    Parameters
-    ----------
-    widnow: list
-
-    elements: numpy.array
-
-    coordinates: numpy.array
-
-    elements_vdw: numpy.array
-
-    step: float
-
-    """
-    # Copy the coordinates as we will manipulate them.
-    coordinates = deepcopy(coordinates)
-    # We create an array of vdw radii of elements.
-    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
-    # Find the vector with the largest window sampling diameter from the pool.
-    vector_ = window[window.argmax(axis=0)[1]][5:8]
-    vector_analysed = vector_analysis(
-        vector_, coordinates, elements_vdw, increment=increment2
-    )
-    # A safety check, if the refined analysis give None we end the function.
-    if vector_analysed is not None:
-        pass
-    else:
-        return None
-    vector = vector_analysed[5:8]
-    # Unit vectors.
-    vec_a = [1, 0, 0]
-    vec_b = [0, 1, 0]  # noqa: F841
-    vec_c = [0, 0, 1]
-    # Angles needed for rotation (in radians) to rotate and translate the
-    # molecule for the vector to become the Z-axis.
-    angle_1 = angle_between_vectors(np.array([vector[0], vector[1], 0]), vec_a)
-    angle_2 = angle_between_vectors(vector, vec_c)
-    # Depending in which cartesian coordinate system area the vector is
-    # We need a rotation into a different direction and by different value.
-    if vector[0] >= 0 and vector[1] >= 0 and vector[2] >= 0:
-        angle_1 = -angle_1
-        angle_2 = -angle_2
-    if vector[0] < 0 and vector[1] >= 0 and vector[2] >= 0:
-        angle_1 = np.pi * 2 + angle_1
-        angle_2 = angle_2  # noqa: PLW0127
-    if vector[0] >= 0 and vector[1] < 0 and vector[2] >= 0:
-        angle_1 = angle_1  # noqa: PLW0127
-        angle_2 = -angle_2
-    if vector[0] < 0 and vector[1] < 0 and vector[2] >= 0:
-        angle_1 = np.pi * 2 - angle_1
-    if vector[0] >= 0 and vector[1] >= 0 and vector[2] < 0:
-        angle_1 = -angle_1
-        angle_2 = np.pi + angle_2
-    if vector[0] < 0 and vector[1] >= 0 and vector[2] < 0:
-        angle_2 = np.pi - angle_2
-    if vector[0] >= 0 and vector[1] < 0 and vector[2] < 0:
-        angle_2 = angle_2 + np.pi
-    if vector[0] < 0 and vector[1] < 0 and vector[2] < 0:
-        angle_1 = -angle_1
-        angle_2 = np.pi - angle_2
-    # Rotation matrix for rotation around Z-axis with angle_1.
-    rotation_around_z = np.array(
-        [
-            [np.cos(angle_1), -np.sin(angle_1), 0],
-            [np.sin(angle_1), np.cos(angle_1), 0],
-            [0, 0, 1],
-        ]
-    )
-    # Rotate the whole molecule around with rotation_around_z.
-    coordinates = np.array([np.dot(rotation_around_z, i) for i in coordinates])
-    # Rotation matrix for rotation around Y-axis with angle_2
-    rotation_around_y = np.array(
-        [
-            [np.cos(angle_2), 0, np.sin(angle_2)],
-            [0, 1, 0],
-            [-np.sin(angle_2), 0, np.cos(angle_2)],
-        ]
-    )
-    # Rotate the whole molecule around with rotation_around_y.
-    coordinates = np.array([np.dot(rotation_around_y, i) for i in coordinates])
-    # Third step is translation. We are now at [0, 0, -z].
-    # We shift the molecule so that center of the window is at the origin.
-    # The `z` is from original vector analysis. It is the point on the vector
-    # where the largest sampling sphere was (vector_analysed[0]).
-    new_z = vector_analysed[0]
-    # Translate the whole molecule to shift window's center to origin.
-    coordinates = coordinates - np.array(
-        [[0, 0, new_z]] * coordinates.shape[0]
-    )
-    # !!!Here the window center (xy and z) optimisation take place!!!
-    window_com = np.array([0, 0, 0], dtype=float)
-    # The lb_z parameter is 'lower bound equal to z' which means,
-    # that we set the lower bound for the z optimisation to be equal
-    # to the -new_z as in some cages it's the COM - pore that is the
-    # limiting diameter. But, no lower than new_z because we don't want to
-    # move into the other direction.
-    if lb_z:
-        z_bounds[0] = -new_z
-    window_diameter, _ = pore_diameter(elements, coordinates, com=window_com)
-    # SciPy minimisation on z coordinate.
-    z_args = (window_com[0], window_com[1], elements, coordinates)
-    z_optimisation = minimize(
-        optimise_z, x0=window_com[2], args=z_args, bounds=[z_bounds]
-    )
-    # Substitute the z coordinate for a minimised one.
-    window_com[2] = z_optimisation.x[0]
-    # SciPy brute optimisation on x and y coordinates in window plane.
-    xy_args = (window_com[2], elements, coordinates)
-    xy_bounds = (
-        (-window_diameter / 2, window_diameter / 2),
-        (-window_diameter / 2, window_diameter / 2),
-    )
-    xy_optimisation = brute(
-        optimise_xy, xy_bounds, args=xy_args, full_output=True, finish=fmin
-    )
-    # Substitute the x and y coordinates for the optimised ones.
-    window_com[0] = xy_optimisation[0][0]
-    window_com[1] = xy_optimisation[0][1]
-    # Additional SciPy minimisation on z coordinate. Added on 18 May 2017.
-    # We can argue which aproach is best. Whether z opt and then xy opt
-    # or like now z opt -> xy opt -> additional z opt etc. I have also tested
-    # a loop of optimisations until some convergence and optimisation of
-    # xyz coordinates at the same time by optimising these two optimisations.
-    # In the end. I think this approach is best for cages.
-    # Update 20 October 2017: I made this optional and turned off by default
-    # In many cases that worsen the quality of the results and should be used
-    # with caution.
-    if z_second_mini is not False:
-        z_args = (window_com[0], window_com[1], elements, coordinates)
-        # The z_bounds should be passed in kwargs.
-        z_optimisation = minimize(
-            optimise_z, x0=window_com[2], args=z_args, bounds=[z_bounds]
-        )
-        # Substitute the z coordinate for a minimised one.
-        window_com[2] = z_optimisation.x[0]
-    # Getting the 2D plane crosssection of a window in XY plain. (10-04-18)
-    # First translation around Z axis.
-    vectors_translated = [
-        [
-            np.dot(rotation_around_z, i[5:])[0],
-            np.dot(rotation_around_z, i[5:])[1],
-            np.dot(rotation_around_z, i[5:])[2],
-        ]
-        for i in window
-    ]
-    # Second rotation around Y axis.
-    vectors_translated = [
-        [
-            np.dot(rotation_around_y, i)[0],
-            np.dot(rotation_around_y, i)[1],
-            np.dot(rotation_around_y, i)[2],
-        ]
-        for i in vectors_translated
-    ]
-    ref_distance = (new_z - window_com[2]) / np.linalg.norm(vector)
-    # Cutting the XY plane.
-    return np.array(
-        [
-            [i[0] * ref_distance, i[1] * ref_distance]
-            for i in vectors_translated
-        ]
-    )
-
-
-def find_windows_new(
-    elements,
-    coordinates,
-    processes=None,
-    mol_size=None,
-    adjust=1,
-    pore_opt=True,
-    increment=1.0,
-    **kwargs,
-):
-    """Return windows diameters and center of masses for a molecule."""
-    # Copy the coordinates as will perform many opertaions on them
-    coordinates = deepcopy(coordinates)
-    # Center of our cartesian system is always at origin
-    origin = np.array([0, 0, 0])  # noqa: F841
-    # Initial center of mass to reverse translation at the end
-    initial_com = center_of_mass(elements, coordinates)
-    # Shift the cage to the origin using either the standard center of mass
-    # or if pore_opt flag is True, the optimised pore center as center of mass
-    if pore_opt is True:
-        # Normally the pore is calculated from the COM of a molecule.
-        # So, esentially the molecule's COM is the pore center.
-        # To shift the molecule so that the center of the optimised pore
-        # is at the origin of the system and not the center of the not
-        # optimised one, we need to adjust the shift. We also have to update
-        # the initial com.
-        com_adjust = (
-            initial_com - opt_pore_diameter(elements, coordinates, **kwargs)[2]
-        )
-        initial_com = initial_com - com_adjust
-        coordinates = shift_com(elements, coordinates, com_adjust=com_adjust)
-    else:
-        # Otherwise, we just shift the cage to the origin.
-        coordinates = shift_com(elements, coordinates)
-    # We create an array of vdw radii of elements.
-    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
-    # We calculate maximum diameter of a molecule to determine the radius
-    # of a sampling sphere neccessary to enclose the whole molecule.
-    shpere_radius = max_dim(elements, coordinates)[2] / 2
-    sphere_surface_area = 4 * np.pi * shpere_radius**2
-    # Here we determine the number of sampling points necessary for a fine
-    # sampling. Smaller molecules require more finner density of sampling
-    # points on the sampling sphere's surface, whereas largen require less.
-    # This formula was created so that larger molecule do not take much longer
-    # to analyse, as number_sampling_points*length_of_sampling_vectors
-    # results in quadratic increase of sampling time. The 250 factor was
-    # specificly determined to produce close to 1 sampling point /Angstrom^2
-    # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
-    # sampling by changing the adjust factor.
-    number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    # Here I use code by Alexandre Devert for spreading points on a sphere:
-    # http://blog.marmakoide.org/?p=1
-    golden_angle = np.pi * (3 - np.sqrt(5))
-    theta = golden_angle * np.arange(number_of_points)
-    z = np.linspace(
-        1 - 1.0 / number_of_points,
-        1.0 / number_of_points - 1.0,
-        number_of_points,
-    )
-    radius = np.sqrt(1 - z * z)
-    points = np.zeros((number_of_points, 3))
-    points[:, 0] = radius * np.cos(theta) * shpere_radius
-    points[:, 1] = radius * np.sin(theta) * shpere_radius
-    points[:, 2] = z * shpere_radius
-    # Here we will compute the eps parameter for the sklearn.cluster.DBSCAN
-    # (3-dimensional spatial clustering algorithm) which is the mean distance
-    # to the closest point of all points.
-    values = []
-    tree = KDTree(points)
-    for i in points:
-        dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.extend(dist)
-    mean_distance = np.mean(values)
-    # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_distance + mean_distance**0.5
-    # Here we either run the sampling points vectors analysis in serial
-    # or parallel. The vectors that go through molecular pores return
-    # as analysed list with the increment at vector's path with largest
-    # included sphere, coordinates for this narrow channel point. vectors
-    # that find molecule on theirs path are return as NoneType object.
-    # Parralel analysis on user's defined number of CPUs.
-    if processes:
-        pool = Pool(processes=processes)
-        parallel = [
-            pool.apply_async(
-                vector_preanalysis,
-                args=(point, coordinates, elements_vdw),
-                kwds={"increment": increment},
-            )
-            for point in points
-        ]
-        results = [p.get() for p in parallel if p.get() is not None]
-        pool.terminate()
-        # Dataset is an array of sampling points coordinates.
-        dataset = np.array([x[5:8] for x in results])
-    else:
-        results = [
-            vector_preanalysis(
-                point, coordinates, elements_vdw, increment=increment
-            )
-            for point in points
-        ]
-        results = [x for x in results if x is not None]
-        dataset = np.array([x[5:8] for x in results])
-    # If not a single vector was returned from the analysis it mean that
-    # no molecular channels (what we call windows here) connects the
-    # molecule's interior with the surroungsings (exterior space).
-    # The number of windows in that case equals zero and zero is returned.
-    # Otherwise we continue our search for windows.
-    if len(results) == 0:
-        return None
-    # Perfomr DBSCAN to cluster the sampling points vectors.
-    # the n_jobs will be developed later.
-
-    db = DBSCAN(eps=eps).fit(dataset)
-    core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-    core_samples_mask[db.core_sample_indices_] = True
-    labels = set(db.labels_)
-    # Assing cluster label to a sampling point.
-    clusters = [[i, j] for i, j in zip(results, db.labels_, strict=False)]
-    clustered_results = {label: [] for label in labels}
-    # Create a dictionary of clusters with points listed.
-    [clustered_results[i[1]].append(i[0]) for i in clusters]
-    return clustered_results, elements, coordinates, initial_com
-
-
-def calculate_window_diameter(window, elements, coordinates, **kwargs):
-    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
-    window_results = window_analysis(
-        np.array(window), elements, coordinates, elements_vdw, **kwargs
-    )
-    # The function returns two numpy arrays, one with windows diameters
-    # in Angstrom, second with corresponding windows center's coordinates
-    if window_results:
-        return window_results[0]
-    return None
-
-
-def get_window_com(window, elements, coordinates, initial_com, **kwargs):
-    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
-    window_results = window_analysis(
-        np.array(window), elements, coordinates, elements_vdw, **kwargs
-    )
-    # The function returns two numpy arrays, one with windows diameters
-    # in Angstrom, second with corresponding windows center's coordinates
-    if window_results:
-        # I correct the COM of window for the initial COM of the cage
-        return np.add(window_results[1], initial_com)
-    return None
-
-
-def vector_analysis_reversed(vector, coordinates, elements_vdw):
+def vector_analysis_reversed(
+    vector: np.ndarray,
+    coordinates: list[np.ndarray],
+    elements_vdw: np.ndarray,
+) -> tuple[float, np.ndarray] | None:
     norm_vec = vector / np.linalg.norm(vector)
     intersections = []
     origin = center_of_coor(coordinates)
-    L = coordinates - origin
-    t_ca = np.dot(L, norm_vec)
-    d = np.sqrt(np.einsum("ij,ij->i", L, L) - t_ca**2)
+    length = coordinates - origin
+    t_ca = np.dot(length, norm_vec)
+    d = np.sqrt(np.einsum("ij,ij->i", length, length) - t_ca**2)
     under_sqrt = elements_vdw**2 - d**2
     diag = under_sqrt.diagonal()
     positions = np.argwhere(diag > 0)
@@ -1878,8 +1555,11 @@ def vector_analysis_reversed(vector, coordinates, elements_vdw):
 
 
 def find_average_diameter(
-    elements, coordinates, adjust=1, increment=0.1, processes=None, **kwargs
-):
+    elements: list[str],
+    coordinates: list[np.ndarray],
+    adjust: float = 1,
+    processes: int | None = None,
+) -> float:
     """Return average diameter for a molecule."""
     # Copy the coordinates as will perform many opertaions on them
     coordinates = deepcopy(coordinates)
@@ -1941,99 +1621,9 @@ def find_average_diameter(
     return np.mean(results_cleaned) * 2
 
 
-def vector_analysis_pore_shape(vector, coordinates, elements_vdw):
-    norm_vec = vector / np.linalg.norm(vector)
-    intersections = []
-    origin = center_of_coor(coordinates)
-    length = coordinates - origin
-    t_ca = np.dot(length, norm_vec)
-    d = np.sqrt(np.einsum("ij,ij->i", length, length) - t_ca**2)
-    under_sqrt = elements_vdw**2 - d**2
-    diag = under_sqrt.diagonal()
-    positions = np.argwhere(diag > 0)
-    for pos in positions:
-        t_hc = np.sqrt(diag[pos[0]])
-        t_0 = t_ca[pos][0] - t_hc
-        t_1 = t_ca[pos][0] + t_hc
-
-        p_0 = origin + np.dot(t_0, norm_vec)
-        p_1 = origin + np.dot(t_1, norm_vec)
-
-        if np.linalg.norm(p_0) < np.linalg.norm(p_1):
-            intersections.append([np.linalg.norm(p_0), p_0])
-    if intersections:
-        return sorted(intersections)[0][1]
-    return None
-
-
-def calculate_pore_shape(
-    elements, coordinates, adjust=1, increment=0.1, **kwargs
-):
-    """Return average diameter for a molecule."""
-    # Copy the coordinates as will perform many opertaions on them
-    coordinates = deepcopy(coordinates)
-    # Center of our cartesian system is always at origin
-    origin = np.array([0, 0, 0])  # noqa: F841
-    # Initial center of mass to reverse translation at the end
-    initial_com = center_of_mass(elements, coordinates)  # noqa: F841
-    # We just shift the cage to the origin.
-    coordinates = shift_com(elements, coordinates)
-    # We create an array of vdw radii of elements.
-    elements_vdw = np.array([[atomic_vdw_radius[x.upper()]] for x in elements])
-    # We calculate maximum diameter of a molecule to determine the radius
-    # of a sampling sphere neccessary to enclose the whole molecule.
-    shpere_radius = max_dim(elements, coordinates)[2] / 2
-    sphere_surface_area = 4 * np.pi * shpere_radius**2
-    # Here we determine the number of sampling points necessary for a fine
-    # sampling. Smaller molecules require more finner density of sampling
-    # points on the sampling sphere's surface, whereas largen require less.
-    # This formula was created so that larger molecule do not take much longer
-    # to analyse, as number_sampling_points*length_of_sampling_vectors
-    # results in quadratic increase of sampling time. The 250 factor was
-    # specificly determined to produce close to 1 sampling point /Angstrom^2
-    # for a sphere of radius ~ 24 Angstrom. We can adjust how fine is the
-    # sampling by changing the adjust factor.
-    number_of_points = int(np.log10(sphere_surface_area) * 250 * adjust)
-    # Here I use code by Alexandre Devert for spreading points on a sphere:
-    # http://blog.marmakoide.org/?p=1
-    golden_angle = np.pi * (3 - np.sqrt(5))
-    theta = golden_angle * np.arange(number_of_points)
-    z = np.linspace(
-        1 - 1.0 / number_of_points,
-        1.0 / number_of_points - 1.0,
-        number_of_points,
-    )
-    radius = np.sqrt(1 - z * z)
-    points = np.zeros((number_of_points, 3))
-    points[:, 0] = radius * np.cos(theta) * shpere_radius
-    points[:, 1] = radius * np.sin(theta) * shpere_radius
-    points[:, 2] = z * shpere_radius
-    # Here we will compute the eps parameter for the sklearn.cluster.DBSCAN
-    # (3-dimensional spatial clustering algorithm) which is the mean distance
-    # to the closest point of all points.
-    values = []
-    tree = KDTree(points)
-    for i in points:
-        dist, ind = tree.query(i.reshape(1, -1), k=10)
-        values.extend(dist)
-    mean_distance = np.mean(values)
-    # The best eps is parametrized when adding the mean distance and it's root.
-    eps = mean_distance + mean_distance**0.5  # noqa: F841
-    # Here we either run the sampling points vectors analysis in serial
-    # or parallel. The vectors that go through molecular voids return
-    # as analysed list with the increment at vector's path with largest
-    # included sphere, coordinates for this narrow channel point. vectors
-    # that find molecule on theirs path are return as NoneType object.
-    results = [
-        vector_analysis_pore_shape(point, coordinates, elements_vdw)
-        for point in points
-    ]
-    results_cleaned = [x for x in results if x is not None]
-    ele = np.array(["X"] * len(results_cleaned))  # noqa: F841
-    return np.array(results_cleaned)
-
-
-def circumcircle_window(coordinates, atom_set):
+def circumcircle_window(
+    coordinates: np.ndarray, atom_set: list
+) -> tuple[float, np.ndarray]:
     # Calculating circumcircle
     cap_a = np.array(coordinates[int(atom_set[0])])
     cap_b = np.array(coordinates[int(atom_set[1])])
@@ -2056,7 +1646,9 @@ def circumcircle_window(coordinates, atom_set):
     return r, com
 
 
-def circumcircle(coordinates, atom_sets):
+def circumcircle(
+    coordinates: np.ndarray, atom_sets: list
+) -> tuple[list[float], list[np.ndarray]]:
     pld_diameter_list = []
     pld_com_list = []
     iter_ = 0
