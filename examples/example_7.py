@@ -25,19 +25,26 @@ def main() -> None:  # noqa: PLR0915
     input_directory = data_directory / "input"
     output_directory = data_directory / "output"
 
-    traj = pw.DLPOLY(str(input_directory / "HISTORY_singlemol"))
+    traj = pw.DLPOLY(input_directory / "HISTORY_singlemol_short")
 
     logger.info("there are %s frames", traj.no_of_frames)
 
-    frame_0 = traj.get_frames(0)
+    frame_0 = traj.get_frames(0)[0]
     frame_0.swap_atom_keys({"he": "H"})
     frame_0.decipher_atom_keys("opls")
 
-    traj.analysis(forcefield="opls", swap_atoms={"he": "H"}, ncpus=4)
+    # Bring it all together.
+    traj.analysis(forcefield="opls", swap_atoms={"he": "H"}, ncpus=1)
 
     traj.save_analysis(
-        output_directory / "HISTORY_out.json",
+        filepath=output_directory / "HISTORY_out.json",
         override=True,
+    )
+    traj.save_frames(
+        frames="all",
+        filepath=output_directory / "HISTORY_out.xyz",
+        forcefield="opls",
+        swap_atoms={"he": "H"},
     )
 
     with (output_directory / "HISTORY_out.json").open("r") as file:
@@ -48,15 +55,14 @@ def main() -> None:  # noqa: PLR0915
     max_diam = []
 
     for key in saved_analysis:
-        if int(key) >= 200:
-            for i in saved_analysis[key]["0"]["windows"]["diameters"]:
-                windows.append(i)
-            pore_diam_opt.append(
-                saved_analysis[key]["0"]["pore_diameter_opt"]["diameter"]
-            )
-            max_diam.append(
-                saved_analysis[key]["0"]["maximum_diameter"]["diameter"]
-            )
+        for i in saved_analysis[key]["0"]["windows"]["diameters"]:
+            windows.append(i)
+        pore_diam_opt.append(
+            saved_analysis[key]["0"]["pore_diameter_opt"]["diameter"]
+        )
+        max_diam.append(
+            saved_analysis[key]["0"]["maximum_diameter"]["diameter"]
+        )
 
     x_range_windows = np.linspace(min(windows) - 1, max(windows) + 1, 1000)
 

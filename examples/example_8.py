@@ -24,11 +24,11 @@ def main() -> None:
     input_directory = data_directory / "input"
     output_directory = data_directory / "output"
 
-    traj = pw.DLPOLY(str(input_directory / "HISTORY_periodic"))
+    traj = pw.DLPOLY(input_directory / "HISTORY_periodic")
 
     logger.info("there are %s frames", traj.no_of_frames)
 
-    frame_0 = traj.get_frames(0)
+    frame_0 = traj.get_frames(0)[0]
     frame_0.swap_atom_keys({"he": "H"})
     frame_0.decipher_atom_keys("opls")
 
@@ -40,7 +40,7 @@ def main() -> None:
         modular=True,
     )
 
-    traj.save_analysis(str(output_directory / "HISTORY_periodic_out.json"))
+    traj.save_analysis(output_directory / "HISTORY_periodic_out.json")
 
     windows = []
     pore_diam_opt = []
@@ -81,7 +81,7 @@ def main() -> None:
     ax.set_xlabel(r"Diameter ($\mathregular{\AA)}$", fontsize=12)
     fig.tight_layout()
     fig.savefig(
-        output_directory / "trajectory_windows.pdf",
+        output_directory / "8_trajectory_windows.pdf",
         dpi=360,
         bbox_inches="tight",
     )
@@ -99,7 +99,7 @@ def main() -> None:
     ax.set_xlabel(r"Diameter ($\mathregular{\AA)}$", fontsize=12)
     fig.tight_layout()
     fig.savefig(
-        output_directory / "trajectory_pores.pdf",
+        output_directory / "8_trajectory_pores.pdf",
         dpi=360,
         bbox_inches="tight",
     )
@@ -117,7 +117,7 @@ def main() -> None:
     ax.set_xlabel(r"Diameter ($\mathregular{\AA)}$", fontsize=12)
     fig.tight_layout()
     fig.savefig(
-        output_directory / "trajectory_maxdim.pdf",
+        output_directory / "8_trajectory_maxdim.pdf",
         dpi=360,
         bbox_inches="tight",
     )

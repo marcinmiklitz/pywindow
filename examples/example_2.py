@@ -60,7 +60,7 @@ def main() -> None:
     for input_file in input_files:
         name = input_file.name.split(".")[0]
 
-        rdkit_mol = Chem.MolFromMol2File(input_file)
+        rdkit_mol = Chem.MolFromMol2File(str(input_file))
         molsys = pw.MolecularSystem.load_rdkit_mol(rdkit_mol)
         mol = molsys.system_to_molecule()
 

@@ -1,4 +1,4 @@
-pywindow.PDB
+﻿pywindow.PDB
 ============
 
 .. currentmodule:: pywindow
@@ -17,10 +17,6 @@ pywindow.PDB
    .. autosummary::
       :nosignatures:
    
-      ~PDB.analysis
-      ~PDB.get_frames
-      ~PDB.save_analysis
-      ~PDB.save_frames
    
    
 

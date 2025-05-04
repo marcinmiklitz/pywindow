@@ -473,19 +473,18 @@ def main() -> None:
         molsys = pw.MolecularSystem.load_file(input_file)
         rebuild_molsys = molsys.rebuild_system()
         rebuild_molsys.dump_system(
-            str(output_directory / f"{name}_rebuild.pdb"),
+            output_directory / f"{name}_rebuild.pdb",
             override=True,
         )
         rebuild_molsys.make_modular()
 
-        for molecule in rebuild_molsys.molecules:
+        for molecule, mol in rebuild_molsys.molecules.items():
             logger.info(
                 "Analysing molecule %s out of %s of %s",
                 molecule + 1,
                 len(rebuild_molsys.molecules),
                 name,
             )
-            mol = rebuild_molsys.molecules[molecule]
             mol.full_analysis()
             logger.info(
                 "pore size: %s", mol.properties["pore_diameter"]["diameter"]
@@ -497,7 +496,7 @@ def main() -> None:
             )
             # Each molecule can be saved separately
             mol.dump_molecule(
-                str(output_directory / f"{name}_rebuild_mol_{molecule}.pdb"),
+                output_directory / f"{name}_rebuild_mol_{molecule}.pdb",
                 include_coms=True,
                 override=True,
             )

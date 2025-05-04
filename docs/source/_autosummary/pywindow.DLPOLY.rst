@@ -1,4 +1,4 @@
-pywindow.DLPOLY
+﻿pywindow.DLPOLY
 ===============
 
 .. currentmodule:: pywindow
@@ -17,10 +17,6 @@ pywindow.DLPOLY
    .. autosummary::
       :nosignatures:
    
-      ~DLPOLY.analysis
-      ~DLPOLY.get_frames
-      ~DLPOLY.save_analysis
-      ~DLPOLY.save_frames
    
    
 

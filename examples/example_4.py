@@ -84,7 +84,7 @@ def main() -> None:
             raise RuntimeError(msg)
 
         mol.dump_molecule(
-            filepath=str(output_directory / f"{name}_out.pdb"),
+            filepath=output_directory / f"{name}_out.pdb",
             include_coms=True,
             override=True,
         )

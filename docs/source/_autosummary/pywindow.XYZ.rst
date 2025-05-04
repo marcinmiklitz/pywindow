@@ -1,4 +1,4 @@
-pywindow.XYZ
+﻿pywindow.XYZ
 ============
 
 .. currentmodule:: pywindow
@@ -17,10 +17,6 @@ pywindow.XYZ
    .. autosummary::
       :nosignatures:
    
-      ~XYZ.analysis
-      ~XYZ.get_frames
-      ~XYZ.save_analysis
-      ~XYZ.save_frames
    
    
 

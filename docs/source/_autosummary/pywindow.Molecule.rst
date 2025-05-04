@@ -1,4 +1,4 @@
-﻿pywindow.Molecule
+pywindow.Molecule
 =================
 
 .. currentmodule:: pywindow
