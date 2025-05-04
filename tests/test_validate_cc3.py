@@ -417,8 +417,8 @@ def test_calculate_windows() -> None:
     molsys = pw.MolecularSystem.load_system(system, "test")
     mol = molsys.system_to_molecule()
     mol.calculate_windows()
-    windows = mol.properties["windows"]["diameters"]
-    coms = mol.properties["windows"]["centre_of_mass"]
+    windows = mol.properties["windows"]["diameters"]  # type:ignore[index]
+    coms = mol.properties["windows"]["centre_of_mass"]  # type:ignore[index]
 
     p = windows.argsort()
 

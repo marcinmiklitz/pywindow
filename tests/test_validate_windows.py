@@ -2012,8 +2012,8 @@ def test_case_2() -> None:
     molsys = pw.MolecularSystem.load_system(case_2, "case_2")
     mol = molsys.system_to_molecule()
     mol.calculate_windows()
-    windows = mol.properties["windows"]["diameters"]
-    coms = mol.properties["windows"]["centre_of_mass"]
+    windows = mol.properties["windows"]["diameters"]  # type:ignore[index]
+    coms = mol.properties["windows"]["centre_of_mass"]  # type:ignore[index]
 
     p = windows.argsort()
     p_ref = results_2["windows_diam"].argsort()
@@ -2032,8 +2032,8 @@ def test_case_3() -> None:
     molsys = pw.MolecularSystem.load_system(case_3, "case_3")
     mol = molsys.system_to_molecule()
     mol.calculate_windows()
-    windows = mol.properties["windows"]["diameters"]
-    coms = mol.properties["windows"]["centre_of_mass"]
+    windows = mol.properties["windows"]["diameters"]  # type:ignore[index]
+    coms = mol.properties["windows"]["centre_of_mass"]  # type:ignore[index]
 
     p = windows.argsort()
     p_ref = results_3["windows_diam"].argsort()
@@ -2052,8 +2052,8 @@ def test_case_4() -> None:
     molsys = pw.MolecularSystem.load_system(case_4, "case_4")
     mol = molsys.system_to_molecule()
     mol.calculate_windows()
-    windows = mol.properties["windows"]["diameters"]
-    coms = mol.properties["windows"]["centre_of_mass"]
+    windows = mol.properties["windows"]["diameters"]  # type:ignore[index]
+    coms = mol.properties["windows"]["centre_of_mass"]  # type:ignore[index]
 
     p = windows.argsort()
     p_ref = results_4["windows_diam"].argsort()
@@ -2072,8 +2072,8 @@ def test_case_5() -> None:
     molsys = pw.MolecularSystem.load_system(case_5, "case_5")
     mol = molsys.system_to_molecule()
     mol.calculate_windows()
-    windows = mol.properties["windows"]["diameters"]
-    coms = mol.properties["windows"]["centre_of_mass"]
+    windows = mol.properties["windows"]["diameters"]  # type:ignore[index]
+    coms = mol.properties["windows"]["centre_of_mass"]  # type:ignore[index]
 
     p = windows.argsort()
     p_ref = results_5["windows_diam"].argsort()

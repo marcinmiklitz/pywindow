@@ -9024,7 +9024,8 @@ def test_loadmolsys() -> None:
 
     np.testing.assert_equal(molsys.system["elements"], system["elements"])
     np.testing.assert_equal(
-        molsys.system["coordinates"], system["coordinates"]
+        molsys.system["coordinates"],
+        system["coordinates"],
     )
 
 
@@ -9033,22 +9034,29 @@ def test_periodic_loadmolsys() -> None:
     assert molsys.system_id == "periodic"
 
     np.testing.assert_equal(
-        molsys.system["remarks"], system_periodic["remarks"]
+        molsys.system["remarks"],
+        system_periodic["remarks"],
     )
     np.testing.assert_equal(
-        molsys.system["unit_cell"], system_periodic["unit_cell"]
+        molsys.system["unit_cell"],
+        system_periodic["unit_cell"],
     )
     np.testing.assert_almost_equal(
-        molsys.system["lattice"], system_periodic["lattice"], decimal=16
+        molsys.system["lattice"],
+        system_periodic["lattice"],  # type:ignore[arg-type]
+        decimal=16,
     )
     np.testing.assert_equal(
-        molsys.system["atom_ids"], system_periodic["atom_ids"]
+        molsys.system["atom_ids"],
+        system_periodic["atom_ids"],
     )
     np.testing.assert_equal(
-        molsys.system["elements"], system_periodic["elements"]
+        molsys.system["elements"],
+        system_periodic["elements"],
     )
     np.testing.assert_almost_equal(
-        molsys.system["coordinates"], system_periodic["coordinates"]
+        molsys.system["coordinates"],
+        system_periodic["coordinates"],  # type:ignore[arg-type]
     )
 
 
@@ -9103,9 +9111,9 @@ def test_periodic_makemodular_rebuild() -> None:
         mol.coordinates, mol_system_r["coordinates"]
     )
 
-    for mol in molsys.molecules:
-        assert len(molsys.molecules[mol].coordinates) == 168  # noqa: PLR2004
-        assert len(molsys.molecules[mol].elements) == 168  # noqa: PLR2004
+    for molecule in molsys.molecules.values():
+        assert len(molecule.coordinates) == 168  # noqa: PLR2004
+        assert len(molecule.elements) == 168  # noqa: PLR2004
 
 
 def test_asystemtomolecule() -> None:
@@ -9185,8 +9193,8 @@ def test_calculate_windows() -> None:
     molsys = pw.MolecularSystem.load_system(system, "test")
     mol = molsys.system_to_molecule()
     mol.calculate_windows()
-    windows = mol.properties["windows"]["diameters"]
-    coms = mol.properties["windows"]["centre_of_mass"]
+    windows = mol.properties["windows"]["diameters"]  # type: ignore[index]
+    coms = mol.properties["windows"]["centre_of_mass"]  # type: ignore[index]
 
     p = windows.argsort()
 

@@ -487,7 +487,8 @@ def main() -> None:
             )
             mol.full_analysis()
             logger.info(
-                "pore size: %s", mol.properties["pore_diameter"]["diameter"]
+                "pore size: %s",
+                mol.properties["pore_diameter"]["diameter"],  # type: ignore[index]
             )
 
             (same_dict, failed_prop) = pw.compare_properties_dict(

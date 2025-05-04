@@ -6680,20 +6680,27 @@ def test_load_pdb_periodic() -> None:
     read_periodic = inp._read_pdb()  # noqa: SLF001
 
     np.testing.assert_equal(
-        read_periodic["remarks"], system_periodic["remarks"]
+        read_periodic["remarks"],
+        system_periodic["remarks"],
     )
     np.testing.assert_equal(
-        read_periodic["unit_cell"], system_periodic["unit_cell"]
+        read_periodic["unit_cell"],
+        system_periodic["unit_cell"],
     )
     np.testing.assert_almost_equal(
-        read_periodic["lattice"], system_periodic["lattice"], decimal=16
+        read_periodic["lattice"],
+        system_periodic["lattice"],  # type: ignore[arg-type]
+        decimal=16,
     )
     np.testing.assert_equal(
-        read_periodic["atom_ids"], system_periodic["atom_ids"]
+        read_periodic["atom_ids"],
+        system_periodic["atom_ids"],
     )
     np.testing.assert_equal(
-        read_periodic["elements"], system_periodic["elements"]
+        read_periodic["elements"],
+        system_periodic["elements"],
     )
     np.testing.assert_almost_equal(
-        read_periodic["coordinates"], system_periodic["coordinates"]
+        read_periodic["coordinates"],
+        system_periodic["coordinates"],  # type: ignore[arg-type]
     )

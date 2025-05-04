@@ -597,8 +597,8 @@ class MolecularSystem:
         system : :class:`dict`
             A dictionary containing all the information extracted from input.
 
-        molecules : :class:`list`
-            A list containing all the returned :class:`Molecule` s after using
+        molecules:
+            A dictionary containing all the returned :class:`Molecule` s after using
             :func:`make_modular()`.
 
     """
@@ -607,6 +607,8 @@ class MolecularSystem:
         self._Input = Input()
         self._Output = Output()
         self.system_id = 0
+        self.system: dict = {}
+        self.molecules: dict[int, Molecule] = {}
 
     @classmethod
     def load_file(cls, filepath: pathlib.Path | str) -> MolecularSystem:
@@ -876,8 +878,7 @@ class MolecularSystem:
             elements = np.array([])
             atom_ids = np.array([])
             coor = np.array([]).reshape(0, 3)
-            for mol_ in self.molecules:
-                mol = self.molecules[mol_]
+            for mol in self.molecules.values():
                 elements = np.concatenate((elements, mol.mol["elements"]))
                 atom_ids = np.concatenate((atom_ids, mol.mol["atom_ids"]))
                 coor = np.concatenate((coor, mol.mol["coordinates"]), axis=0)
@@ -941,8 +942,7 @@ class MolecularSystem:
                 )
                 raise _NotAModularSystemError(msg) from None
             dict_obj = {}
-            for molecule in self.molecules:
-                mol_ = self.molecules[molecule]
+            for molecule, mol_ in self.molecules.items():
                 dict_obj[molecule] = mol_.mol
         # If no filepath is provided we create one.
         if filepath is None:
