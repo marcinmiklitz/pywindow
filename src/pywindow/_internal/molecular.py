@@ -327,7 +327,7 @@ class Molecule:
         self.properties["pore_volume_opt"] = self.pore_volume_opt
         return self.pore_volume_opt
 
-    def calculate_windows(self) -> np.ndarray | None:
+    def calculate_windows(self, ncpus: int = 1) -> np.ndarray | None:
         """Return the diameters of all windows in a molecule.
 
         This function first finds and then measures the diameters of all the
@@ -341,7 +341,11 @@ class Molecule:
                 If no windows were found.
 
         """
-        windows = find_windows(self.elements, self.coordinates)
+        windows = find_windows(
+            self.elements,
+            self.coordinates,
+            processes=ncpus,
+        )
         if windows:
             self.properties.update(
                 {
@@ -387,6 +391,7 @@ class Molecule:
         self,
         filepath: pathlib.Path | str | None = None,
         molecular: bool = False,  # noqa: FBT001, FBT002
+        override: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
         """Dump content of :attr:`Molecule.properties` to a JSON dictionary.
 
@@ -400,9 +405,9 @@ class Molecule:
                 If False, dump only the content of :attr:`Molecule.properties`,
                 if True, dump all the information about :class:`Molecule`.
 
-        Returns:
-            None : :class:`NoneType`
-
+            override:
+                If True, any file in the filepath will be override.
+                (default=False)
         """
         # We pass a copy of the properties dictionary.
         dict_obj = deepcopy(self.properties)
@@ -415,16 +420,20 @@ class Molecule:
             filepath = pathlib.Path.cwd() / filepath
         filepath = pathlib.Path(filepath)
         # Dump the dictionary to json file.
-        self._Output.dump2json(dict_obj, filepath, default=to_list)
+        self._Output.dump2json(
+            dict_obj,
+            filepath,
+            default=to_list,
+            override=override,
+        )
 
     def dump_molecule(
         self,
         filepath: pathlib.Path | str | None = None,
         include_coms: bool = False,  # noqa: FBT001, FBT002
+        override: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
         """Dump a :class:`Molecule` to a file (PDB or XYZ).
-
-        Kwargs are passed to :func:`pywindow.io_tools.Output.dump2file()`.
 
         For validation purposes an overlay of window centres and COMs can also
         be dumped as:
@@ -445,8 +454,9 @@ class Molecule:
                 If True, dump also with an overlay of window centres and COMs.
                 (default=False)
 
-        Returns:
-            None : :class:`NoneType`
+            override:
+                If True, any file in the filepath will be override.
+                (default=False)
 
         """
         # If no filepath is provided we create one.
@@ -531,10 +541,20 @@ class Molecule:
                             ),
                         )
                     )
-            self._Output.dump2file(mmol, filepath, atom_ids=atom_ids)
+            self._Output.dump2file(
+                mmol,
+                filepath,
+                atom_ids=atom_ids,
+                override=override,
+            )
 
         else:
-            self._Output.dump2file(self.mol, filepath, atom_ids=atom_ids)
+            self._Output.dump2file(
+                self.mol,
+                filepath,
+                atom_ids=atom_ids,
+                override=override,
+            )
 
     def _update(self) -> None:
         self.mol["coordinates"] = self.coordinates
@@ -606,7 +626,7 @@ class MolecularSystem:
         filepath = pathlib.Path(filepath)
         obj = cls()
         obj.system = obj._Input.load_file(filepath)
-        obj.filename = filepath.name()
+        obj.filename = filepath.name
         obj.system_id = obj.filename.split(".")[0]
         obj.name, ext = obj.filename.split(".")
         return obj
@@ -804,7 +824,7 @@ class MolecularSystem:
             supercell_333 = None
         dis = discrete_molecules(self.system, rebuild=supercell_333)
         self.no_of_discrete_molecules = len(dis)
-        self.molecules = {}
+        self.molecules: dict[int, Molecule] = {}
         for i in range(len(dis)):
             self.molecules[i] = Molecule(dis[i], self.system_id, i)
 
@@ -824,10 +844,9 @@ class MolecularSystem:
         self,
         filepath: pathlib.Path | str | None = None,
         modular: bool = False,  # noqa: FBT001, FBT002
+        override: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
         """Dump a :class:`MolecularSystem` to a file (PDB or XYZ).
-
-        Kwargs are passed to :func:`pywindow.io_tools.Output.dump2file()`.
 
         Parameters:
             filepath:
@@ -841,8 +860,9 @@ class MolecularSystem:
                 :class:`MolecularSystem` as catenated :class:Molecule objects
                 from :attr:`MolecularSystem.molecules`
 
-        Returns:
-            None : :class:`NoneType`
+            override:
+                If True, any file in the filepath will be override.
+                (default=False)
 
         """
         # If no filepath is provided we create one.
@@ -873,12 +893,14 @@ class MolecularSystem:
             system_dict,
             filepath,
             atom_ids=atom_ids,
+            override=override,
         )
 
     def dump_system_json(
         self,
         filepath: pathlib.Path | str | None = None,
         modular: bool = False,  # noqa: FBT001, FBT002
+        override: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
         """Dump a :class:`MolecularSystem` to a JSON dictionary.
 
@@ -900,8 +922,9 @@ class MolecularSystem:
                 :class:`MolecularSystem` as catenated :class:Molecule objects
                 from :attr:`MolecularSystem.molecules`
 
-        Returns:
-            None : :class:`NoneType`
+            override:
+                If True, any file in the filepath will be override.
+                (default=False)
 
         """
         # We pass a copy of the properties dictionary.
@@ -927,4 +950,9 @@ class MolecularSystem:
         filepath = pathlib.Path(filepath)
 
         # Dump the dictionary to json file.
-        self._Output.dump2json(dict_obj, filepath, default=to_list)
+        self._Output.dump2json(
+            dict_obj,
+            filepath,
+            default=to_list,
+            override=override,
+        )
