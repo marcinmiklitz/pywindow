@@ -83,5 +83,5 @@ warn_unreachable = true
 disallow_any_generics = true
 
 [[tool.mypy.overrides]]
-module = ["rdkit.*", "scipy.*"]
+module = ["rdkit.*", "scipy.*", "sklearn.*"]
 ignore_missing_imports = true

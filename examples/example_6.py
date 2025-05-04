@@ -14,7 +14,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 known_properties = {
-    "PUDXES_no_solvent_rebuild_mol_1": {
+    "PUDXES_no_solvent_rebuild_mol_0": {
         "no_of_atoms": 168,
         "pore_volume_opt": 82.311543851544172,
         "pore_diameter_opt": {
@@ -44,7 +44,7 @@ known_properties = {
             ),
         },
     },
-    "PUDXES_no_solvent_rebuild_mol_2": {
+    "PUDXES_no_solvent_rebuild_mol_1": {
         "no_of_atoms": 168,
         "pore_volume_opt": 82.311543851544741,
         "pore_diameter_opt": {
@@ -74,7 +74,7 @@ known_properties = {
             ),
         },
     },
-    "PUDXES_no_solvent_rebuild_mol_3": {
+    "PUDXES_no_solvent_rebuild_mol_2": {
         "no_of_atoms": 168,
         "pore_volume_opt": 82.311543851544172,
         "pore_diameter_opt": {
@@ -104,7 +104,7 @@ known_properties = {
             ),
         },
     },
-    "PUDXES_no_solvent_rebuild_mol_4": {
+    "PUDXES_no_solvent_rebuild_mol_3": {
         "no_of_atoms": 168,
         "pore_volume_opt": 82.311543851544172,
         "pore_diameter_opt": {
@@ -134,7 +134,7 @@ known_properties = {
             ),
         },
     },
-    "PUDXES_no_solvent_rebuild_mol_5": {
+    "PUDXES_no_solvent_rebuild_mol_4": {
         "no_of_atoms": 168,
         "pore_volume_opt": 82.311543851544741,
         "pore_diameter_opt": {
@@ -168,7 +168,7 @@ known_properties = {
             ),
         },
     },
-    "PUDXES_no_solvent_rebuild_mol_6": {
+    "PUDXES_no_solvent_rebuild_mol_5": {
         "no_of_atoms": 168,
         "pore_volume_opt": 82.311543851544741,
         "pore_diameter_opt": {
@@ -202,7 +202,7 @@ known_properties = {
             ),
         },
     },
-    "PUDXES_no_solvent_rebuild_mol_7": {
+    "PUDXES_no_solvent_rebuild_mol_6": {
         "no_of_atoms": 168,
         "pore_volume_opt": 82.311543851544741,
         "pore_diameter_opt": {
@@ -236,7 +236,7 @@ known_properties = {
             ),
         },
     },
-    "PUDXES_no_solvent_rebuild_mol_8": {
+    "PUDXES_no_solvent_rebuild_mol_7": {
         "no_of_atoms": 168,
         "pore_volume_opt": 82.311543851544172,
         "pore_diameter_opt": {
@@ -266,7 +266,7 @@ known_properties = {
             ),
         },
     },
-    "EPIRUR_no_solvent_rebuild_mol_1": {
+    "EPIRUR_no_solvent_rebuild_mol_0": {
         "no_of_atoms": 132,
         "pore_volume_opt": 77.956489351993511,
         "pore_diameter_opt": {
@@ -309,7 +309,7 @@ known_properties = {
             ),
         },
     },
-    "EPIRUR_no_solvent_rebuild_mol_2": {
+    "EPIRUR_no_solvent_rebuild_mol_1": {
         "no_of_atoms": 132,
         "pore_volume_opt": 77.95863474639259,
         "pore_diameter_opt": {
@@ -348,7 +348,7 @@ known_properties = {
             ),
         },
     },
-    "EPIRUR_no_solvent_rebuild_mol_3": {
+    "EPIRUR_no_solvent_rebuild_mol_2": {
         "no_of_atoms": 132,
         "pore_volume_opt": 77.981955217293134,
         "pore_diameter_opt": {
@@ -391,7 +391,7 @@ known_properties = {
             ),
         },
     },
-    "TATVER_no_solvent_rebuild_mol_1": {
+    "TATVER_no_solvent_rebuild_mol_0": {
         "no_of_atoms": 244,
         "pore_volume_opt": 477.5395402757328,
         "pore_diameter_opt": {
@@ -421,7 +421,7 @@ known_properties = {
             ),
         },
     },
-    "TATVER_no_solvent_rebuild_mol_2": {
+    "TATVER_no_solvent_rebuild_mol_1": {
         "no_of_atoms": 244,
         "pore_volume_opt": 477.54078784832939,
         "pore_diameter_opt": {
@@ -481,7 +481,7 @@ def main() -> None:
         for molecule, mol in rebuild_molsys.molecules.items():
             logger.info(
                 "Analysing molecule %s out of %s of %s",
-                molecule + 1,
+                molecule,
                 len(rebuild_molsys.molecules),
                 name,
             )
@@ -492,8 +492,8 @@ def main() -> None:
             )
 
             (same_dict, failed_prop) = pw.compare_properties_dict(
-                dict1=mol.properties,
-                dict2=known_properties[f"{name}_rebuild_mol_{molecule + 1}"],
+                dict1=mol.properties,  # type:ignore[arg-type]
+                dict2=known_properties[f"{name}_rebuild_mol_{molecule}"],  # type:ignore[arg-type]
             )
             # Each molecule can be saved separately
             mol.dump_molecule(

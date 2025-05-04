@@ -118,7 +118,7 @@ class Molecule:
 
     """
 
-    def __init__(self, mol: dict, system_name: str, mol_id: int) -> None:
+    def __init__(self, mol: dict, system_name: str, mol_id: int) -> None:  # type:ignore[type-arg]
         self._Output = Output()
         self.mol = mol
         self.no_of_atoms = len(mol["elements"])
@@ -153,7 +153,7 @@ class Molecule:
         """
         return cls(Input().load_rdkit_mol(mol), system_name, mol_id)
 
-    def full_analysis(self, ncpus: int = 1) -> dict:
+    def full_analysis(self, ncpus: int = 1) -> dict:  # type:ignore[type-arg]
         """Perform a full structural analysis of a molecule.
 
         This invokes other methods:
@@ -212,30 +212,28 @@ class Molecule:
         )
         self.aligned_to_principal_axes = True
 
-    def calculate_centre_of_mass(self) -> np.ndarray:
+    def calculate_centre_of_mass(self) -> np.ndarray:  # type:ignore[type-arg]
         """Return the xyz coordinates of the centre of mass of a molecule.
 
         Returns:
-            :class:`numpy.array`
-                The centre of mass of the molecule.
+            The centre of mass of the molecule.
 
         """
         self.centre_of_mass = center_of_mass(self.elements, self.coordinates)
-        self.properties["centre_of_mass"] = self.centre_of_mass
+        self.properties["centre_of_mass"] = self.centre_of_mass  # type:ignore[assignment]
         return self.centre_of_mass
 
     def calculate_maximum_diameter(self) -> float:
         """Return the maximum diamension of a molecule.
 
         Returns:
-            :class:`float`
-                The maximum dimension of the molecule.
+            The maximum dimension of the molecule.
 
         """
         self.maxd_atom_1, self.maxd_atom_2, self.maximum_diameter = max_dim(
             self.elements, self.coordinates
         )
-        self.properties["maximum_diameter"] = {
+        self.properties["maximum_diameter"] = {  # type:ignore[assignment]
             "diameter": self.maximum_diameter,
             "atom_1": int(self.maxd_atom_1),
             "atom_2": int(self.maxd_atom_2),
@@ -246,28 +244,26 @@ class Molecule:
         """Return the average diamension of a molecule.
 
         Returns:
-            :class:`float`
-                The average dimension of the molecule.
+            The average dimension of the molecule.
 
         """
         self.average_diameter = find_average_diameter(
             self.elements, self.coordinates
         )
-        self.properties["average_diameter"] = self.average_diameter
+        self.properties["average_diameter"] = self.average_diameter  # type:ignore[assignment]
         return self.average_diameter
 
     def calculate_pore_diameter(self) -> float:
         """Return the intrinsic pore diameter.
 
         Returns:
-            :class:`float`
-                The intrinsic pore diameter.
+            The intrinsic pore diameter.
 
         """
         self.pore_diameter, self.pore_closest_atom = pore_diameter(
             self.elements, self.coordinates
         )
-        self.properties["pore_diameter"] = {
+        self.properties["pore_diameter"] = {  # type:ignore[assignment]
             "diameter": self.pore_diameter,
             "atom": int(self.pore_closest_atom),
         }
@@ -277,12 +273,11 @@ class Molecule:
         """Return the intrinsic pore volume.
 
         Returns:
-            :class:`float`
-                The intrinsic pore volume.
+            The intrinsic pore volume.
 
         """
         self.pore_volume = sphere_volume(self.calculate_pore_diameter() / 2)
-        self.properties["pore_volume"] = self.pore_volume
+        self.properties["pore_volume"] = self.pore_volume  # type:ignore[assignment]
         return self.pore_volume
 
     def calculate_pore_diameter_opt(self) -> float:
@@ -293,8 +288,7 @@ class Molecule:
         of the pore centre is found with optimisation.
 
         Returns:
-            :class:`float`
-                The intrinsic pore diameter.
+            The intrinsic pore diameter.
 
         """
         (
@@ -302,7 +296,7 @@ class Molecule:
             self.pore_opt_closest_atom,
             self.pore_opt_COM,
         ) = opt_pore_diameter(self.elements, self.coordinates)
-        self.properties["pore_diameter_opt"] = {
+        self.properties["pore_diameter_opt"] = {  # type:ignore[assignment]
             "diameter": self.pore_diameter_opt,
             "atom_1": int(self.pore_opt_closest_atom),
             "centre_of_mass": self.pore_opt_COM,
@@ -317,28 +311,23 @@ class Molecule:
         :func:`calculate_pore_diameter_opt` returned value.
 
         Returns:
-            :class:`float`
-                The intrinsic pore volume.
+            The intrinsic pore volume.
 
         """
         self.pore_volume_opt = sphere_volume(
             self.calculate_pore_diameter_opt() / 2
         )
-        self.properties["pore_volume_opt"] = self.pore_volume_opt
+        self.properties["pore_volume_opt"] = self.pore_volume_opt  # type:ignore[assignment]
         return self.pore_volume_opt
 
-    def calculate_windows(self, ncpus: int = 1) -> np.ndarray | None:
+    def calculate_windows(self, ncpus: int = 1) -> np.ndarray | None:  # type:ignore[type-arg]
         """Return the diameters of all windows in a molecule.
 
         This function first finds and then measures the diameters of all the
         window in the molecule.
 
         Returns:
-            :class:`numpy.array`
-                An array of windows' diameters.
-
-            :class:`NoneType`
-                If no windows were found.
+            An array of windows' diameters. Or, None, ff no windows were found.
 
         """
         windows = find_windows(
@@ -346,10 +335,10 @@ class Molecule:
             self.coordinates,
             processes=ncpus,
         )
-        if windows:
+        if windows is not None:
             self.properties.update(
                 {
-                    "windows": {
+                    "windows": {  # type:ignore[dict-item]
                         "diameters": windows[0],
                         "centre_of_mass": windows[1],
                     }
@@ -358,7 +347,7 @@ class Molecule:
             return windows[0]
 
         self.properties.update(
-            {"windows": {"diameters": None, "centre_of_mass": None}}
+            {"windows": {"diameters": None, "centre_of_mass": None}}  # type:ignore[dict-item]
         )
         return None
 
@@ -470,7 +459,7 @@ class Molecule:
         filepath = pathlib.Path(filepath)
         # Check if there is an 'atom_ids' keyword in the self.mol dict.
         # Otherwise pass to the dump2file atom_ids='elements'.
-        atom_ids = "elements" if "atom_ids" not in self.mol else "atom_ids"
+        atom_ids_key = "elements" if "atom_ids" not in self.mol else "atom_ids"
         # Dump molecule into a file.
         # If coms are to be included additional steps are required.
         # First deepcopy the molecule
@@ -507,7 +496,7 @@ class Molecule:
                     mmol["coordinates"],
                     np.array(
                         [
-                            self.properties["pore_diameter_opt"][
+                            self.properties["pore_diameter_opt"][  # type:ignore[index]
                                 "centre_of_mass"
                             ]
                         ]
@@ -515,9 +504,9 @@ class Molecule:
                 )
             )
             # add centre of windows as 'Ar'.
-            if self.properties["windows"]["centre_of_mass"] is not None:
+            if self.properties["windows"]["centre_of_mass"] is not None:  # type:ignore[index]
                 range_ = range(
-                    len(self.properties["windows"]["centre_of_mass"])
+                    len(self.properties["windows"]["centre_of_mass"])  # type:ignore[index]
                 )
                 for com in range_:
                     mmol["elements"] = np.concatenate(
@@ -534,7 +523,7 @@ class Molecule:
                             mmol["coordinates"],
                             np.array(
                                 [
-                                    self.properties["windows"][
+                                    self.properties["windows"][  # type:ignore[index]
                                         "centre_of_mass"
                                     ][com]
                                 ]
@@ -544,7 +533,7 @@ class Molecule:
             self._Output.dump2file(
                 mmol,
                 filepath,
-                atom_ids=atom_ids,
+                atom_ids_key=atom_ids_key,
                 override=override,
             )
 
@@ -552,7 +541,7 @@ class Molecule:
             self._Output.dump2file(
                 self.mol,
                 filepath,
-                atom_ids=atom_ids,
+                atom_ids_key=atom_ids_key,
                 override=override,
             )
 
@@ -598,17 +587,17 @@ class MolecularSystem:
             A dictionary containing all the information extracted from input.
 
         molecules:
-            A dictionary containing all the returned :class:`Molecule` s after using
-            :func:`make_modular()`.
+            A dictionary containing all the returned :class:`Molecule` s after
+            using :func:`make_modular()`.
 
     """
 
     def __init__(self) -> None:
         self._Input = Input()
         self._Output = Output()
-        self.system_id = 0
-        self.system: dict = {}
-        self.molecules: dict[int, Molecule] = {}
+        self.system_id: str | int = 0
+        self.system: dict = {}  # type: ignore[type-arg]
+        self.molecules: dict[int | str, Molecule] = {}
 
     @classmethod
     def load_file(cls, filepath: pathlib.Path | str) -> MolecularSystem:
@@ -628,9 +617,9 @@ class MolecularSystem:
         filepath = pathlib.Path(filepath)
         obj = cls()
         obj.system = obj._Input.load_file(filepath)
-        obj.filename = filepath.name
-        obj.system_id = obj.filename.split(".")[0]
-        obj.name, ext = obj.filename.split(".")
+        obj.filename = filepath.name  # type: ignore[attr-defined]
+        obj.system_id = obj.filename.split(".")[0]  # type: ignore[attr-defined]
+        obj.name, ext = obj.filename.split(".")  # type: ignore[attr-defined]
         return obj
 
     @classmethod
@@ -652,7 +641,7 @@ class MolecularSystem:
     @classmethod
     def load_system(
         cls,
-        dict_: dict,
+        dict_: dict,  # type: ignore[type-arg]
         system_id: str | int = "system",
     ) -> MolecularSystem:
         """Create a :class:`MolecularSystem` from a python :class:`dict`.
@@ -715,12 +704,12 @@ class MolecularSystem:
         }
         if override is True:
             self.system.update(rebuild_system)
-            return None
+
         return self.load_system(rebuild_system)
 
     def swap_atom_keys(
         self,
-        swap_dict: dict,
+        swap_dict: dict,  # type: ignore[type-arg]
         dict_key: str = "atom_ids",
     ) -> None:
         """Swap a force field atom id for another user-defined value.
@@ -826,9 +815,13 @@ class MolecularSystem:
             supercell_333 = None
         dis = discrete_molecules(self.system, rebuild=supercell_333)
         self.no_of_discrete_molecules = len(dis)
-        self.molecules: dict[int, Molecule] = {}
+        self.molecules = {}
         for i in range(len(dis)):
-            self.molecules[i] = Molecule(dis[i], self.system_id, i)
+            self.molecules[i] = Molecule(
+                mol=dis[i],
+                system_name=str(self.system_id),
+                mol_id=i,
+            )
 
     def system_to_molecule(self) -> Molecule:
         """Return :class:`MolecularSystem` as a :class:`Molecule` directly.
@@ -840,7 +833,9 @@ class MolecularSystem:
             :class:`pywindow.Molecule`
 
         """
-        return Molecule(self.system, self.system_id, 0)
+        return Molecule(
+            mol=self.system, system_name=str(self.system_id), mol_id=0
+        )
 
     def dump_system(
         self,
@@ -888,12 +883,14 @@ class MolecularSystem:
         # Check if there is an 'atom_ids' keyword in the self.mol dict.
         # Otherwise pass to the dump2file atom_ids='elements'.
         # This is mostly for XYZ files and not deciphered trajectories.
-        atom_ids = "elements" if "atom_ids" not in system_dict else "atom_ids"
+        atom_ids_key = (
+            "elements" if "atom_ids" not in system_dict else "atom_ids"
+        )
         # Dump system into a file.
         self._Output.dump2file(
             system_dict,
             filepath,
-            atom_ids=atom_ids,
+            atom_ids_key=atom_ids_key,
             override=override,
         )
 

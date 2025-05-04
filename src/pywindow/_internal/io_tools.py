@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import pathlib
-from typing import TYPE_CHECKING, Callable, Literal
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 
@@ -49,7 +49,7 @@ class Input:
             ".mol": self._read_mol,
         }
 
-    def load_file(self, filepath: pathlib.Path | str) -> dict:
+    def load_file(self, filepath: pathlib.Path | str) -> dict:  # type:ignore[type-arg]
         """This function opens any type of a readable file.
 
         It decomposes the file object into a list, for each line, of lists
@@ -70,14 +70,14 @@ class Input:
                 with new data.
         """
         self.file_path = pathlib.Path(filepath)
-        self.file_type = filepath.suffix
-        self.file_name = filepath.name
-        with filepath.open("r") as ffile:
+        self.file_type = self.file_path.suffix
+        self.file_name = self.file_path.name
+        with self.file_path.open("r") as ffile:
             self.file_content = ffile.readlines()
 
         return self._load_funcs[self.file_type]()
 
-    def load_rdkit_mol(self, mol: rdkit.Chem.Mol) -> dict:
+    def load_rdkit_mol(self, mol: rdkit.Chem.Mol) -> dict:  # type:ignore[type-arg]
         """Return molecular data from :class:`rdkit.Chem.Mol` object.
 
         Parameters:
@@ -103,7 +103,7 @@ class Input:
             self.system["coordinates"][atom_id] = x, y, z
         return self.system
 
-    def _read_xyz(self) -> dict:
+    def _read_xyz(self) -> dict:  # type:ignore[type-arg]
         try:
             self.system = {}
             self.file_remarks = self.file_content[1]
@@ -126,7 +126,7 @@ class Input:
             raise _CorruptedXYZFileError(msg) from None
         return self.system
 
-    def _read_pdb(self) -> dict:
+    def _read_pdb(self) -> dict:  # type:ignore[type-arg]
         if sum([i.count("END ") for i in self.file_content]) > 1:
             msg = (
                 "Multiple 'END' statements were found in this PDB file."
@@ -135,7 +135,7 @@ class Input:
             )
             raise _CorruptedPDBFileError(msg)
         self.system = {}
-        self.system["remarks"] = [
+        self.system["remarks"] = [  # type:ignore[assignment]
             i for i in self.file_content if i[:6] == "REMARK"
         ]
         self.system["unit_cell"] = np.array(
@@ -182,11 +182,11 @@ class Input:
         )
         return self.system
 
-    def _read_mol(self) -> dict:
+    def _read_mol(self) -> dict:  # type:ignore[type-arg]
         """Read V3000 mol file."""
         self.system = {}
         if self.file_content[2] != "\n":
-            self.system["remarks"] = self.file_content[2]
+            self.system["remarks"] = self.file_content[2]  # type:ignore[assignment]
         file_body = [i.split() for i in self.file_content]
         elements = []
         coordinates = []
@@ -214,9 +214,9 @@ class Output:
 
     def dump2json(
         self,
-        obj: dict,
+        obj: dict,  # type: ignore[type-arg]
         filepath: str | pathlib.Path,
-        default: Callable,
+        default: Callable,  # type:ignore[type-arg]
         override: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
         """Dump a dictionary into a JSON dictionary.
@@ -241,15 +241,13 @@ class Output:
         filepath = pathlib.Path(filepath)
 
         # We make sure that the object passed by the user is a dictionary.
-        if isinstance(obj, dict):
-            pass
-        else:
-            msg = "This function only accepts dictionaries as input"
+        if not isinstance(obj, dict):
+            msg = "This function only accepts dictionaries as input"  # type:ignore[unreachable]
             raise _NotADictionaryError(msg)
 
         # We check if the filepath has a json extenstion, if not we add it.
-        if filepath.suffix != ".json":
-            filepath = ".".join((str(filepath), "json"))
+        if ".json" not in filepath.name:
+            filepath = filepath.with_suffix(".json")
 
         # First we check if the file already exists. If yes and the override
         # keyword is False (default), we will raise an exception. Otherwise
@@ -268,12 +266,12 @@ class Output:
 
     def dump2file(  # noqa: PLR0913
         self,
-        obj: dict,
+        obj: dict,  # type: ignore[type-arg]
         filepath: str | pathlib.Path,
-        atom_ids: Literal["elements", "atom_ids"],
+        atom_ids_key: str,
         override: bool = False,  # noqa: FBT001, FBT002
-        elements: Literal["elements"] = "elements",
-        coordinates: Literal["coordinates"] = "coordinates",
+        elements_key: str = "elements",
+        coordinates_key: str = "coordinates",
         remarks: None | abc.Sequence[str] | str | float = None,
         cryst: str = "unit_cell",
         space_group: str | None = None,
@@ -306,7 +304,7 @@ class Output:
         # First we check if the file already exists. If yes and the override
         # keyword is False (default), we will raise an exception. Otherwise
         # the file will be overwritten.
-        if override is False and filepath.isfile():
+        if override is False and filepath.is_file():
             msg = (
                 f"The file {filepath} already exists. "
                 "Use a different filepath, "
@@ -315,12 +313,12 @@ class Output:
             raise FileExistsError(msg)
 
         if filepath.suffix == ".pdb":
-            self._save_funcs[filepath.suffix](
+            self._save_pdb(
                 system=obj,
                 filepath=filepath,
-                atom_ids=atom_ids,
-                elements=elements,
-                coordinates=coordinates,
+                atom_ids_key=atom_ids_key,
+                elements_key=elements_key,
+                coordinates_key=coordinates_key,
                 remarks=remarks,
                 cryst=cryst,
                 space_group=space_group,
@@ -331,12 +329,11 @@ class Output:
                 resseq=resseq,
             )
         elif filepath.suffix == ".xyz":
-            self._save_funcs[filepath.suffix](
+            self._save_xyz(
                 system=obj,
                 filepath=filepath,
-                atom_ids=atom_ids,
-                elements=elements,
-                coordinates=coordinates,
+                elements_key=elements_key,
+                coordinates_key=coordinates_key,
                 remarks=remarks,
                 forcefield=forcefield,
                 decipher=decipher,
@@ -351,12 +348,11 @@ class Output:
 
     def _save_xyz(  # noqa: PLR0913
         self,
-        system: dict,
+        system: dict,  # type: ignore[type-arg]
         filepath: str | pathlib.Path,
-        atom_ids: Literal["elements", "atom_ids"],  # noqa: ARG002
-        elements: Literal["elements"] = "elements",
-        coordinates: Literal["coordinates"] = "coordinates",
-        remarks: None | str | float = None,
+        elements_key: str = "elements",
+        coordinates_key: str = "coordinates",
+        remarks: None | str | float | abc.Sequence[str] = None,
         forcefield: str | None = None,
         decipher: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
@@ -364,11 +360,16 @@ class Output:
 
         if isinstance(remarks, (list, tuple)):
             remarks = ";".join(remarks)
+        elif remarks is None:
+            remarks = ""
 
         # Extract neccessary data.
-        elements = system["elements"]
-        coordinates = system["coordinates"]
+        elements = system[elements_key]
+        coordinates = system[coordinates_key]
         if decipher is True:
+            if forcefield is None:
+                msg = "forcefield must be provided when decipher is True"
+                raise ValueError(msg)
             elements = np.array(
                 [
                     decipher_atom_key(key, forcefield=forcefield)
@@ -383,11 +384,11 @@ class Output:
 
     def _save_pdb(  # noqa: C901, PLR0913
         self,
-        system: dict,
+        system: dict,  # type: ignore[type-arg]
         filepath: str | pathlib.Path,
-        atom_ids: Literal["elements", "atom_ids"],
-        elements: Literal["elements"] = "elements",
-        coordinates: Literal["coordinates"] = "coordinates",
+        atom_ids_key: str,
+        elements_key: str = "elements",
+        coordinates_key: str = "coordinates",
         remarks: None | abc.Sequence[str] | str | float = None,
         cryst: str = "unit_cell",
         space_group: str | None = None,
@@ -402,8 +403,7 @@ class Output:
         # We create initial string that we will gradually extend while we
         # process the data and in the end it will be written into a pdb file.
         string = "REMARK File generated using pyWINDOW."
-        # Number of items (atoms) in the provided system.
-        len_ = system[atom_ids].shape[0]
+
         # We process the remarks, if any, given by the user (optional).
         if isinstance(remarks, (list, tuple)):
             # If a list or tuple of remarks each is written at a new line
@@ -448,21 +448,27 @@ class Output:
         # (chainID) and residue sequence (resSeq) can be controlled by
         # appropriate parameter keyword passed to this function, Otherwise
         # the default values from settings dictionary are used.
-        atom_ids = system[atom_ids]
-        elements = system[elements]
+        atom_ids = system[atom_ids_key]
+        elements = system[elements_key]
         # If the 'elements' array of the system need deciphering atom keys this
         # is done if the user sets decipher to True. They can also provided
         # forcefield, otherwise it's None which equals to DLF.
         if decipher is True:
+            if forcefield is None:
+                msg = "forcefield must be provided when decipher is True"
+                raise ValueError(msg)
             elements = np.array(
                 [
                     decipher_atom_key(key, forcefield=forcefield)
                     for key in elements
                 ]
             )
-        coordinates = system[coordinates]
-        for i in range(len_):
-            atom_line = f"ATOM  {i + 1:5d}"
+        coordinates = system[coordinates_key]
+
+        # Number of items (atoms) in the provided system.
+        # No idea why mypy has an issue here...
+        for i in range(len(list(system[atom_ids_key]))):  # type: ignore[assignment]
+            atom_line = f"ATOM  {i + 1:5d}"  # type: ignore[operator]
             atom_id = f"{atom_ids[i].center(4):4}"
             atom_line = f"{atom_line} {atom_id} {resname:3} {chainid}"
             resseq_formatted = str(resseq).rjust(4)
@@ -479,8 +485,9 @@ class Output:
 
         string = f"{string}\nEND"
         # Check if .pdb extension is missing from filepath.
-        if str(filepath)[-4:].lower() != ".pdb":
-            filepath = f"{filepath}.pdb"
+        if filepath.suffix != ".pdb":
+            filepath = pathlib.Path(f"{filepath}.pdb")
+
         # Write the string to a a PDB file.
         with filepath.open("w+") as file:
             file.write(string)

@@ -37,8 +37,8 @@ def main() -> None:
 
         logger.info("properties for %s: %s", input_file.name, mol.properties)
         (same_dict, failed_prop) = pw.compare_properties_dict(
-            dict1=mol.properties,
-            dict2=known_properties[name],
+            dict1=mol.properties,  # type:ignore[arg-type]
+            dict2=known_properties[name],  # type:ignore[arg-type]
         )
 
         if not same_dict:

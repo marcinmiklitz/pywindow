@@ -38,7 +38,7 @@ from contextlib import closing
 from copy import deepcopy
 from mmap import ACCESS_READ, mmap
 from multiprocessing import Pool
-from typing import Literal
+from typing import Any, Literal
 
 import numpy as np
 
@@ -73,8 +73,7 @@ class _FunctionError(Exception):
 
 
 def make_supercell(
-    system: dict,
-    matrix: np.ndarray,
+    system: dict,  # type: ignore[type-arg]
     supercell: list[float] | None = None,
 ) -> MolecularSystem:
     """Return a supercell.
@@ -85,9 +84,6 @@ def make_supercell(
     Parameters:
         system:
             The unit cell for creation of the supercell
-
-        matrix:
-            The unit cell parameters in form of a lattice.
 
         supercell:
             A list that specifies the size of the supercell in the a, b and c
@@ -100,7 +96,7 @@ def make_supercell(
     if supercell is None:
         supercell = [1, 1, 1]
     user_supercell = [[1, supercell[0]], [1, supercell[1]], [1, supercell[1]]]
-    system = create_supercell(system, matrix, supercell=user_supercell)
+    system = create_supercell(system=system, supercell=user_supercell)
     return MolecularSystem.load_system(system)
 
 
@@ -108,14 +104,19 @@ class Trajectory:
     """A base class container for trajectories."""
 
     def __init__(self) -> None:
+        self.frames = {}  # type: ignore[var-annotated]
+        self.analysis_output = {}  # type: ignore[var-annotated]
         msg = "This is an abstract class"
         raise NotImplementedError(msg)
 
     def get_frames(  # noqa: C901
         self,
-        frames: int | list[int] | Literal["all", "everything"] = "all",
+        frames: int
+        | list[int]
+        | tuple[int, int]
+        | Literal["all", "everything"] = "all",
         override: bool = False,  # noqa: FBT001, FBT002
-        swap_atoms: dict | None = None,
+        swap_atoms: dict | None = None,  # type: ignore[type-arg]
         forcefield: str | None = None,
         extract_data: bool = True,  # noqa: FBT001, FBT002
     ) -> dict[int, MolecularSystem]:
@@ -161,7 +162,7 @@ class Trajectory:
 
         if isinstance(frames, int):
             frame_system = self._get_frame(
-                frame_coordinates=self.trajectory_map[frames],
+                frame_coordinates=self.trajectory_map[frames],  # type: ignore[attr-defined]
                 frame_no=frames,
                 swap_atoms=swap_atoms,
                 forcefield=forcefield,
@@ -176,7 +177,7 @@ class Trajectory:
             for frame in frames:
                 if frame not in self.frames:
                     self.frames[frame] = self._get_frame(
-                        frame_coordinates=self.trajectory_map[frame],
+                        frame_coordinates=self.trajectory_map[frame],  # type: ignore[attr-defined]
                         frame_no=frame,
                         swap_atoms=swap_atoms,
                         forcefield=forcefield,
@@ -188,7 +189,7 @@ class Trajectory:
             for frame in range(frames[0], frames[1]):
                 if frame not in self.frames:
                     self.frames[frame] = self._get_frame(
-                        frame_coordinates=self.trajectory_map[frame],
+                        frame_coordinates=self.trajectory_map[frame],  # type: ignore[attr-defined]
                         frame_no=frame,
                         swap_atoms=swap_atoms,
                         forcefield=forcefield,
@@ -197,10 +198,10 @@ class Trajectory:
                 collected_frames[frame] = self.frames[frame]
 
         if isinstance(frames, str) and frames in ["all", "everything"]:
-            for frame in range(self.no_of_frames):
+            for frame in range(self.no_of_frames):  # type: ignore[attr-defined]
                 if frame not in self.frames:
                     self.frames[frame] = self._get_frame(
-                        frame_coordinates=self.trajectory_map[frame],
+                        frame_coordinates=self.trajectory_map[frame],  # type: ignore[attr-defined]
                         frame_no=frame,
                         swap_atoms=swap_atoms,
                         forcefield=forcefield,
@@ -210,23 +211,26 @@ class Trajectory:
 
         return collected_frames
 
+    def _decode_frame(self, frame: list) -> dict:  # type:ignore[type-arg]
+        raise NotImplementedError
+
     def _get_frame(
         self,
         frame_coordinates: list[int],
         frame_no: int,
-        swap_atoms: dict,
-        forcefield: str,
+        swap_atoms: dict | None = None,  # type: ignore[type-arg]
+        forcefield: str | None = None,
         extract_data: bool = True,  # noqa: FBT001, FBT002
     ) -> MolecularSystem:
         start, end = frame_coordinates
         with (
-            self.filepath.open() as trajectory_file,
+            self.filepath.open() as trajectory_file,  # type: ignore[attr-defined]
             closing(
                 mmap(trajectory_file.fileno(), 0, access=ACCESS_READ)
             ) as mapped_file,
         ):
             if extract_data is False:
-                return mapped_file[start:end].decode("utf-8")
+                return mapped_file[start:end].decode("utf-8")  # type: ignore[return-value]
             # [:-1] because the split results in last list empty.
             frame = [
                 i.split()
@@ -235,7 +239,7 @@ class Trajectory:
             decoded_frame = self._decode_frame(frame)
             molsys = MolecularSystem.load_system(
                 decoded_frame,
-                "_".join([self.system_id, str(frame_no)]),
+                "_".join([self.system_id, str(frame_no)]),  # type: ignore[attr-defined]
             )
 
             if swap_atoms is not None:
@@ -250,13 +254,13 @@ class Trajectory:
         override: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
         """Dump the content of :attr:`analysis_output` as JSON dictionary."""
-        filepath = pathlib.Path(filepath)
         # We pass a copy of the analysis attribute dictionary.
-        dict_obj = deepcopy(self.analysis_output)
+        dict_obj = deepcopy(self.analysis_output)  # type: ignore[attr-defined]
         # If no filepath is provided we create one.
         if filepath is None:
-            filepath = f"{self.system_id}_pywindow_analysis"
+            filepath = f"{self.system_id}_pywindow_analysis"  # type: ignore[attr-defined]
             filepath = pathlib.Path.cwd() / filepath
+        filepath = pathlib.Path(filepath)
 
         # Dump the dictionary to json file.
         Output().dump2json(
@@ -268,12 +272,15 @@ class Trajectory:
 
     def save_frames(  # noqa: C901, PLR0912
         self,
-        frames: int | list | tuple | Literal["all", "everything"] = "all",
+        frames: int | list | tuple | Literal["all", "everything"] = "all",  # type: ignore[type-arg]
         filepath: str | pathlib.Path | None = None,
         decipher: bool = True,  # noqa: FBT001, FBT002
-        swap_atoms: dict | None = None,
+        swap_atoms: dict | None = None,  # type: ignore[type-arg]
         forcefield: str | None = None,
     ) -> None:
+        # If no filepath is provided we create one.
+        if filepath is None:
+            filepath = pathlib.Path.cwd() / str(self.system_id)  # type: ignore[attr-defined]
         filepath = pathlib.Path(filepath)
 
         frames_to_get = []
@@ -285,14 +292,11 @@ class Trajectory:
             for frame in range(frames[0], frames[1]):
                 frames_to_get.append(frame)
         if isinstance(frames, str) and frames in ["all", "everything"]:
-            for frame in range(self.no_of_frames):
+            for frame in range(self.no_of_frames):  # type: ignore[attr-defined]
                 frames_to_get.append(frame)
         for frame in frames_to_get:
             if frame not in self.frames:
                 _ = self.get_frames(frame)
-        # If no filepath is provided we create one.
-        if filepath is None:
-            filepath = pathlib.Path.cwd() / str(self.system_id)
 
         for frame in frames_to_get:
             frame_molsys = self.frames[frame]
@@ -301,7 +305,7 @@ class Trajectory:
                     if isinstance(swap_atoms, dict):
                         frame_molsys.swap_atom_keys(swap_atoms)
                     else:
-                        msg = (
+                        msg = (  # type: ignore[unreachable]
                             "The swap_atom_keys function only accepts "
                             "'swap_atoms' argument in form of a dictionary."
                         )
@@ -322,7 +326,7 @@ class Trajectory:
                 Output()._save_pdb(  # noqa: SLF001
                     system=frame_molsys.system,
                     filepath=ffilepath,
-                    atom_ids="elements"
+                    atom_ids_key="elements"
                     if "atom_ids" not in frame_molsys.system
                     else "atom_ids",
                     forcefield=forcefield,
@@ -332,9 +336,6 @@ class Trajectory:
                 Output()._save_xyz(  # noqa: SLF001
                     system=frame_molsys.system,
                     filepath=ffilepath,
-                    atom_ids="elements"
-                    if "atom_ids" not in frame_molsys.system
-                    else "atom_ids",
                     forcefield=forcefield,
                     decipher=decipher,
                 )
@@ -348,14 +349,14 @@ class Trajectory:
 
     def analysis(  # noqa: C901, PLR0912, PLR0913
         self,
-        frames: int | list | tuple | str = "all",
+        frames: int | list | tuple | str = "all",  # type: ignore[type-arg]
         ncpus: int = 1,
         ncpus_analysis: int = 1,
         override: bool = False,  # noqa: FBT001, FBT002
-        swap_atoms: dict | None = None,
+        modular: bool = False,  # noqa: FBT001, FBT002
+        rebuild: bool = False,  # noqa: FBT001, FBT002
+        swap_atoms: dict | None = None,  # type: ignore[type-arg]
         forcefield: str | None = None,
-        modular: bool | None = None,
-        rebuild: bool | None = None,
     ) -> None:
         """Perform structural analysis on a frame/ set of frames.
 
@@ -453,7 +454,7 @@ class Trajectory:
             raise _FunctionError(msg)
         if isinstance(frames, str):
             if frames in ["all", "everything"]:
-                for frame in range(self.no_of_frames):
+                for frame in range(self.no_of_frames):  # type: ignore[attr-defined]
                     frames_for_analysis.append(frame)  # noqa: PERF402
 
             else:
@@ -494,16 +495,16 @@ class Trajectory:
 
     def _analysis_serial(  # noqa: PLR0913
         self,
-        frame: dict,
+        frame: int,
         ncpus_analysis: int = 1,
         rebuild: bool = False,  # noqa: FBT001, FBT002
         modular: bool = False,  # noqa: FBT001, FBT002
-        swap_atoms: dict | None = None,
+        swap_atoms: dict | None = None,  # type: ignore[type-arg]
         forcefield: str | None = None,
-    ) -> dict:
+    ) -> dict:  # type: ignore[type-arg]
         molecular_system = self._get_frame(
-            self.trajectory_map[frame],
-            frame,
+            frame_coordinates=self.trajectory_map[frame],  # type: ignore[attr-defined]
+            frame_no=frame,
             extract_data=True,
             swap_atoms=swap_atoms,
             forcefield=forcefield,
@@ -520,23 +521,21 @@ class Trajectory:
             results[molecule] = mol.full_analysis(ncpus=ncpus_analysis)
         return results
 
-    def _analysis_parallel_execute(
+    def _analysis_parallel_execute(  # type: ignore[no-untyped-def]
         self,
-        frame: dict,
+        frame: int,
         # Using kwargs here for parallel execution.
         **kwargs,  # noqa: ANN003
-    ) -> None:
-        settings = {
-            "rebuild": False,
-            "modular": False,
-        }
+    ) -> tuple[int, dict]:  # type: ignore[type-arg]
+        settings = {"rebuild": False, "modular": False}
         settings.update(kwargs)
+
         molecular_system = self._get_frame(
-            frame_coordinates=self.trajectory_map[frame],
-            frame_no=frame,
+            frame_coordinates=self.trajectory_map[frame],  # type: ignore[attr-defined]
+            frame_no=frame,  # type: ignore[arg-type]
             extract_data=True,
-            swap_atoms=settings["swap_atoms"],
-            forcefield=settings["forcefield"],
+            swap_atoms=settings["swap_atoms"],  # type: ignore[arg-type]
+            forcefield=settings["forcefield"],  # type: ignore[arg-type]
         )
         if settings["modular"] is True:
             molecular_system.make_modular(rebuild=settings["rebuild"])
@@ -553,12 +552,12 @@ class Trajectory:
 
     def _analysis_parallel(  # noqa: PLR0913
         self,
-        frames: list,
+        frames: list,  # type: ignore[type-arg]
         ncpus: int,
         ncpus_analysis: int,
         rebuild: bool = False,  # noqa: FBT001, FBT002
         modular: bool = False,  # noqa: FBT001, FBT002
-        swap_atoms: dict | None = None,
+        swap_atoms: dict | None = None,  # type: ignore[type-arg]
         forcefield: str | None = None,
     ) -> None:
         try:
@@ -580,7 +579,7 @@ class Trajectory:
             results = [p.get() for p in parallel if p.get()]
             pool.terminate()
             for i in results:
-                self.analysis_output[i[0]] = i[1]
+                self.analysis_output[i[0]] = i[1]  # type: ignore[index, attr-defined]
         except TypeError:
             pool.terminate()
             msg = "Parallel analysis failed."
@@ -638,8 +637,8 @@ class DLPOLY(Trajectory):
         }
         self.filepath = pathlib.Path(filepath)
         self.system_id = self.filepath.name.split(".")[0]
-        self.frames = {}
-        self.analysis_output = {}
+        self.frames = {}  # type: ignore[var-annotated]
+        self.analysis_output = {}  # type: ignore[var-annotated]
         # Check the history file at init, if no errors, proceed to mapping.
         self._check_history()
         # Map the trajectory file at init.
@@ -647,7 +646,7 @@ class DLPOLY(Trajectory):
 
     def _map_history(self) -> None:
         """Map HISTORY file."""
-        self.trajectory_map = {}
+        self.trajectory_map: dict[str | int, Any] = {}
         with self.filepath.open() as trajectory_file:
             with closing(
                 mmap(trajectory_file.fileno(), 0, access=ACCESS_READ)
@@ -676,7 +675,7 @@ class DLPOLY(Trajectory):
                             frame_start,  # noqa: F821
                             progress,
                         ]
-                        frame_start = progress
+                        frame_start: int = progress
                         frame = frame + 1
                     # Here we extract the map's byte coordinates for the header
                     # And also the periodic system type needed for later.
@@ -689,7 +688,10 @@ class DLPOLY(Trajectory):
                     progress = progress + len(bline)
             self.no_of_frames = frame
 
-    def _decode_head(self, header_coordinates: list[int]) -> list[int | str]:
+    def _decode_head(
+        self,
+        header_coordinates: list[int],
+    ) -> list[list[str]]:
         start, end = header_coordinates
         with (
             self.filepath.open() as trajectory_file,
@@ -701,13 +703,13 @@ class DLPOLY(Trajectory):
                 i.split()
                 for i in mapped_file[start:end].decode("utf-8").split("\n")
             ]
-            header = [int(i) for i in header[1]]
-        self.periodic_boundary = self._imcon[header[1]]
-        self.content_type = self._keytrj[header[0]]
-        self.no_of_atoms = header[2]
+            header = [int(i) for i in header[1]]  # type:ignore[misc]
+        self.periodic_boundary = self._imcon[header[1]]  # type:ignore[index]
+        self.content_type = self._keytrj[header[0]]  # type:ignore[index]
+        self.no_of_atoms = header[2]  # type:ignore[index]
         return header
 
-    def _decode_frame(self, frame: list) -> dict:  # noqa: C901, PLR0912
+    def _decode_frame(self, frame: list) -> dict:  # type:ignore[type-arg]  # noqa: C901, PLR0912
         frame_data = {
             "frame_info": {
                 "nstep": int(frame[0][1]),
@@ -719,9 +721,9 @@ class DLPOLY(Trajectory):
         }
         start_line = 1
         if frame_data["frame_info"]["imcon"] in [1, 2, 3]:
-            frame_data["lattice"] = np.array(frame[1:4], dtype=float).T
-            frame_data["unit_cell"] = lattice_array_to_unit_cell(
-                frame_data["lattice"]
+            frame_data["lattice"] = np.array(frame[1:4], dtype=float).T  # type:ignore[assignment]
+            frame_data["unit_cell"] = lattice_array_to_unit_cell(  # type:ignore[assignment]
+                frame_data["lattice"]  # type:ignore[arg-type]
             )
             start_line = 4
 
@@ -755,12 +757,12 @@ class DLPOLY(Trajectory):
                 if i % 4 == 3:  # noqa: PLR2004
                     forces.append(frame[i_])
 
-        frame_data["atom_ids"] = np.array(elements)
-        frame_data["coordinates"] = np.array(coordinates, dtype=float)
+        frame_data["atom_ids"] = np.array(elements)  # type:ignore[assignment]
+        frame_data["coordinates"] = np.array(coordinates, dtype=float)  # type:ignore[assignment]
         if velocities:
-            frame_data["velocities"] = np.array(velocities, dtype=float)
+            frame_data["velocities"] = np.array(velocities, dtype=float)  # type:ignore[assignment]
         if forces:
-            frame_data["forces"] = np.array(forces, dtype=float)
+            frame_data["forces"] = np.array(forces, dtype=float)  # type:ignore[assignment]
         return frame_data
 
     def _check_history(self) -> None:
@@ -822,7 +824,7 @@ class DLPOLY(Trajectory):
                     old_timestep = timestep
                     timestep = int(string_line[1])
                     if old_timestep > timestep:
-                        error = " ".join(f"Line {line}:", error_1)
+                        error = " ".join((f"Line {line}:", error_1))
                         raise _TrajectoryError(error)
 
                 # Error 2
@@ -867,10 +869,10 @@ class XYZ(Trajectory):
 
     def __init__(self, filepath: pathlib.Path | str) -> None:
         self.filepath = pathlib.Path(filepath)
-        self.filename = filepath.name
+        self.filename = self.filepath.name
         self.system_id = self.filename.split(".")[0]
-        self.frames = {}
-        self.analysis_output = {}
+        self.frames = {}  # type: ignore[var-annotated]
+        self.analysis_output = {}  # type: ignore[var-annotated]
         # Map the trajectory file at init.
         self._map_trajectory()
 
@@ -911,7 +913,7 @@ class XYZ(Trajectory):
                     progress = progress + len(bline)
             self.no_of_frames = frame + 1
 
-    def _decode_frame(self, frame: list) -> dict:
+    def _decode_frame(self, frame: list) -> dict:  # type: ignore[type-arg]
         frame_data = {
             "frame_info": {
                 "natms": int(frame[0][0]),
@@ -924,8 +926,8 @@ class XYZ(Trajectory):
         for i in range(start_line, len(frame)):
             elements.append(frame[i][0])
             coordinates.append(frame[i][1:])
-        frame_data["atom_ids"] = np.array(elements)
-        frame_data["coordinates"] = np.array(coordinates, dtype=float)
+        frame_data["atom_ids"] = np.array(elements)  # type: ignore[assignment]
+        frame_data["coordinates"] = np.array(coordinates, dtype=float)  # type: ignore[assignment]
         return frame_data
 
 
@@ -945,29 +947,29 @@ class PDB(Trajectory):
         :attr:`pywindow.MolecularSystem.system`)
 
         Attributes:
-            filepath : :class:`str`
+            filepath:
                 The filepath.
 
-            filename : :class:`str`
+            filename:
                 The filename.
 
-            system_id : :class:`str`
+            system_id:
                 The system id inherited from the filename.
 
-            frames : :class:`dict`
+            frames:
                 A dictionary that is populated, on the fly, with the extracted
                 frames.
 
-            analysis_output : :class:`dict`
+            analysis_output:
                 A dictionary that is populated, on the fly, with the analysis
                 output.
 
         """
         self.filepath = pathlib.Path(filepath)
-        self.filename = filepath.name
+        self.filename = self.filepath.name
         self.system_id = self.filename.split(".")[0]
-        self.frames = {}
-        self.analysis_output = {}
+        self.frames: dict = {}  # type: ignore[type-arg]
+        self.analysis_output: dict = {}  # type: ignore[type-arg]
         # Map the trajectory file at init.
         self._map_trajectory()
 
@@ -1008,15 +1010,15 @@ class PDB(Trajectory):
                     progress = progress + len(bline)
             self.no_of_frames = frame
 
-    def _decode_frame(self, frame: list) -> dict:
-        frame_data = {}
+    def _decode_frame(self, frame: list) -> dict:  # type: ignore[type-arg]
+        frame_data = {}  # type: ignore[var-annotated]
         elements = []
         coordinates = []
         for i in range(len(frame)):
             if frame[i][:6] == "REMARK":
                 if "REMARKS" not in frame_data:
-                    frame_data["REMARKS"] = []
-                frame_data["REMARKS"].append(frame[i][6:])
+                    frame_data["REMARKS"] = []  # type: ignore[assignment]
+                frame_data["REMARKS"].append(frame[i][6:])  # type: ignore[attr-defined]
             if frame[i][:6] == "CRYST1":
                 cryst = np.array(
                     [
