@@ -40,7 +40,10 @@ def main() -> None:
         modular=True,
     )
 
-    traj.save_analysis(output_directory / "HISTORY_periodic_out.json")
+    traj.save_analysis(
+        output_directory / "HISTORY_periodic_out.json",
+        override=True,
+    )
 
     windows = []
     pore_diam_opt = []
