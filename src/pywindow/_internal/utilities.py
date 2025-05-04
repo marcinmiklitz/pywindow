@@ -1414,7 +1414,7 @@ def find_windows(  # noqa: PLR0913, PLR0915
     # included sphere, coordinates for this narrow channel point. vectors
     # that find molecule on theirs path are return as NoneType object.
     # Parralel analysis on user's defined number of CPUs.
-    if processes:
+    if processes is not None and processes > 1:
         pool = Pool(processes=processes)
         parallel = [
             pool.apply_async(
@@ -1463,7 +1463,7 @@ def find_windows(  # noqa: PLR0913, PLR0915
     # We also pass user defined settings for window analysis.
     # Again either in serlia or in parallel.
     # Noisy points get a cluster label -1, therefore we have to exclude it.
-    if processes:
+    if processes is not None and processes > 1:
         pool = Pool(processes=processes)
         parallel = [
             pool.apply_async(
