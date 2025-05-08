@@ -3087,7 +3087,7 @@ wheels = [
 ]
 
 [[package]]
-name = "pywindowx2"
+name = "pywindowx"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib", version = "3.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.8'" },

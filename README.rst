@@ -25,7 +25,7 @@ Installation
 
 .. code-block:: bash
 
-  pip install pywindowx2
+  pip install pywindowx
 
 Developer Setup
 ---------------
