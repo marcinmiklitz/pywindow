@@ -7,7 +7,7 @@ on:
     workflow_dispatch:
 jobs:
     ruff:
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - uses: astral-sh/setup-uv@v3
@@ -19,7 +19,7 @@ jobs:
             - run: uv sync --all-extras --dev
             - run: uv run ruff check src/ tests/ docs/source/ examples/
     mypy:
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - uses: astral-sh/setup-uv@v3
@@ -31,7 +31,7 @@ jobs:
             - run: uv sync --all-extras --dev
             - run: uv run mypy src/ tests/ docs/source/ examples/
     ruff-format:
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - uses: astral-sh/setup-uv@v3
@@ -43,7 +43,7 @@ jobs:
             - run: uv sync --all-extras --dev
             - run: uv run ruff format --check src/ tests/ docs/source/ examples/
     pytest:
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - uses: astral-sh/setup-uv@v3
@@ -55,7 +55,7 @@ jobs:
             - run: uv sync --all-extras --dev
             - run: uv run pytest
     doctest:
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - uses: astral-sh/setup-uv@v3
