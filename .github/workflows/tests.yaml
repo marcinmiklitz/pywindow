@@ -1,0 +1,68 @@
+name: Tests
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+    workflow_dispatch:
+jobs:
+    ruff:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v3
+              with:
+                  enable-cache: true
+            - uses: actions/setup-python@v5
+              with:
+                  python-version-file: "pyproject.toml"
+            - run: uv sync --all-extras --dev
+            - run: uv run ruff check src/ tests/ docs/source/ examples/
+    mypy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v3
+              with:
+                  enable-cache: true
+            - uses: actions/setup-python@v5
+              with:
+                  python-version-file: "pyproject.toml"
+            - run: uv sync --all-extras --dev
+            - run: uv run mypy src/ tests/ docs/source/ examples/
+    ruff-format:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v3
+              with:
+                  enable-cache: true
+            - uses: actions/setup-python@v5
+              with:
+                  python-version-file: "pyproject.toml"
+            - run: uv sync --all-extras --dev
+            - run: uv run ruff format --check src/ tests/ docs/source/ examples/
+    pytest:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v3
+              with:
+                  enable-cache: true
+            - uses: actions/setup-python@v5
+              with:
+                  python-version-file: "pyproject.toml"
+            - run: uv sync --all-extras --dev
+            - run: uv run pytest
+    doctest:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v3
+              with:
+                  enable-cache: true
+            - uses: actions/setup-python@v5
+              with:
+                  python-version-file: "pyproject.toml"
+            - run: uv sync --all-extras --dev
+            - run: uv run make -C docs doctest
