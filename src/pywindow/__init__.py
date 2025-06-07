@@ -1,10 +1,19 @@
-#!/usr/bin/env python3
-from .tables import *
-from .io_tools import *
-from .utilities import *
-from .molecular import *
-from .trajectory import *
-# from .postprocess import *
-# from .shape import *
+"""pywindow module."""
 
-name = 'pywindow'
+from pywindow._internal.io_tools import Input
+from pywindow._internal.molecular import MolecularSystem, Molecule
+from pywindow._internal.tables import periodic_table
+from pywindow._internal.trajectory import DLPOLY, PDB, XYZ, make_supercell
+from pywindow._internal.utilities import compare_properties_dict
+
+__all__ = [
+    "DLPOLY",
+    "PDB",
+    "XYZ",
+    "Input",
+    "MolecularSystem",
+    "Molecule",
+    "compare_properties_dict",
+    "make_supercell",
+    "periodic_table",
+]
