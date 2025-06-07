@@ -1,7 +1,9 @@
-pywindow
-========
+Modules
+=======
 
-.. toctree::
-   :maxdepth: 4
+.. autosummary::
+  :toctree: _autosummary
+  :template: module.rst
+  :recursive:
 
-   pywindow
+  pywindow

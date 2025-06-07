@@ -10,7 +10,7 @@ maintainers = [
 ]
 
 dependencies = ["numpy", "scipy", "scikit-learn", "rdkit", "matplotlib"]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dynamic = ["version"]
 readme = "README.rst"
 description = " A Python package for structural analysis of porous molecules."
@@ -19,14 +19,19 @@ description = " A Python package for structural analysis of porous molecules."
 dev = [
     "ruff",
     "mypy",
-    "numpy",
-    "pytest",
+    "pip-tools",
+    # TODO: Remove pin when https://github.com/TvoroG/pytest-lazy-fixture/issues/65 is resolved.
+    # pytest-lazy-fixture 0.6.0 is incompatible with pytest 8.0.0
+    "pytest<8",
+    "pytest-datadir",
+    "pytest-lazy-fixture",
     "pytest-cov",
     "sphinx",
     "sphinx-copybutton",
-    "build",
     "twine",
+    "sphinx_rtd_theme",
     "furo",
+    "moldoc",
 ]
 
 [project.urls]
@@ -48,6 +53,7 @@ convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
     "D100",
+    "E501",
     "D101",
     "D102",
     "D103",
@@ -58,7 +64,11 @@ convention = "google"
     "S101",
     "INP001",
 ]
+"examples/*" = ["T201", "E501", "PTH123", "PLR2004", "PERF402", "ERA001"]
 "docs/source/conf.py" = ["D100", "INP001"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-report term-missing"
 
 [tool.mypy]
 show_error_codes = true
@@ -72,6 +82,6 @@ disallow_untyped_decorators = true
 warn_unreachable = true
 disallow_any_generics = true
 
-
-[tool.pytest.ini_options]
-addopts = "--cov=src --cov-report term-missing"
+[[tool.mypy.overrides]]
+module = ["rdkit.*", "scipy.*", "sklearn.*"]
+ignore_missing_imports = true
