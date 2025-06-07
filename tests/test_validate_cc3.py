@@ -1,5 +1,3 @@
-import unittest
-
 import numpy as np
 
 import pywindow as pw
@@ -352,90 +350,90 @@ system = {
 }
 
 
-class TestValidateCC3(unittest.TestCase):
-    """Validate all features for CC3."""
+def test_calculate_centre_of_mass() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
 
-    def test_calculate_centre_of_mass(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_centre_of_mass(), np.array([12.4, 12.4, 12.4])
-        )
-
-    def test_calculate_maximum_diameter(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_maximum_diameter(), 22.179369990077188, decimal=3
-        )
-
-    def test_calculate_average_diameter(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 13.832017514255472, decimal=3
-        )
-
-    def test_calculate_pore_diameter(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_pore_diameter(), 5.397020177310022, decimal=3
-        )
-
-    def test_calculate_pore_volume(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_pore_volume(), 82.31154385154417, decimal=3
-        )
-
-    def test_calculate_pore_diameter_opt(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_pore_diameter_opt(), 5.397020177310022, decimal=3
-        )
-
-    def test_calculate_pore_volume_opt(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_pore_volume_opt(), 82.31154385154417, decimal=3
-        )
-
-    def test_calculate_windows(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-        mol.calculate_windows()
-        windows = mol.properties["windows"]["diameters"]
-        coms = mol.properties["windows"]["centre_of_mass"]
-
-        p = windows.argsort()
-
-        win_ref = np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512])
-        com_ref = np.array(
-            [
-                [10.77105705, 10.77097707, 14.02893956],
-                [14.01544846, 14.0154126, 14.01539845],
-                [10.77542236, 14.02453217, 10.77546634],
-                [13.92965524, 10.87029766, 10.87034163],
-            ]
-        )
-
-        p_ref = win_ref.argsort()
-
-        np.testing.assert_almost_equal(windows[p], win_ref[p_ref], decimal=3)
-
-        np.testing.assert_almost_equal(coms[p], com_ref[p_ref], decimal=3)
+    np.testing.assert_almost_equal(
+        mol.calculate_centre_of_mass(), np.array([12.4, 12.4, 12.4])
+    )
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_calculate_maximum_diameter() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_maximum_diameter(), 22.179369990077188, decimal=3
+    )
+
+
+def test_calculate_average_diameter() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 13.832017514255472, decimal=3
+    )
+
+
+def test_calculate_pore_diameter() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_pore_diameter(), 5.397020177310022, decimal=3
+    )
+
+
+def test_calculate_pore_volume() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_pore_volume(), 82.31154385154417, decimal=3
+    )
+
+
+def test_calculate_pore_diameter_opt() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_pore_diameter_opt(), 5.397020177310022, decimal=3
+    )
+
+
+def test_calculate_pore_volume_opt() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_pore_volume_opt(), 82.31154385154417, decimal=3
+    )
+
+
+def test_calculate_windows() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+    mol.calculate_windows()
+    windows = mol.properties["windows"]["diameters"]  # type:ignore[index]
+    coms = mol.properties["windows"]["centre_of_mass"]  # type:ignore[index]
+
+    p = windows.argsort()
+
+    win_ref = np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512])
+    com_ref = np.array(
+        [
+            [10.77105705, 10.77097707, 14.02893956],
+            [14.01544846, 14.0154126, 14.01539845],
+            [10.77542236, 14.02453217, 10.77546634],
+            [13.92965524, 10.87029766, 10.87034163],
+        ]
+    )
+
+    p_ref = win_ref.argsort()
+
+    np.testing.assert_almost_equal(windows[p], win_ref[p_ref], decimal=3)
+
+    np.testing.assert_almost_equal(coms[p], com_ref[p_ref], decimal=3)

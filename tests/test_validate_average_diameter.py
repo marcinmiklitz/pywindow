@@ -1,5 +1,3 @@
-import unittest
-
 import numpy as np
 
 import pywindow as pw
@@ -109,7 +107,7 @@ case_1 = {
             "H",
             "H",
             "H",
-        ]
+        ],
     ),
     "coordinates": np.array(
         [
@@ -215,7 +213,7 @@ case_1 = {
             [0.07, -1.944, -0.072],
             [0.013, -1.879, 2.283],
             [-0.115, -5.674, 2.045],
-        ]
+        ],
     ),
 }
 
@@ -384,7 +382,7 @@ case_2 = {
             "H",
             "H",
             "H",
-        ]
+        ],
     ),
     "coordinates": np.array(
         [
@@ -550,7 +548,7 @@ case_2 = {
             [-1.06220000e01, 7.67400000e00, -8.67000000e-01],
             [-6.52800000e00, 4.10900000e00, 2.47000000e00],
             [-5.44300000e00, 2.29000000e00, 3.50600000e00],
-        ]
+        ],
     ),
 }
 
@@ -725,7 +723,7 @@ case_3 = {
             "H",
             "H",
             "H",
-        ]
+        ],
     ),
     "coordinates": np.array(
         [
@@ -897,7 +895,7 @@ case_3 = {
             [1.10000000e00, -5.84000000e00, 4.47100000e00],
             [5.83000000e-01, -7.10000000e00, 2.45600000e00],
             [-2.92000000e00, -7.35600000e00, 9.84000000e-01],
-        ]
+        ],
     ),
 }
 
@@ -1172,7 +1170,7 @@ case_4 = {
             "H",
             "H",
             "H",
-        ]
+        ],
     ),
     "coordinates": np.array(
         [
@@ -1444,7 +1442,7 @@ case_4 = {
             [-3.42020000e01, -1.67200000e00, 2.04990000e01],
             [-3.16960000e01, 1.13900000e00, 2.10510000e01],
             [-3.03670000e01, 1.38300000e00, 2.30690000e01],
-        ]
+        ],
     ),
 }
 
@@ -1907,7 +1905,7 @@ case_5 = {
             "H",
             "H",
             "H",
-        ]
+        ],
     ),
     "coordinates": np.array(
         [
@@ -2367,52 +2365,51 @@ case_5 = {
             [-2.98860000e01, 1.10880000e01, 3.00000000e01],
             [-2.79370000e01, 7.91800000e00, 3.07920000e01],
             [-2.85500000e01, 5.72100000e00, 2.99360000e01],
-        ]
+        ],
     ),
 }
 
 
-class TestAverageDiameter(unittest.TestCase):
-    def test_case_1(self):
-        molsys = pw.MolecularSystem.load_system(case_1, "case_1")
-        mol = molsys.system_to_molecule()
+def test_case_1() -> None:
+    molsys = pw.MolecularSystem.load_system(case_1, "case_1")
+    mol = molsys.system_to_molecule()
 
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 12.38895620, decimal=3
-        )
-
-    def test_case_2(self):
-        molsys = pw.MolecularSystem.load_system(case_2, "case_2")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 13.36606775, decimal=3
-        )
-
-    def test_case_3(self):
-        molsys = pw.MolecularSystem.load_system(case_3, "case_3")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 18.10740925, decimal=3
-        )
-
-    def test_case_4(self):
-        molsys = pw.MolecularSystem.load_system(case_4, "case_4")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 19.23547068, decimal=3
-        )
-
-    def test_case_5(self):
-        molsys = pw.MolecularSystem.load_system(case_5, "case_5")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 24.03139233, decimal=3
-        )
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 12.38895620, decimal=3
+    )
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_case_2() -> None:
+    molsys = pw.MolecularSystem.load_system(case_2, "case_2")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 13.36606775, decimal=3
+    )
+
+
+def test_case_3() -> None:
+    molsys = pw.MolecularSystem.load_system(case_3, "case_3")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 18.10740925, decimal=3
+    )
+
+
+def test_case_4() -> None:
+    molsys = pw.MolecularSystem.load_system(case_4, "case_4")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 19.23547068, decimal=3
+    )
+
+
+def test_case_5() -> None:
+    molsys = pw.MolecularSystem.load_system(case_5, "case_5")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 24.03139233, decimal=3
+    )

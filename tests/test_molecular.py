@@ -1,5 +1,3 @@
-import unittest
-
 import numpy as np
 
 import pywindow as pw
@@ -9020,234 +9018,215 @@ mol_system_r = {
 }
 
 
-class TestMolecularSystemClass(unittest.TestCase):
-    def test_loadmolsys(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        self.assertEqual(molsys.system_id, "test")
-        np.testing.assert_equal(molsys.system["elements"], system["elements"])
-        np.testing.assert_equal(
-            molsys.system["coordinates"], system["coordinates"]
-        )
+def test_loadmolsys() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    assert molsys.system_id == "test"
 
-    def test_periodic_loadmolsys(self):
-        molsys = pw.MolecularSystem.load_system(system_periodic, "periodic")
-        self.assertEqual(molsys.system_id, "periodic")
-        np.testing.assert_equal(
-            molsys.system["remarks"], system_periodic["remarks"]
-        )
-        np.testing.assert_equal(
-            molsys.system["unit_cell"], system_periodic["unit_cell"]
-        )
-        np.testing.assert_almost_equal(
-            molsys.system["lattice"], system_periodic["lattice"], decimal=16
-        )
-        np.testing.assert_equal(
-            molsys.system["atom_ids"], system_periodic["atom_ids"]
-        )
-        np.testing.assert_equal(
-            molsys.system["elements"], system_periodic["elements"]
-        )
-        np.testing.assert_almost_equal(
-            molsys.system["coordinates"], system_periodic["coordinates"]
-        )
-
-    def test_periodic_rebuild(self):
-        molsys = pw.MolecularSystem.load_system(system_periodic, "periodic")
-        molsys_rebuild = molsys.rebuild_system()
-
-        np.testing.assert_equal(
-            molsys_rebuild.system["atom_ids"],
-            system_periodic_rebuild["atom_ids"],
-        )
-        np.testing.assert_equal(
-            molsys_rebuild.system["elements"],
-            system_periodic_rebuild["elements"],
-        )
-        np.testing.assert_almost_equal(
-            molsys_rebuild.system["coordinates"],
-            system_periodic_rebuild["coordinates"],
-        )
-
-    def test_periodic_makemodular(self):
-        molsys = pw.MolecularSystem.load_system(system_periodic, "periodic")
-        molsys.make_modular()
-
-        self.assertTrue(molsys.molecules)
-        self.assertIsInstance(molsys.molecules, dict)
-        self.assertEqual(len(molsys.molecules), 33)
-
-        mol = molsys.molecules[0]
-
-        self.assertTrue(mol)
-        self.assertIsInstance(mol, pw.molecular.Molecule)
-        np.testing.assert_equal(mol.elements, mol_system["elements"])
-        np.testing.assert_almost_equal(
-            mol.coordinates, mol_system["coordinates"]
-        )
-
-    def test_periodic_makemodular_rebuild(self):
-        molsys = pw.MolecularSystem.load_system(system_periodic, "periodic")
-        molsys.make_modular(rebuild=True)
-
-        self.assertTrue(molsys.molecules)
-        self.assertIsInstance(molsys.molecules, dict)
-        self.assertEqual(len(molsys.molecules), 8)
-
-        mol = molsys.molecules[0]
-
-        self.assertTrue(mol)
-        self.assertIsInstance(mol, pw.molecular.Molecule)
-        np.testing.assert_equal(mol.elements, mol_system_r["elements"])
-        np.testing.assert_almost_equal(
-            mol.coordinates, mol_system_r["coordinates"]
-        )
-
-        for mol in molsys.molecules:
-            self.assertEqual(len(molsys.molecules[mol].coordinates), 168)
-            self.assertEqual(len(molsys.molecules[mol].elements), 168)
+    np.testing.assert_equal(molsys.system["elements"], system["elements"])
+    np.testing.assert_equal(
+        molsys.system["coordinates"],
+        system["coordinates"],
+    )
 
 
-class TestMoleculeClass(unittest.TestCase):
-    def test_asystemtomolecule(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
+def test_periodic_loadmolsys() -> None:
+    molsys = pw.MolecularSystem.load_system(system_periodic, "periodic")
+    assert molsys.system_id == "periodic"
 
-        self.assertIsInstance(mol, pw.molecular.Molecule)
-        np.testing.assert_equal(mol.mol["elements"], system["elements"])
-        np.testing.assert_equal(mol.mol["coordinates"], system["coordinates"])
-
-    def test_calculate_centre_of_mass(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_centre_of_mass(), np.array([12.4, 12.4, 12.4])
-        )
-
-    def test_calculate_maximum_diameter(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_maximum_diameter(), 22.179369990077188
-        )
-
-    def test_calculate_average_diameter(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_average_diameter(), 13.832017514255472
-        )
-
-    def test_calculate_pore_diameter(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_pore_diameter(), 5.397020177310022
-        )
-
-    def _test_calculate_pore_diameter_new(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-        pore = mol.get_pore()
-
-        np.testing.assert_almost_equal(pore.diameter, 5.397020177310022)
-
-    def test_calculate_pore_volume(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_pore_volume(), 82.31154385154417
-        )
-
-    def _test_calculate_pore_volume_new(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-        pore = mol.get_pore()
-
-        np.testing.assert_almost_equal(
-            pore.spherical_volume, 82.31154385154417
-        )
-
-    def test_calculate_pore_diameter_opt(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_pore_diameter_opt(), 5.397020177310022
-        )
-
-    def _test_calculate_pore_diameter_opt_new(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-        pore = mol.get_pore()
-        pore.optimise()
-
-        np.testing.assert_almost_equal(pore.diameter, 5.397020177310022)
-
-    def test_calculate_pore_volume_opt(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_pore_volume_opt(), 82.31154385154417
-        )
-
-    def _test_calculate_pore_volume_opt_new(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-        pore = mol.get_pore()
-        pore.optimise()
-
-        np.testing.assert_almost_equal(
-            pore.spherical_volume, 82.31154385154417
-        )
-
-    def test_calculate_windows(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-        mol.calculate_windows()
-        windows = mol.properties["windows"]["diameters"]
-        coms = mol.properties["windows"]["centre_of_mass"]
-
-        p = windows.argsort()
-
-        ref_win = np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512])
-        ref_com = np.array(
-            [
-                [10.77105705, 10.77097707, 14.02893956],
-                [14.01544846, 14.0154126, 14.01539845],
-                [10.77542236, 14.02453217, 10.77546634],
-                [13.92965524, 10.87029766, 10.87034163],
-            ]
-        )
-
-        p_ref = ref_win.argsort()
-
-        np.testing.assert_almost_equal(windows[p], ref_win[p_ref])
-        np.testing.assert_almost_equal(coms[p], ref_com[p_ref])
-
-    def test_molecular_weight(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-
-        np.testing.assert_almost_equal(
-            mol.molecular_weight(), 1117.5479999999998
-        )
-
-    def test_shift_to_origin(self):
-        molsys = pw.MolecularSystem.load_system(system, "test")
-        mol = molsys.system_to_molecule()
-        mol.shift_to_origin()
-
-        np.testing.assert_almost_equal(
-            mol.calculate_centre_of_mass(),
-            np.array([-1.04240249e-14, 9.14466577e-15, 8.19542860e-15]),
-        )
+    np.testing.assert_equal(
+        molsys.system["remarks"],
+        system_periodic["remarks"],
+    )
+    np.testing.assert_equal(
+        molsys.system["unit_cell"],
+        system_periodic["unit_cell"],
+    )
+    np.testing.assert_almost_equal(
+        molsys.system["lattice"],
+        system_periodic["lattice"],  # type:ignore[arg-type]
+        decimal=16,
+    )
+    np.testing.assert_equal(
+        molsys.system["atom_ids"],
+        system_periodic["atom_ids"],
+    )
+    np.testing.assert_equal(
+        molsys.system["elements"],
+        system_periodic["elements"],
+    )
+    np.testing.assert_almost_equal(
+        molsys.system["coordinates"],
+        system_periodic["coordinates"],  # type:ignore[arg-type]
+    )
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_periodic_rebuild() -> None:
+    molsys = pw.MolecularSystem.load_system(system_periodic, "periodic")
+    molsys_rebuild = molsys.rebuild_system()
+
+    np.testing.assert_equal(
+        molsys_rebuild.system["atom_ids"],
+        system_periodic_rebuild["atom_ids"],
+    )
+    np.testing.assert_equal(
+        molsys_rebuild.system["elements"],
+        system_periodic_rebuild["elements"],
+    )
+    np.testing.assert_almost_equal(
+        molsys_rebuild.system["coordinates"],
+        system_periodic_rebuild["coordinates"],
+    )
+
+
+def test_periodic_makemodular() -> None:
+    molsys = pw.MolecularSystem.load_system(system_periodic, "periodic")
+    molsys.make_modular()
+
+    assert molsys.molecules
+    assert isinstance(molsys.molecules, dict)
+    assert len(molsys.molecules) == 33  # noqa: PLR2004
+
+    mol = molsys.molecules[0]
+
+    assert mol
+    assert isinstance(mol, pw.Molecule)
+    np.testing.assert_equal(mol.elements, mol_system["elements"])
+    np.testing.assert_almost_equal(mol.coordinates, mol_system["coordinates"])
+
+
+def test_periodic_makemodular_rebuild() -> None:
+    molsys = pw.MolecularSystem.load_system(system_periodic, "periodic")
+    molsys.make_modular(rebuild=True)
+
+    assert molsys.molecules
+    assert isinstance(molsys.molecules, dict)
+    assert len(molsys.molecules) == 8  # noqa: PLR2004
+
+    mol = molsys.molecules[0]
+
+    assert mol
+    assert isinstance(mol, pw.Molecule)
+    np.testing.assert_equal(mol.elements, mol_system_r["elements"])
+    np.testing.assert_almost_equal(
+        mol.coordinates, mol_system_r["coordinates"]
+    )
+
+    for molecule in molsys.molecules.values():
+        assert len(molecule.coordinates) == 168  # noqa: PLR2004
+        assert len(molecule.elements) == 168  # noqa: PLR2004
+
+
+def test_asystemtomolecule() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    assert isinstance(mol, pw.Molecule)
+
+    np.testing.assert_equal(mol.mol["elements"], system["elements"])
+    np.testing.assert_equal(mol.mol["coordinates"], system["coordinates"])
+
+
+def test_calculate_centre_of_mass() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_centre_of_mass(), np.array([12.4, 12.4, 12.4])
+    )
+
+
+def test_calculate_maximum_diameter() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_maximum_diameter(), 22.179369990077188
+    )
+
+
+def test_calculate_average_diameter() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_average_diameter(), 13.832017514255472
+    )
+
+
+def test_calculate_pore_diameter() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_pore_diameter(), 5.397020177310022
+    )
+
+
+def test_calculate_pore_volume() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_pore_volume(), 82.31154385154417
+    )
+
+
+def test_calculate_pore_diameter_opt() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_pore_diameter_opt(), 5.397020177310022
+    )
+
+
+def test_calculate_pore_volume_opt() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_pore_volume_opt(), 82.31154385154417
+    )
+
+
+def test_calculate_windows() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+    mol.calculate_windows()
+    windows = mol.properties["windows"]["diameters"]  # type: ignore[index]
+    coms = mol.properties["windows"]["centre_of_mass"]  # type: ignore[index]
+
+    p = windows.argsort()
+
+    ref_win = np.array([3.63778746, 3.63562103, 3.63707237, 3.62896512])
+    ref_com = np.array(
+        [
+            [10.77105705, 10.77097707, 14.02893956],
+            [14.01544846, 14.0154126, 14.01539845],
+            [10.77542236, 14.02453217, 10.77546634],
+            [13.92965524, 10.87029766, 10.87034163],
+        ]
+    )
+
+    p_ref = ref_win.argsort()
+
+    np.testing.assert_almost_equal(windows[p], ref_win[p_ref])
+    np.testing.assert_almost_equal(coms[p], ref_com[p_ref])
+
+
+def test_molecular_weight() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+
+    np.testing.assert_almost_equal(mol.molecular_weight(), 1117.5479999999998)
+
+
+def test_shift_to_origin() -> None:
+    molsys = pw.MolecularSystem.load_system(system, "test")
+    mol = molsys.system_to_molecule()
+    mol.shift_to_origin()
+
+    np.testing.assert_almost_equal(
+        mol.calculate_centre_of_mass(),
+        np.array([-1.04240249e-14, 9.14466577e-15, 8.19542860e-15]),
+    )

@@ -1,5 +1,3 @@
-import unittest
-
 import numpy as np
 
 from pywindow import Input
@@ -6649,55 +6647,60 @@ system_periodic = {
 }
 
 
-class TestIOClass(unittest.TestCase):
-    def test_loadXYZ(self):
-        input = Input()
-        input.file_content = xyz_readlines
-        read_xyz = input._read_xyz()
+def test_load_xyz() -> None:
+    inp = Input()
+    inp.file_content = xyz_readlines
+    read_xyz = inp._read_xyz()  # noqa: SLF001
 
-        np.testing.assert_equal(read_xyz["elements"], system["elements"])
-        np.testing.assert_equal(read_xyz["coordinates"], system["coordinates"])
-
-    def test_loadPDB(self):
-        input = Input()
-        input.file_content = pdb_readlines
-        read_pdb = input._read_pdb()
-
-        np.testing.assert_equal(read_pdb["elements"], system["elements"])
-        np.testing.assert_equal(read_pdb["coordinates"], system["coordinates"])
-
-    def test_loadMOL(self):
-        input = Input()
-        input.file_content = mol_readlines
-        read_mol = input._read_mol()
-
-        np.testing.assert_equal(read_mol["elements"], system["elements"])
-        np.testing.assert_equal(read_mol["coordinates"], system["coordinates"])
-
-    def test_loadPDBperiodic(self):
-        input = Input()
-        input.file_content = pdb_periodic
-        read_periodic = input._read_pdb()
-
-        np.testing.assert_equal(
-            read_periodic["remarks"], system_periodic["remarks"]
-        )
-        np.testing.assert_equal(
-            read_periodic["unit_cell"], system_periodic["unit_cell"]
-        )
-        np.testing.assert_almost_equal(
-            read_periodic["lattice"], system_periodic["lattice"], decimal=16
-        )
-        np.testing.assert_equal(
-            read_periodic["atom_ids"], system_periodic["atom_ids"]
-        )
-        np.testing.assert_equal(
-            read_periodic["elements"], system_periodic["elements"]
-        )
-        np.testing.assert_almost_equal(
-            read_periodic["coordinates"], system_periodic["coordinates"]
-        )
+    np.testing.assert_equal(read_xyz["elements"], system["elements"])
+    np.testing.assert_equal(read_xyz["coordinates"], system["coordinates"])
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_load_pdb() -> None:
+    inp = Input()
+    inp.file_content = pdb_readlines
+    read_pdb = inp._read_pdb()  # noqa: SLF001
+
+    np.testing.assert_equal(read_pdb["elements"], system["elements"])
+    np.testing.assert_equal(read_pdb["coordinates"], system["coordinates"])
+
+
+def test_load_mol() -> None:
+    inp = Input()
+    inp.file_content = mol_readlines
+    read_mol = inp._read_mol()  # noqa: SLF001
+
+    np.testing.assert_equal(read_mol["elements"], system["elements"])
+    np.testing.assert_equal(read_mol["coordinates"], system["coordinates"])
+
+
+def test_load_pdb_periodic() -> None:
+    inp = Input()
+    inp.file_content = pdb_periodic
+    read_periodic = inp._read_pdb()  # noqa: SLF001
+
+    np.testing.assert_equal(
+        read_periodic["remarks"],
+        system_periodic["remarks"],
+    )
+    np.testing.assert_equal(
+        read_periodic["unit_cell"],
+        system_periodic["unit_cell"],
+    )
+    np.testing.assert_almost_equal(
+        read_periodic["lattice"],
+        system_periodic["lattice"],  # type: ignore[arg-type]
+        decimal=16,
+    )
+    np.testing.assert_equal(
+        read_periodic["atom_ids"],
+        system_periodic["atom_ids"],
+    )
+    np.testing.assert_equal(
+        read_periodic["elements"],
+        system_periodic["elements"],
+    )
+    np.testing.assert_almost_equal(
+        read_periodic["coordinates"],
+        system_periodic["coordinates"],  # type: ignore[arg-type]
+    )
