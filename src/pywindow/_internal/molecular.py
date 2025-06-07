@@ -4,44 +4,30 @@ This module is the most important part of the ``pywindow`` package, as it is
 at the frontfront of the interaction with the user. The two main classes
 defined here: :class:`MolecularSystem` and :class:`Molecule` are used to
 store and analyse single molecules or assemblies of single molecules.
-
 The :class:`MolecularSystem` is used as a first step to the analysis. It allows
 to load data, to refine it (rebuild molecules in a periodic system, decipher
 force field atom ids) and to extract single molecules for analysis as
 :class:`Molecule` instances.
-
 To get started see :class:`MolecularSystem`.
-
 To get started with the analysis of Molecular Dynamic trajectories go to
 :mod:`pywindow.trajectory`.
-
 """
 
-import os
+from __future__ import annotations
+
 from copy import deepcopy
 
 import numpy as np
-from scipy.spatial import ConvexHull
 
-from .io_tools import Input, Output
-from .utilities import (
+from pywindow._internal.io_tools import Input, Output
+from pywindow._internal.utilities import (
     align_principal_ax,
-    calc_acylidricity,
-    calc_asphericity,
-    calc_relative_shape_anisotropy,
-    calculate_pore_shape,
-    calculate_window_diameter,
     center_of_mass,
-    circumcircle,
     create_supercell,
     decipher_atom_key,
     discrete_molecules,
     find_average_diameter,
     find_windows,
-    find_windows_new,
-    get_gyration_tensor,
-    get_inertia_tensor,
-    get_window_com,
     max_dim,
     molecular_weight,
     opt_pore_diameter,
@@ -49,7 +35,6 @@ from .utilities import (
     shift_com,
     sphere_volume,
     to_list,
-    window_shape,
 )
 
 
@@ -1015,8 +1000,8 @@ class MolecularSystem:
         # I do it on temporary object so that it only finishes when successful
         temp = deepcopy(self.system[dict_key])
         for element in range(len(temp)):
-            temp[element] = "{0}".format(
-                decipher_atom_key(temp[element], forcefield=forcefield)
+            temp[element] = (
+                f"{decipher_atom_key(temp[element], forcefield=forcefield)}"
             )
         self.system["elements"] = temp
 

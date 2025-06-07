@@ -6,14 +6,10 @@ the one of the corresponding classes (DLPOLY, PDB or XYZ, respectively).
 Example:
 -------
 In this example a DL_POLY_C HISTORY trajectory file is loaded.
-
-
 .. code-block:: python
-
     pywindow.trajectory.DLPOLY('path/to/HISTORY')
-
 Then, each of the trajectory frames can be extracted and returned as a
-:class:`pywindow.molecular.MolecularSystem` object for analysis. See
+:class:`pywindow.MolecularSystem` object for analysis. See
 :mod:`pywindow.molecular` docstring for more information.
 
 Alternatively, the analysis can be performed on a whole or a chunk of
@@ -23,16 +19,16 @@ single JSON dictionary in a straightforward way. Also, the deciphering of the
 force field atom ids and the rebuilding of molecules can be applied to each
 frame in a consitent and automated manner. The downfall is that at the
 moment it is not possible to choose the set of parameters that are being
-calculated in the :class:`pywindow.molecular.Molecule` as the
-:func:`pywindow.molecular.Molecule.full_analysis()` is invoked by default.
+calculated in the :class:`pywindow.Molecule` as the
+:func:`pywindow.Molecule.full_analysis()` is invoked by default.
 However, the computational cost of calculating majority of the structural
 properties is miniscule and it is usually the
-:func:`pywindow.molecular.MolecularSystem.rebuild_system()` step that is the
+:func:`pywindow.MolecularSystem.rebuild_system()` step that is the
 bottleneck.
-
 """
 
-import os
+from __future__ import annotations
+
 from contextlib import closing
 from copy import deepcopy
 from mmap import ACCESS_READ, mmap
@@ -40,9 +36,9 @@ from multiprocessing import Pool
 
 import numpy as np
 
-from .io_tools import Output
-from .molecular import MolecularSystem
-from .utilities import (
+from pywindow._internal.io_tools import Output
+from pywindow._internal.molecular import MolecularSystem
+from pywindow._internal.utilities import (
     create_supercell,
     is_number,
     lattice_array_to_unit_cell,

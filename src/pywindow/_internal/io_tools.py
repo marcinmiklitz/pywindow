@@ -1,11 +1,15 @@
 """Module contains classes for input/output processing."""
 
+from __future__ import annotations
+
 import json
-import os
 
 import numpy as np
 
-from .utilities import decipher_atom_key, unit_cell_to_lattice_array
+from pywindow._internal.utilities import (
+    decipher_atom_key,
+    unit_cell_to_lattice_array,
+)
 
 
 class _CorruptedPDBFile(Exception):

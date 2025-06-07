@@ -1,39 +1,6 @@
-"""Module containing all general purpose functions shared by other modules.
+"""Module containing all general purpose functions shared by other modules."""
 
-This module is not intended for the direct use by a User. Therefore, I will
-only docstring functions if I see fit to do so.
-
-LOG
----
-
-11/07/18
-    Changed the way vector path is analysed. Now, the initial analysis is
-    done with the geometrical formula for line-sphere intersection. Only
-    the remaining vestors that do not intersect any van der Waals spheres are
-    then analysed in the old way.
-
-27/07/17
-    Fixed the cartesian coordinates -> fractional coordinates -> cartesian
-    coordinates conversion related functions, creation of lattice array
-    from unit cell parameters (triclinic system: so applicable to any)
-    and conversion back to unit cell parameters. WORKS! inspiration from:
-    http://www.ruppweb.org/Xray/tutorial/Coordinate%20system%20transformation.htm
-
-26/07/17
-    Changed the way bonds are determined. Now, rather then fixed value
-    a formula and covalent radii are used as explained in the Elemental_Radii
-    spreadsheet (see tables module).
-
-TO DO LIST
-----------
-
-- Fix and validate calculating shape descriptors: asphericity, acylindricity
-  and the realtive shape anisotropy. (Not working at the moment)
-
-- In the find_windows() function, maybe change the way the EPS value for
-  the DBSCAN() is estimates. Need to look how the distances change with the
-  increase in size of the sampling sphere. (validate this with the MongoDB)
-"""
+from __future__ import annotations
 
 from copy import deepcopy
 from multiprocessing import Pool
@@ -44,7 +11,7 @@ from sklearn.cluster import DBSCAN
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.neighbors import KDTree
 
-from .tables import (
+from pywindow._internal.tables import (
     atomic_covalent_radius,
     atomic_mass,
     atomic_vdw_radius,
