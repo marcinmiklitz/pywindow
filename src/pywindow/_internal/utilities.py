@@ -2076,3 +2076,66 @@ def circumcircle(coordinates, atom_sets):
         pld_com_list.append(COM)
         iter_ += 1
     return pld_diameter_list, pld_com_list
+
+
+def compare_properties_dict(  # noqa: C901, PLR0911
+    dict1: dict[str, int | float | dict],  # type:ignore[type-arg]
+    dict2: dict[str, int | float | dict],  # type:ignore[type-arg]
+) -> tuple[bool, str]:
+    """Compare two properties dictionaries."""
+    possible_properties = {
+        "centre_of_mass": "array",
+        "maximum_diameter.atom_1": "int",
+        "maximum_diameter.atom_2": "int",
+        "maximum_diameter.diameter": "float",
+        "no_of_atoms": "int",
+        "pore_diameter.atom": "int",
+        "pore_diameter.diameter": "float",
+        "pore_diameter_opt.atom_1": "int",
+        "pore_diameter_opt.centre_of_mass": "array",
+        "pore_diameter_opt.diameter": "float",
+        "pore_volume": "float",
+        "pore_volume_opt": "float",
+        "windows.centre_of_mass": "array",
+        "windows.diameters": "array",
+        "average_diameter": "float",
+    }
+
+    for prop, method in possible_properties.items():
+        path = prop.split(".")
+        if len(path) == 1:
+            if path[0] not in dict1 and path[0] not in dict2:
+                continue
+            if (path[0] not in dict1 and path[0] in dict2) or (
+                path[0] in dict1 and path[0] not in dict2
+            ):
+                return (False, prop)
+
+            item1 = dict1[path[0]]
+            item2 = dict2[path[0]]
+
+        elif len(path) == 2:  # noqa: PLR2004
+            if path[0] not in dict1 and path[0] not in dict2:
+                continue
+            if (path[0] not in dict1 and path[0] in dict2) or (
+                path[0] in dict1 and path[0] not in dict2
+            ):
+                return (False, prop)
+
+            item1 = dict1[path[0]][path[1]]  # type:ignore[index]
+            item2 = dict2[path[0]][path[1]]  # type:ignore[index]
+
+        if (item1 is None and item2 is not None) or (  # type:ignore[unreachable]
+            item1 is not None and item2 is None
+        ):
+            return (False, prop)  # type:ignore[unreachable]
+
+        if item1 is not None and item2 is not None:
+            if method == "array" and not np.allclose(item1, item2):  # type:ignore[arg-type]
+                return (False, prop)
+            if method == "float" and not np.isclose(item1, item2):  # type:ignore[arg-type]
+                return (False, prop)
+            if method in "int" and item1 != item2:
+                return (False, prop)
+
+    return (True, "none")
