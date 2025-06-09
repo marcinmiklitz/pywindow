@@ -48,4 +48,4 @@ exclude_patterns: list[str] = []
 html_theme = "furo"
 html_static_path = ["_static"]
 html_logo = "_static/pyWINDOW_logo.png"
-html_theme_options = {}
+html_theme_options = {}  # type: ignore[var-annotated]
