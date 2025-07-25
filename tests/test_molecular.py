@@ -4472,12 +4472,15 @@ def test_periodic_rebuild() -> None:
     molsys = pw.MolecularSystem.load_file(input_path)
 
     output_path = data_directory / "system_periodic_rebuild.pdb"
+    tmp_path = data_directory / "temp_system_periodic_rebuild.pdb"
     if not output_path.exists():
         msg = f"{output_path} does not exist"
         raise FileNotFoundError(msg)
     output_molsys = pw.MolecularSystem.load_file(output_path)
 
     molsys_rebuild = molsys.rebuild_system()
+    # For visualisation.
+    molsys_rebuild.dump_system(tmp_path)
     molsys_rebuild.make_modular()
     assert len(molsys_rebuild.molecules.items()) == 8  # noqa: PLR2004
     for mol in molsys_rebuild.molecules.values():
@@ -4496,6 +4499,7 @@ def test_periodic_rebuild() -> None:
         molsys_rebuild.system["coordinates"],
         output_molsys.system["coordinates"],
     )
+    tmp_path.unlink()
 
 
 def test_periodic_makemodular() -> None:
@@ -4513,11 +4517,14 @@ def test_periodic_makemodular() -> None:
         msg = f"{output_path} does not exist"
         raise FileNotFoundError(msg)
     output_mol = pw.MolecularSystem.load_file(output_path).system_to_molecule()
+    tmp_path = data_directory / "temp_mol_system.pdb"
+    mol.dump_molecule(tmp_path)
 
     assert mol
     assert isinstance(mol, pw.Molecule)
     np.testing.assert_equal(mol.elements, output_mol.elements)
     np.testing.assert_almost_equal(mol.coordinates, output_mol.coordinates)
+    tmp_path.unlink()
 
 
 def test_periodic_makemodular_rebuild() -> None:
