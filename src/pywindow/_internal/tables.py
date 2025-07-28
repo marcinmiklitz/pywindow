@@ -640,7 +640,6 @@ opls_atom_keys = {
     "Xe": ["Xe", "xe"],
 }
 
-
 periodic_table = {
     "H": 1,
     "He": 2,
