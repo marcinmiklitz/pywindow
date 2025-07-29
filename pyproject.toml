@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pywindowx"
+maintainers = [
+    { name = "Marcin Miklitz", email = "marcin.miklitz@gmail.com" },
+    { name = "Andrew Tarzia", email = "andrew.tarzia@gmail.com" },
+]
+
+dependencies = ["numpy", "scipy", "scikit-learn", "rdkit", "matplotlib"]
+requires-python = ">=3.9"
+dynamic = ["version"]
+readme = "README.rst"
+description = " A Python package for structural analysis of porous molecules."
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "mypy",
+    "pip-tools",
+    # TODO: Remove pin when https://github.com/TvoroG/pytest-lazy-fixture/issues/65 is resolved.
+    # pytest-lazy-fixture 0.6.0 is incompatible with pytest 8.0.0
+    "pytest<8",
+    "pytest-datadir",
+    "pytest-lazy-fixture",
+    "pytest-cov",
+    "sphinx",
+    "sphinx-copybutton",
+    "twine",
+    "sphinx_rtd_theme",
+    "furo",
+    "moldoc",
+]
+
+[project.urls]
+github = "https://github.com/marcinmiklitz/pywindow"
+documentation = "https://pywindow.readthedocs.io"
+
+
+[tool.setuptools_scm]
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["COM812", "ISC001", "A005"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "D100",
+    "E501",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    "S101",
+    "INP001",
+]
+"examples/*" = ["T201", "E501", "PTH123", "PLR2004", "PERF402", "ERA001"]
+"docs/source/conf.py" = ["D100", "INP001"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-report term-missing"
+
+[tool.mypy]
+show_error_codes = true
+implicit_optional = false
+warn_no_return = true
+strict_optional = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+warn_unreachable = true
+disallow_any_generics = true
+
+[[tool.mypy.overrides]]
+module = ["rdkit.*", "scipy.*", "sklearn.*"]
+ignore_missing_imports = true
