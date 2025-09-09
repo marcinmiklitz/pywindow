@@ -1,7 +1,7 @@
 :maintainers:
   `marcinmiklitz <https://github.com/marcinmiklitz/>`_
   `andrewtarzia <https://github.com/andrewtarzia/>`_
-:documentation: https://pywindowx.readthedocs.io/en/latest/
+:documentation: https://pywindow.readthedocs.io/en/latest/
 
 .. figure:: docs/source/_static/pyWINDOW_logo.png
 
@@ -31,7 +31,8 @@ Developer Setup
 ---------------
 
 To develop with ``pywindow``, you can clone the repo and use
-`just <https://github.com/casey/just>`_ to setup the dev environment:
+`just <https://github.com/casey/just>`_ and `uv <https://docs.astral.sh>`_
+to setup the dev environment:
 
 .. code-block:: bash
 
