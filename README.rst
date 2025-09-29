@@ -1,7 +1,7 @@
 :maintainers:
   `marcinmiklitz <https://github.com/marcinmiklitz/>`_
   `andrewtarzia <https://github.com/andrewtarzia/>`_
-:documentation: https://pywindow.readthedocs.io/en/latest/
+:documentation: https://pywindowx.readthedocs.io/en/latest/
 
 .. figure:: docs/source/_static/pyWINDOW_logo.png
 
